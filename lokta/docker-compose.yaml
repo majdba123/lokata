@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  db:
+    image: mysql # You can specify a different version if needed
+    container_name: lokta_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: lokta
+      MYSQL_ROOT_PASSWORD: root 
+      MYSQL_USER: myappuser 
+      MYSQL_PASSWORD: myapppassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
