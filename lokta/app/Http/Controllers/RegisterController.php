@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Http\JsonResponse;
-
 use Illuminate\Http\Request;
 use App\Http\Requests\registartion\RegisterUser ; // Ensure the namespace is correct
 use App\Services\registartion\register; // Ensure the namespace is correct\use Illuminate\Http\JsonResponse;
@@ -30,10 +29,7 @@ class RegisterController extends Controller
 
         if (isset($validatedData['email'])) {
             OtpHelper::sendOtpEmail($user->id);
-        }/*elseif(isset($validatedData['phone']))
-        {
-            $this->sendOtp_mobile($user->id);
-        }*/
+        }
 
         return response()->json([
             'message' => 'User  registered successfully',
@@ -43,7 +39,7 @@ class RegisterController extends Controller
 
 
 
-    public function verfication_otp(Request $request)
+    public function verification_otp(Request $request)
     {
         // Validate the request
         $request->validate([

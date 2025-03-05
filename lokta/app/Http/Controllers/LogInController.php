@@ -7,6 +7,7 @@ use App\Http\Requests\registartion\LoginRequest ; // Ensure the namespace is cor
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use App\Services\registartion\login;
+
 class LogInController extends Controller
 {
     protected $loginService;
@@ -23,12 +24,22 @@ class LogInController extends Controller
        // The validated data is automatically available from the request
        $validatedData = $request->validated();
 
-       $token = $this->loginService->login($validatedData);
+       try {
+        $res = $this->loginService->login($validatedData);
+            return response()->json([
+                'access_token' => $res["access_token"],
+                'token_type' => 'Bearer',
+                'user' => $res["user"],
+            ]);
+       } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ], 401);
+       }
+      
+       
+    }
 
-       return response()->json([
-           'access_token' => $token,
-       ]);
-   }
 
 
    public function logout(){

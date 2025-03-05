@@ -2,6 +2,7 @@
 
 use App\Models\Sub_Category;
 use App\Models\Vendor;
+use App\Models\Brand;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -21,8 +22,9 @@ return new class extends Migration
             $table->string('discreption');
             $table->foreignIdFor(Sub_Category::class)->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignIdFor(Vendor::class)->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-
+            $table->foreignIdFor(Brand::class)->nullable();
             $table->timestamps();
+
         });
     }
 

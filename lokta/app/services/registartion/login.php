@@ -33,14 +33,12 @@ class login
 
 
         if (!$user || !Hash::check($data['password'], $user->password)) {
-            return response()->json([
-                'message' => 'Invalid Credentials'
-            ], 401);
+           throw new \Exception('Invalid Credentials');
         }
 
         $token = $user->createToken($user->name . '-AuthToken')->plainTextToken;
 
-        return $token;
+        return ["access_token" => $token, "user" => $user];
     }
 
 }

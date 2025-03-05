@@ -10,11 +10,12 @@ class Product extends Model
     use HasFactory;
     protected $fillable = [
         'title',
-        'vendor_id',
-        'sub_category_id',
+        'sub__category_id',
         'image',
         'price',
         'discreption',
+        'vendor_id',
+        'brand_id',
     ];
 
     public function OrderProduct()
@@ -24,12 +25,18 @@ class Product extends Model
 
     public function sub_category()
     {
-        return $this->belongsTo(Sub_Category::class ,'sub_category_id');
+        return $this->belongsTo(Sub_Category::class ,'sub__category_id');
     }
 
     public function vendor()
     {
         return $this->belongsTo(Vendor::class ,'vendor_id');
+    }
+
+    // generate relation with brand
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class, 'brand_id');
     }
 
 }

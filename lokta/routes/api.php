@@ -2,6 +2,12 @@
 
 use App\Http\Controllers\LogInController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SubCategoryController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\BrandController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ForgetPasswordController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,10 +22,51 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+
 
 
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/login', [LogInController::class, 'login']);
+Route::post('/forget-password', [ForgetPasswordController::class, 'forgetPassword']);
+Route::post('/reset-password', [ForgetPasswordController::class, 'resetPasswordByVerifyOtp']);
+
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+    Route::put('/user', [UserController::class, 'update']);
+    Route::put('/user/change-password', [UserController::class, 'changePassword']);
+    Route::get('/user/verify-otp', [RegisterController::class, 'verification_otp']);
+    Route::post('/logout', [LogInController::class, 'logout']);
+});
+
+
+Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
+    Route::post('/admin/create-category', [CategoryController::class, 'create']);
+    Route::put('/admin/update-category/{category}', [CategoryController::class, 'update']);
+    Route::delete('/admin/delete-category/{category}', [CategoryController::class, 'destroy']);
+    Route::post('/admin/categories/{category_id}/subcategories', [SubCategoryController::class, 'create']);
+    Route::put('/admin/categories/{category_id}/subcategories/{subCategory}', [SubCategoryController::class, 'update']);
+    Route::delete('/admin/categories/{category_id}/subcategories/{subCategory}', [SubCategoryController::class, 'destroy']);
+});
+
+Route::group(['middleware' => ['auth:sanctum', 'vendor']], function () {
+    Route::post('/products', [ProductController::class, 'store']);
+    Route::put('/products/{product}', [ProductController::class, 'update']);
+    Route::delete('/products/{product}', [ProductController::class, 'destroy']);
+
+    Route::delete('/brands/{brand}', [BrandController::class, 'destroy']);
+    Route::put('/brands/{brand}', [BrandController::class, 'update']);
+    Route::post('/brands', [BrandController::class, 'store']);
+
+});
+
+
+Route::get('/categories', [CategoryController::class, 'allCategories']);
+Route::get('/categories/{category}', [CategoryController::class, 'categoryById']); 
+Route::get('/products/filter', [ProductController::class, 'filterProducts']);
+Route::get('/products', [ProductController::class, 'index']);
+Route::get('/products/{product}', [ProductController::class, 'show']);
+Route::get('/products/subcategories/{subCategoryId}', [ProductController::class, 'getProductsBySubCategory']);
+Route::get('/brands', [BrandController::class, 'index']);
+Route::get('/brands/{brand}', [BrandController::class, 'index']);
