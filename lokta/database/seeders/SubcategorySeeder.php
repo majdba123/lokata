@@ -21,7 +21,7 @@ class SubcategorySeeder extends Seeder
         foreach (range(1, 20) as $index) {
             $subcategory = Sub_Category::create([
                 'title' => $faker->name,
-                'image' => $faker->imageUrl(),
+                'image' => "https://picsum.photos/seed/picsum/300/300",
                 'category_id' => rand(1, 20),
             ]);
         }

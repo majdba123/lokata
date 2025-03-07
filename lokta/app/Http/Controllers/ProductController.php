@@ -102,17 +102,15 @@ class ProductController extends Controller
             $query->where('title', 'like', "%$searchTerm%");
         }
 
-        if ($request->has('min_price') && $request->filled('min_price') && $request->has('max_price') && $request->filled('max_price')) {
-            $minPrice = $request->input('min_price');
-            $maxPrice = $request->input('max_price');
-            $query->whereBetween('price', [$minPrice, $maxPrice]);
-        } elseif ($request->has('min_price') && $request->filled('min_price')) {
+         if ($request->has('min_price') && $request->filled('min_price')) {
             $minPrice = $request->input('min_price');
             $query->where('price', '>=', $minPrice);
-        } elseif ($request->has('max_price') && $request->filled('max_price')) {
+        }
+        if ($request->has('max_price') && $request->filled('max_price')) {
             $maxPrice = $request->input('max_price');
             $query->where('price', '<=', $maxPrice);
         }
+
 
         $products = $query->get();
 

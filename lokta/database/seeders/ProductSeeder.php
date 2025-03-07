@@ -20,8 +20,8 @@ class ProductSeeder extends Seeder
             Product::create([
                 'title' => $faker->word,
                 'discreption' => $faker->sentence,
-                'price' => $faker->randomFloat(2, 10, 100),
-                'image' => $faker->imageUrl(),
+                'price' => $faker->randomFloat(2, 10, 1000),
+                'image' => "https://picsum.photos/seed/picsum/300/300",
                 'sub__category_id' => rand(1, 20),
                 'vendor_id' => rand(1, 10),
                 'brand_id' => rand(1, 10),

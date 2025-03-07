@@ -59,7 +59,9 @@ class CategoryController extends Controller
     public function allCategories(): JsonResponse
     {
        
-        $categories = Category::with('subCategories')->get();
+        $categories = Category::with('subCategories')
+            ->whereHas('subCategories')
+            ->get();
 
         return response()->json(CategoryResource::collection($categories), 200);
     }

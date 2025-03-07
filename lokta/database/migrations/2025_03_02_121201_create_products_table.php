@@ -18,7 +18,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('image');
-            $table->string('price');
+            $table->integer('price');
             $table->string('discreption');
             $table->foreignIdFor(Sub_Category::class)->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignIdFor(Vendor::class)->constrained()->cascadeOnDelete()->cascadeOnUpdate();
