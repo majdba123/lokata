@@ -10,6 +10,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ForgetPasswordController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ChatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
+
+
     Route::put('/user', [UserController::class, 'update']);
     Route::put('/user/change-password', [UserController::class, 'changePassword']);
     Route::get('/user/verify-otp', [RegisterController::class, 'verification_otp']);
@@ -63,10 +66,18 @@ Route::group(['middleware' => ['auth:sanctum', 'vendor']], function () {
 
 
 Route::get('/categories', [CategoryController::class, 'allCategories']);
-Route::get('/categories/{category}', [CategoryController::class, 'categoryById']); 
+Route::get('/categories/{category}', [CategoryController::class, 'categoryById']);
 Route::get('/products/filter', [ProductController::class, 'filterProducts']);
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{product}', [ProductController::class, 'show']);
 Route::get('/products/subcategories/{subCategoryId}', [ProductController::class, 'getProductsBySubCategory']);
 Route::get('/brands', [BrandController::class, 'index']);
 Route::get('/brands/{brand}', [BrandController::class, 'index']);
+
+
+
+
+Route::post('/SendTo/{recive_id}', [ChatController::class, 'sendMessage'])->middleware('auth:sanctum');
+Route::get('/messages-from-sender/{sender_id}', [ChatController::class, 'getMessagesFromSender'])->middleware('auth:sanctum');
+Route::get('/unread-messages', [ChatController::class, 'getUnreadMessages'])->middleware('auth:api');
+Route::post('/mark-messages-as-read/{sender_id}', [ChatController::class, 'markMessagesAsRead'])->middleware('auth:api');
