@@ -79,5 +79,8 @@ Route::get('/brands/{brand}', [BrandController::class, 'index']);
 
 Route::post('/SendTo/{recive_id}', [ChatController::class, 'sendMessage'])->middleware('auth:sanctum');
 Route::get('/messages-from-sender/{sender_id}', [ChatController::class, 'getMessagesFromSender'])->middleware('auth:sanctum');
-Route::get('/unread-messages', [ChatController::class, 'getUnreadMessages'])->middleware('auth:api');
-Route::post('/mark-messages-as-read/{sender_id}', [ChatController::class, 'markMessagesAsRead'])->middleware('auth:api');
+Route::get('/unread-messages', [ChatController::class, 'getUnreadMessages'])->middleware('auth:sanctum');
+Route::post('/mark-messages-as-read/{sender_id}', [ChatController::class, 'markMessagesAsRead'])->middleware('auth:sanctum');
+Route::get('/getInteractedUsers', [ChatController::class, 'getInteractedUsers'])->middleware('auth:sanctum');
+Route::get('/getMessagesByReceiver/{reciver_id}', [ChatController::class, 'getMessagesByReceiver'])->middleware('auth:sanctum');
+Route::get('/getConversation/{reciver_id}', [ChatController::class, 'getConversation'])->middleware('auth:sanctum');
