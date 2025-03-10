@@ -48,7 +48,7 @@ class ChatController extends Controller
         $unreadMessages = Chat::where('receiver_id', $receiver_id)
             ->where('is_read', false) // شرط الرسائل غير المقروءة
             ->orderBy('created_at', 'desc')
-            ->paginate(10, ['message', 'created_at']); // تقسيم النتائج إلى صفحات (10 رسائل لكل صفحة)
+            ->paginate(10, ['message', 'sender_id','created_at']); // تقسيم النتائج إلى صفحات (10 رسائل لكل صفحة)
 
 
         // التحقق إذا لم توجد رسائل غير مقروءة
@@ -82,28 +82,24 @@ class ChatController extends Controller
 
 
 
-    public function getInteractedUsers(Request $request)
+    public function getInteractedUsers()
     {
         $userId = auth()->id(); // المعرّف الخاص بالمستخدم الموثق
 
-        // جلب جميع الأشخاص الذين قام المستخدم بمراسلتهم أو قاموا بمراسلته، مع استثناء سجلات المستخدم نفسه
-        $interactedUsers = Chat::where(function ($query) use ($userId) {
-                $query->where('sender_id', $userId)
-                      ->orWhere('receiver_id', $userId);
-            })
-            ->join('users', function ($join) use ($userId) {
-                $join->on('users.id', '=', 'chats.sender_id')
-                     ->orOn('users.id', '=', 'chats.receiver_id');
-            })
-            ->where('users.id', '!=', $userId) // استثناء المستخدم الموثق نفسه
-            ->orderBy('chats.created_at', 'desc') // ترتيب النتائج من الأحدث إلى الأقدم
-            ->distinct()
-            ->paginate(10, ['users.id', 'users.name']); // تقسيم النتائج إلى صفحات (10 عناصر لكل صفحة)
+        // الحصول على معرفات المستخدمين الذين تم التفاعل معهم
+        $interactedUserIds = Chat::where('sender_id', $userId)
+            ->orWhere('receiver_id', $userId)
+            ->pluck('sender_id', 'receiver_id')
+            ->unique(); // إزالة التكرار
 
-        // إرجاع النتيجة مع التجزئة
+        // جلب تفاصيل المستخدمين وتنسيق النتائج
+        $interactedUsers = User::whereIn('id', $interactedUserIds)
+            ->where('id', '!=', $userId) // استثناء المستخدم الموثق
+            ->orderBy('id', 'asc') // ترتيب النتائج وفقًا للحاجة
+            ->paginate(10, ['id', 'name']); // تقسيم النتائج إلى صفحات
+
         return response()->json($interactedUsers);
     }
-
 
 
 
