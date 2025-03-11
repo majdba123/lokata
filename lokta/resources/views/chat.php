@@ -28,6 +28,8 @@
     </script>
 </head>
 
+
+
 <body>
     <h1> user Test</h1>
     <h1>User ID:{{ auth()->user()->id }}</h1>
