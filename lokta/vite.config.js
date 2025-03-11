@@ -11,6 +11,18 @@ export default defineConfig({
             ],
             refresh: true,
         }),
-        vue(), // Add Vue plugin here
+        vue({
+            template: {
+                transformAssetUrls: {
+                    base: null,
+                    includeAbsolute: false,
+                },
+            },
+        }),
     ],
+    resolve: {
+        alias: {
+            vue: 'vue/dist/vue.esm-bundler.js',
+        },
+    },
 });
