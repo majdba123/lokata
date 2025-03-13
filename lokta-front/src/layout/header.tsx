@@ -35,7 +35,7 @@ const Header: React.FC = () => {
       navigate("/login");
       return;
     }
-    navigate("/profile");
+    navigate("/profile/dashboard");
   };
 
   return (

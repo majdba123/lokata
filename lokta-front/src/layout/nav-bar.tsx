@@ -6,18 +6,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { ChevronDown, Flame, Menu } from "lucide-react"; // Added Menu icon
+import { ChevronDown, Menu, MessageCircleMore } from "lucide-react"; // Added Menu icon
 import { useState } from "react"; // Added useState
 import categories_logo from "@/assets/categories.svg";
 import { useAuthStore } from "@/zustand-stores/auth.store";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false); // Added state for menu
   const isLogged = useAuthStore((state) => state.isAuthenticated);
 
+  const navigate = useNavigate();
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleChatClick = () => {
+    navigate(`/${isLogged ? "chat" : "login"}`);
   };
 
   return (
@@ -72,16 +78,15 @@ function Navbar() {
               </Link>
             </nav>
           </div>
-
-          {/* Hot Deals Button */}
           <Button
             className={cn(
               "bg-[#194EB4] hover:bg-blue-700 text-white",
               "px-4 py-2 text-sm font-medium rounded-md cursor-pointer"
             )}
+            onClick={handleChatClick}
           >
-            <Flame fill="white" />
-            Hot Deals
+            <MessageCircleMore />
+            Message Seller
           </Button>
 
           {/* Burger Menu (Visible on small screens) */}
@@ -116,7 +121,6 @@ function Navbar() {
             >
               Profile
             </Link>{" "}
-            
           </nav>
         )}
       </div>
