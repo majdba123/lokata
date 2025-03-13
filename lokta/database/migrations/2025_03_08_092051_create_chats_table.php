@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('sender_id')->constrained('users')->onDelete('cascade'); // معرف المرسل
             $table->foreignId('receiver_id')->constrained('users')->onDelete('cascade'); // معرف المستقبل
             $table->text('message'); // نص الرسالة
-            $table->string('is_read')->default('false'); // نص الرسالة
+            $table->boolval('is_read')->default(false); // نص الرسالة
             $table->timestamps(); // الطوابع الزمنية
         });
     }

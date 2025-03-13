@@ -86,21 +86,38 @@ class ChatController extends Controller
     {
         $userId = auth()->id(); // المعرّف الخاص بالمستخدم الموثق
 
-        // جلب جميع الأشخاص الذين قام المستخدم بمراسلتهم أو قاموا بمراسلته، مع استثناء سجلات المستخدم نفسه
         $interactedUsers = Chat::where(function ($query) use ($userId) {
-                $query->where('sender_id', $userId)
-                      ->orWhere('receiver_id', $userId);
-            })
-            ->join('users', function ($join) use ($userId) {
-                $join->on('users.id', '=', 'chats.sender_id')
-                     ->orOn('users.id', '=', 'chats.receiver_id');
-            })
-            ->where('users.id', '!=', $userId) // استثناء المستخدم الموثق نفسه
-            ->orderBy('chats.created_at', 'desc') // ترتيب النتائج من الأحدث إلى الأقدم
-            ->distinct()
-            ->paginate(10, ['users.id', 'users.name']);
+            $query->where('sender_id', $userId)
+                ->orWhere('receiver_id', $userId);
+        })
+            ->selectRaw('
+                CASE 
+                    WHEN sender_id = ? THEN receiver_id 
+                    ELSE sender_id 
+                END as other_user_id,
+                MAX(created_at) as last_message_at
+            ', [$userId])
+            ->groupBy('other_user_id')
+            ->orderBy('last_message_at', 'desc')
+            ->get();
 
-        return response()->json($interactedUsers);
+        $userIds = $interactedUsers->pluck('other_user_id')->toArray();
+
+        $users = User::whereIn('id', $userIds)
+            ->select('id', 'name')
+            ->get()
+            ->keyBy('id');
+
+        $result = $interactedUsers->map(function ($item) use ($users) {
+            $user = $users->get($item->other_user_id);
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'last_message_at' => $item->last_message_at,
+            ];
+        });
+
+        return response()->json($result);
     }
 
 
