@@ -9,6 +9,9 @@ type ChatState = {
   addInteractedUser: (user: InteractedUser) => void;
   addLastMessage: (userId: number, message: string) => void;
   clearLastMessages: (userId: number) => void;
+  newMessagesCounter: number;
+  increaseNewMessagesCounter: () => void;
+  clearNewMessagesCounter: () => void;
 };
 
 export const useChatStore = create<ChatState>((set) => ({
@@ -38,4 +41,10 @@ export const useChatStore = create<ChatState>((set) => ({
       );
       return { interactedUsers: updatedUsers };
     }),
+  newMessagesCounter: 0,
+  increaseNewMessagesCounter: () =>
+    set((state: ChatState) => ({
+      newMessagesCounter: state.newMessagesCounter + 1,
+    })),
+  clearNewMessagesCounter: () => set(() => ({ newMessagesCounter: 0 })),
 }));

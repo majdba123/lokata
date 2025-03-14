@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useChatStore } from "@/zustand-stores/chat-store";
 import { toast } from "sonner";
 import { getInteractedUsersApi } from "@/api/services/chat/chat-service";
+import ChatNotifications from "./chat-notification";
 
 function ChatSidebar() {
   const setInteractedUsers = useChatStore((state) => state.setInteractedUsers);
@@ -32,6 +33,7 @@ function ChatSidebar() {
 
   return (
     <aside className="w-80 bg-white border-r border-gray-200 px-4 h-screen flex flex-col py-5">
+      <ChatNotifications />
       <div className="relative mb-4">
         <input
           type="text"
