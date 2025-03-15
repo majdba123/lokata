@@ -1,9 +1,9 @@
 import axios from "axios";
 import { resolveError } from "../helpers/error-resolver";
-import { Product, ProductsFilter } from "./types";
+import { CreateProductRequest, Product, ProductsFilter } from "./types";
 import { API_URL } from "@/api/constants";
 
-class BrandService {
+class ProductService {
   filterProductsApi = async (filter: ProductsFilter) => {
     try {
       const { data } = await axios.get<Product[]>(
@@ -20,6 +20,8 @@ class BrandService {
       throw new Error(resolveError(error));
     }
   };
+
+  createProductApi = async (req: CreateProductRequest) => {};
 }
 
-export const { filterProductsApi } = new BrandService();
+export const { filterProductsApi, createProductApi } = new ProductService();

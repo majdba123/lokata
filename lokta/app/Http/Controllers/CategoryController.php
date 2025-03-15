@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 use App\Models\Category;
+use App\Models\Sub_Category;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rule;
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\SubcategoryResource;
+
 
 
 class CategoryController extends Controller
@@ -71,6 +74,13 @@ class CategoryController extends Controller
         $category->load('subCategories');
 
         return response()->json(new CategoryResource($category), 200);
+    }
+
+    public function allSubCategories() : JsonResponse
+    {
+        $subCategories = Sub_Category::all();
+
+        return response()->json(SubcategoryResource::collection($subCategories), 200);
     }
 
 

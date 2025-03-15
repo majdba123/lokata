@@ -27,16 +27,20 @@ class ProductController extends Controller
                 'title' => 'required|string|max:255|unique:products',
                 'price' => 'required|numeric|min:0',
                 'sub__category_id' => 'required|numeric|exists:sub__categories,id',
-                'discreption' => 'required|string',
-                'image' => 'required|string',
+                'description' => 'required|string',
+                'images' => 'required|array', 
+                'images.*' => 'string', 
                 'brand_id' => 'required|numeric|exists:brands,id',
             ]);
-
+            
+            $imagesJson = json_encode($validatedData['images']);
+            unset($validatedData['images']);
+            $validatedData['images'] = $imagesJson;
             $product = Auth::user()->vendor->product()->create($validatedData);
             $product->sub_category()->associate($validatedData['sub__category_id']);
             $product->save();
 
-            return response()->json(new ProductResource($product), 201);
+    return response()->json(new ProductResource($product));
             
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
@@ -55,11 +59,18 @@ class ProductController extends Controller
                 'title' => 'nullable|string|max:255|unique:products',
                 'price' => 'nullable|numeric|min:0',
                 'sub__category_id' => 'nullable|numeric|exists:sub__categories,id',
-                'discreption' => 'nullable|string',
-                'image' => 'nullable|string',
+                'description' => 'nullable|string',
+                'images' => 'nullable|array', 
+                'images.*' => 'string', 
                 'brand_id' => 'nullable|numeric|exists:brands,id',
             ]);
+            if ($request->has('images')) {
+                $imagesJson = json_encode($validatedData['images']);
+                unset($validatedData['images']);
+                $validatedData['images'] = $imagesJson;
+            }
 
+            
             $product->update($validatedData);
             if (isset($validatedData['sub__category_id'])) {
                 $product->sub_category()->associate($validatedData['sub__category_id']);

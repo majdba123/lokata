@@ -13,6 +13,7 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'nullable|string|max:255|unique:users,name,' . auth()->id() . ',id',
+            'image' => 'nullable|string'
         ]);
         $user = User::where('id', auth()->id())->firstOrFail();
         $user->update($request->all());

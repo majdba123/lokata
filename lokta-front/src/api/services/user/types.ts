@@ -4,10 +4,12 @@ export type BaseUser = {
   email: string;
   created_at: string;
   updated_at: string;
+  image: string | null;
 };
 
 export type UpdateProfileRequest = {
   name?: string;
+  image?: string;
 };
 
 export type UpdateProfileResponse = {

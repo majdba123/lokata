@@ -1,7 +1,7 @@
 import { getBrandsApi } from "@/api/services/brand/brand-service";
 import { Brand } from "@/api/services/brand/types";
 import { Subcategory } from "@/api/services/category/types";
-import { filterProductsApi } from "@/api/services/products/brand-service";
+import { filterProductsApi } from "@/api/services/products/product-service";
 import { Product } from "@/api/services/products/types";
 import PriceRangeSlider from "@/components/my-ui/double-price-range";
 import ProductCard from "@/components/my-ui/product-card";
@@ -172,7 +172,7 @@ function CategoryPage() {
                 title={product.title}
                 originalPrice={product.price}
                 discountPrice={product.price}
-                imageUrl={product.image}
+                imageUrl={product.images[0]}
                 discountPercentage={0}
               />
             ))}

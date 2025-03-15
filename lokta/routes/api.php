@@ -11,6 +11,7 @@ use App\Http\Controllers\ForgetPasswordController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\FileUploadController;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,6 +67,7 @@ Route::group(['middleware' => ['auth:sanctum', 'vendor']], function () {
 
 
 Route::get('/categories', [CategoryController::class, 'allCategories']);
+Route::get('/subcategories', [CategoryController::class, 'allSubCategories']);
 Route::get('/categories/{category}', [CategoryController::class, 'categoryById']);
 Route::get('/products/filter', [ProductController::class, 'filterProducts']);
 Route::get('/products', [ProductController::class, 'index']);
@@ -82,6 +84,8 @@ Route::get('/unread-messages', [ChatController::class, 'getUnreadMessages'])->mi
 Route::post('/mark-messages-as-read/{sender_id}', [ChatController::class, 'markMessagesAsRead'])->middleware('auth:sanctum');
 Route::get('/getInteractedUsers', [ChatController::class, 'getInteractedUsers'])->middleware('auth:sanctum');
 Route::get('/getConversation/{reciver_id}', [ChatController::class, 'getConversation'])->middleware('auth:sanctum');
+Route::post('/upload', [FileUploadController::class, 'upload'])->middleware('auth:sanctum');
+
 
 
 /*Route::get('/messages-from-sender/{sender_id}', [ChatController::class, 'getMessagesFromSender'])->middleware('auth:sanctum');

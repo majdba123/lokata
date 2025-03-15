@@ -1,7 +1,8 @@
-import {  useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import UserUpdateProfile from "./user-update-profile";
 import { useAuthStore } from "@/zustand-stores/auth.store";
+import { API_URL } from "@/api/constants";
 
 function ProfileDashboard() {
   const [inEdit, setInEdit] = useState(false);
@@ -24,11 +25,20 @@ function ProfileDashboard() {
           <div className="bg-white p-6 rounded-lg shadow mb-8">
             <h2 className="text-xl font-semibold mb-4">ACCOUNT INFO</h2>
             <div className="flex items-center space-x-4">
+              {user?.image ? (
+                <img
+                  src={`${API_URL}/${user?.image}`}
+                  alt="Profile"
+                  className="h-20 w-20 rounded-full object-contain"
+                />
+              ) : (
+                <div className="h-20 w-20 rounded-full bg-gray-200 flex items-center justify-center">
+                  <span className="text-gray-400 text-4xl">?</span>
+                </div>
+              )}
               <div>
                 <h3 className="font-semibold">{user?.name}</h3>
-                <p className="text-gray-500">Egypt, 202 Egypt</p>
                 <p className="text-gray-500">Email: {user?.email}</p>
-                <p className="text-gray-500">Phone: +20123456789</p>
               </div>
             </div>
             <Button variant="outline" className="mt-4" onClick={handleEdit}>

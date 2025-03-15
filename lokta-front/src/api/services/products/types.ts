@@ -9,11 +9,21 @@ export type ProductsFilter = {
 export type Product = {
   id: number;
   title: string;
-  descreption: string | null;
+  description: string | null;
   price:number;
-  image: string;
+  images: string[];
   created_at: Date;
   updated_at: Date;
   sub__category_id: number;
-  vendor_id: 3;
+  vendor_id: number;
+};
+
+
+export type CreateProductRequest = {
+  title: string;
+  description: string;
+  price: number;
+  sub__category_id: number;
+  images: string[];
+  brand_id: number;
 };
