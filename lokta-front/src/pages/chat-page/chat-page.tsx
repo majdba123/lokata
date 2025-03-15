@@ -7,10 +7,11 @@ import { Message } from "@/api/services/chat/types";
 import { useConversationStore } from "@/zustand-stores/conversation-store";
 import { useParams } from "react-router-dom";
 import { fixInvalidUserId } from "@/lib/helpers";
+import { useEffect } from "react";
 
 function ChatPage() {
-  const curChatUserId = useChatStore((state) => state.curChatUserId);
   const interactedUsers = useChatStore((state) => state.interactedUsers);
+  const setCurChatUserId = useChatStore((state) => state.setCurChatUserId);
   const increaseNewMessagesCounter = useChatStore(
     (state) => state.increaseNewMessagesCounter
   );
@@ -37,16 +38,20 @@ function ChatPage() {
     }
   };
 
+  useEffect(() => {
+    setCurChatUserId(fixInvalidUserId(id));
+  }, [id]);
+
   useListenToChannel({
     userId: myId!,
     onReceiveMessage,
-    otherUserId: curChatUserId || Number(id),
+    otherUserId: fixInvalidUserId(id),
   });
   return (
     <div className="flex h-screen bg-gray-100">
       <ChatSidebar />
-      {curChatUserId && <ChatArea />}
-      {!curChatUserId && (
+      {id && <ChatArea />}
+      {!id && (
         <div className="flex-1 flex items-center justify-center">
           <p className="text-gray-500">Select a chat to start messaging</p>
         </div>

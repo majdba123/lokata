@@ -5,7 +5,7 @@ type CategoryState = {
   currentCategory: Category | null;
   setCurrentCategory: (category: Category) => void;
   curSubCategoryId: number | null;
-  setCurSubCategoryId: (id: number) => void;
+  setCurSubCategoryId: (id: number | undefined) => void;
 };
 
 export const useCategoryStore = create<CategoryState>()((set) => ({
@@ -13,5 +13,5 @@ export const useCategoryStore = create<CategoryState>()((set) => ({
   setCurrentCategory: (category: Category) =>
     set({ currentCategory: category }),
   curSubCategoryId: null,
-  setCurSubCategoryId: (id: number) => set({ curSubCategoryId: id }),
+  setCurSubCategoryId: (id: number | undefined) => set({ curSubCategoryId: id }),
 }));

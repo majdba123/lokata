@@ -1,6 +1,7 @@
 import { signupApi } from "@/api/services/auth/auth-service";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
@@ -14,14 +15,16 @@ type Inputs = {
 };
 
 function Signup() {
+  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
-    formState: { errors, isLoading },
+    formState: { errors },
   } = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
+      setLoading(true);
       await signupApi({
         email: data.email,
         password: data.password,
@@ -29,8 +32,10 @@ function Signup() {
         type: data.type,
       });
       toast.success("Account created successfully");
+      setLoading(false);
     } catch (error: any) {
       toast.error(error.message);
+      setLoading(false);
     }
   };
 
@@ -188,9 +193,9 @@ function Signup() {
             <Button
               className="w-full bg-[#194EB4] text-white hover:bg-[#153e8a]"
               type="submit"
-              disabled={isLoading}
+              disabled={loading}
             >
-              {isLoading ? "Loading..." : "Sign Up"}
+              {loading ? "Loading..." : "Sign Up"}
             </Button>
 
             <Separator />

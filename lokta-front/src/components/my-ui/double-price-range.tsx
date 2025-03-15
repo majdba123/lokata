@@ -39,7 +39,11 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
   const [isCustomRange, setIsCustomRange] = useState<boolean>(false);
 
   useEffect(() => {
-    onChange?.(priceRange);
+    const debounceTimeout = setTimeout(() => {
+      onChange?.(priceRange);
+    }, 400); 
+
+    return () => clearTimeout(debounceTimeout);
   }, [priceRange, onChange]);
 
   const formatPrice = (value: number): string => {

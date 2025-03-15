@@ -23,6 +23,24 @@ class UserService {
       throw new Error(resolveError(error));
     }
   };
+
+  getPossibleChatUserApi = async (userId: number) => {
+    try {
+      const token = useAuthStore.getState().accessToken;
+      const { data } = await axios.get<{ name: string; id: number }>(
+        `${API_URL}/api/possible-chat-user/${userId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return data;
+    } catch (error) {
+      throw new Error(resolveError(error));
+    }
+  };
 }
 
-export const { updateProfileApi } = new UserService();
+export const { updateProfileApi, getPossibleChatUserApi } = new UserService();

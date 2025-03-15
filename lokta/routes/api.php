@@ -42,6 +42,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::put('/user/change-password', [UserController::class, 'changePassword']);
     Route::get('/user/verify-otp', [RegisterController::class, 'verification_otp']);
     Route::post('/logout', [LogInController::class, 'logout']);
+    Route::get('/possible-chat-user/{vendor_id}', [UserController::class, 'possibleChatUser']);
 });
 
 
@@ -85,6 +86,7 @@ Route::post('/mark-messages-as-read/{sender_id}', [ChatController::class, 'markM
 Route::get('/getInteractedUsers', [ChatController::class, 'getInteractedUsers'])->middleware('auth:sanctum');
 Route::get('/getConversation/{reciver_id}', [ChatController::class, 'getConversation'])->middleware('auth:sanctum');
 Route::post('/upload', [FileUploadController::class, 'upload'])->middleware('auth:sanctum');
+
 
 
 

@@ -1,3 +1,4 @@
+import { API_URL } from "@/api/constants";
 import { getBrandsApi } from "@/api/services/brand/brand-service";
 import { Brand } from "@/api/services/brand/types";
 import { Subcategory } from "@/api/services/category/types";
@@ -42,8 +43,9 @@ function CategoryPage() {
     const fetchProducts = async () => {
       try {
         const data = await filterProductsApi({
-          brand_id: brands[curBrandIdx]?.id,
-          sub_category_id: curSubCategoryId!,
+          brand_id: curBrandIdx == -1 ? undefined : brands[curBrandIdx]?.id,
+          sub_category_id:
+            curSubCategoryId! == -1 ? undefined : curSubCategoryId!,
           min_price: priceRange[0],
           max_price: priceRange[1],
         });
@@ -78,8 +80,9 @@ function CategoryPage() {
       <SalesBoard />
       <div className="w-full flex flex-col justify-center items-center space-y-2">
         <p className="text-3xl font-semibold"> {curCategory?.title}</p>
-        <p className="text-3xl font-bold hidden">{curSubCategoryId}</p>
-        <p className="text-xl ">{curSubCategory?.title}</p>
+        <p className="text-xl ">
+          {curSubCategoryId == -1 ? "All" : curSubCategory?.title}
+        </p>
       </div>
       <div className="flex flex-col lg:flex-row min-h-screen">
         {/* Sidebar */}
@@ -90,6 +93,17 @@ function CategoryPage() {
               <h3 className="text-lg font-semibold">Subcategory</h3>
             </div>
             <div className="space-y-1">
+              <label key={0} className="flex items-center">
+                <input
+                  type="radio"
+                  className="mr-2"
+                  name="subcategory"
+                  value={-1}
+                  onClick={() => setCurSubCategoryId(-1)}
+                  checked={curSubCategoryId === -1}
+                />
+                All
+              </label>
               {curCategory?.subCategories.map((sc) => (
                 <label key={sc.id} className="flex items-center">
                   <input
@@ -112,6 +126,17 @@ function CategoryPage() {
               <h3 className="text-lg font-semibold">Brand</h3>
             </div>
             <div className="space-y-1">
+              <label key={0} className="flex items-center">
+                <input
+                  type="radio"
+                  className="mr-2"
+                  name="brand"
+                  value={-1}
+                  onClick={() => setCurBrandIdx(-1)}
+                  checked={curBrandIdx === -1}
+                />
+                All
+              </label>
               {brands.map((item, idx) => (
                 <label key={item.id} className="flex items-center">
                   <input
@@ -172,8 +197,9 @@ function CategoryPage() {
                 title={product.title}
                 originalPrice={product.price}
                 discountPrice={product.price}
-                imageUrl={product.images[0]}
+                imageUrl={`${API_URL}/${product.images[0]}`}
                 discountPercentage={0}
+                vendor_id={product.vendor_id}
               />
             ))}
           </div>

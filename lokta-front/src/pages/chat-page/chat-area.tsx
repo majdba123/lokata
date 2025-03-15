@@ -14,6 +14,8 @@ import ChatList from "./chat-list";
 import ChatHeader from "./chat-header";
 import { fixInvalidUserId } from "@/lib/helpers";
 import ChatInput from "./chat-input";
+import { getPossibleChatUserApi } from "@/api/services/user/user-service";
+import { InteractedUser } from "@/api/services/chat/types";
 
 function ChatArea() {
   const { id } = useParams();
@@ -22,6 +24,7 @@ function ChatArea() {
   const interactedUsers = useChatStore((state) => state.interactedUsers);
   const clearLastMessages = useChatStore((state) => state.clearLastMessages);
   const setCurChatUserId = useChatStore((state) => state.setCurChatUserId);
+  const addInteractedUser = useChatStore((state) => state.addInteractedUser);
   const curUser = interactedUsers.find(
     (user) => user.id === fixInvalidUserId(id)
   );
@@ -84,12 +87,32 @@ function ChatArea() {
     }
   };
 
+  const fetchPossibleChatUser = async () => {
+    const exists = interactedUsers.find(
+      (user) => user.id === fixInvalidUserId(id)
+    );
+    if (exists) return;
+    try {
+      const res = await getPossibleChatUserApi(fixInvalidUserId(id));
+      const possibleChatUser: InteractedUser = {
+        id: res.id,
+        name: res.name,
+        last_message_at: new Date(),
+        last_messages: [],
+      };
+      addInteractedUser(possibleChatUser);
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
   useEffect(() => {
     if (id) {
       setCurChatUserId(fixInvalidUserId(id));
     }
     markMessagesAsRead();
     fetchConversation();
+    fetchPossibleChatUser();
     return () => {
       setConversation([]);
     };

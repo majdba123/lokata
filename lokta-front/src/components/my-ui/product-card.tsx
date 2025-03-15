@@ -1,7 +1,8 @@
 // src/components/ProductCard.tsx
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Heart, Star } from "lucide-react";
+import { Heart, MessageCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface ProductCardProps {
   imageUrl: string;
@@ -10,6 +11,7 @@ interface ProductCardProps {
   discountPrice: number;
   discountPercentage: number;
   hasDiscountLabel: boolean;
+  vendor_id: number;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -19,7 +21,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
   discountPrice,
   discountPercentage,
   hasDiscountLabel,
+  vendor_id,
 }) => {
+  const navigate = useNavigate();
+  const handleChatWithSeller = async () => {
+    navigate("/chat/" + vendor_id);
+  };
+
   return (
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-md">
       {/* Image */}
@@ -55,18 +63,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
             </span>
           )}
         </div>
-
-        {/* Stars */}
-        <div className="flex items-center mb-2">
-          {[...Array(5)].map((_, i) => (
-            <Star
-              strokeWidth={3}
-              key={i}
-              className="text-yellow-400 h-4 w-4 mr-1"
-            />
-          ))}
-          <span className="text-sm text-gray-500">(5.0)</span>
-        </div>
+      </div>
+      <div className="p-4">
+        <Button
+          onClick={handleChatWithSeller}
+          className="w-full cursor-pointer"
+          variant={"outline"}
+        >
+          Message The Seller <MessageCircle />
+        </Button>
       </div>
     </div>
   );
