@@ -106,7 +106,7 @@ class ProductController extends Controller
 
         if($request->has('subcategory_title')) {
             $query->whereHas('sub_category', function($q) use ($request) {
-                $q->where('title', $request->input('subcategory_title'));
+            $q->where('title', 'LIKE', '%' . $request->input('subcategory_title') . '%');
             });
         }
 

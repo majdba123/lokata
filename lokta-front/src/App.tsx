@@ -15,6 +15,7 @@ import VerifyOtp from "./pages/auth-page/verify-otp";
 import ChatPage from "./pages/chat-page/chat-page";
 import ChatArea from "./pages/chat-page/chat-area";
 import PageLayout from "./layout/page-layout";
+import TyrePage from "./pages/tyre-page/tyre-page";
 
 function App() {
   return (
@@ -63,6 +64,9 @@ function App() {
               </h1>
             }
           />
+        </Route>
+        <Route element={<PageLayout />}>
+          <Route path="/tyre" element={<TyrePage />} />
         </Route>
         <Route element={<RequireAuth />}>
           <Route path="chat" element={<ChatPage />}>

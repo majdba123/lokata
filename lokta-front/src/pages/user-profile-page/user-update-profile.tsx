@@ -85,9 +85,33 @@ function UserUpdateProfile() {
         </CardHeader>
         <CardContent>
           <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-            <div className="grid grid-cols-2 gap-4">
-              <Input placeholder="Username" {...register("name")} />
+            <div className="w-full">
+              <Input className="w-full" placeholder="Username" {...register("name")} />
             </div>
+            <div>
+              <label htmlFor="files">
+                Profile Image {loadingUpload && "Loading..."}
+              </label>
+              <input
+                name="files"
+                type="file"
+                className="border border-gray-300 rounded-md p-2 w-full"
+                onChange={handleChooseFile}
+                accept="image/*"
+                disabled={loadingUpload}
+              />
+              {/* preview the chosen images */}
+              <div className="flex flex-wrap">
+                {previewImage && (
+                  <img
+                    src={previewImage}
+                    alt="Preview"
+                    className="mt-2 h[130px] w-[150px] rounded-full object-contain p-5 border-2"
+                  />
+                )}
+              </div>
+            </div>
+
             <Button
               className="w-full bg-blue-600 hover:bg-blue-700"
               type="submit"
@@ -95,30 +119,6 @@ function UserUpdateProfile() {
               {isLoading ? "Loading..." : "Save"}
             </Button>
           </form>
-
-          <div>
-            <label htmlFor="files">
-              Profile Image {loadingUpload && "Loading..."}
-            </label>
-            <input
-              name="files"
-              type="file"
-              className="border border-gray-300 rounded-md p-2 w-full"
-              onChange={handleChooseFile}
-              accept="image/*"
-              disabled={loadingUpload}
-            />
-            {/* preview the chosen images */}
-            <div className="flex flex-wrap">
-              {previewImage && (
-                <img
-                  src={previewImage}
-                  alt="Preview"
-                  className="mt-2 h[130px] w-[150px] rounded-full object-contain p-5 border-2"
-                />
-              )}
-            </div>
-          </div>
         </CardContent>
       </Card>
 

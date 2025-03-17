@@ -11,6 +11,7 @@ import { useCategoryStore } from "@/zustand-stores/category-store";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import categoryBoard from "@/assets/Rectangle5.png";
 
 function CategoryPage() {
   const curCategory = useCategoryStore((state) => state.currentCategory);
@@ -27,6 +28,21 @@ function CategoryPage() {
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const navigate = useNavigate();
 
+  const fetchProducts = async () => {
+    try {
+      const data = await filterProductsApi({
+        brand_id: curBrandIdx == -1 ? undefined : brands[curBrandIdx]?.id,
+        sub_category_id:
+          curSubCategoryId! == -1 ? undefined : curSubCategoryId!,
+        min_price: priceRange[0],
+        max_price: priceRange[1],
+      });
+      setProducts(data);
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
   useEffect(() => {
     const fetchBrands = async () => {
       try {
@@ -40,20 +56,7 @@ function CategoryPage() {
   }, []);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const data = await filterProductsApi({
-          brand_id: curBrandIdx == -1 ? undefined : brands[curBrandIdx]?.id,
-          sub_category_id:
-            curSubCategoryId! == -1 ? undefined : curSubCategoryId!,
-          min_price: priceRange[0],
-          max_price: priceRange[1],
-        });
-        setProducts(data);
-      } catch (error: any) {
-        toast.error(error.message);
-      }
-    };
+   
     fetchProducts();
   }, [curBrandIdx, curSubCategoryId, priceRange[0], priceRange[1]]);
 
@@ -77,7 +80,7 @@ function CategoryPage() {
 
   return (
     <>
-      <SalesBoard />
+      <SalesBoard boardImage={categoryBoard} />
       <div className="w-full flex flex-col justify-center items-center space-y-2">
         <p className="text-3xl font-semibold"> {curCategory?.title}</p>
         <p className="text-xl ">

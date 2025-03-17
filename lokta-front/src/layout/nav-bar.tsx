@@ -1,14 +1,8 @@
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import { cn } from "@/lib/utils";
-import { ChevronDown, Menu, MessageCircleMore } from "lucide-react"; // Added Menu icon
+import { Menu, MessageCircleMore } from "lucide-react"; // Added Menu icon
 import { useState } from "react"; // Added useState
-import categories_logo from "@/assets/categories.svg";
 import { useAuthStore } from "@/zustand-stores/auth.store";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -32,25 +26,6 @@ function Navbar() {
         <div className="flex items-center justify-between">
           {/* Categories Dropdown */}
           <div className="flex items-center gap-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center space-x-1">
-                  <img
-                    src={categories_logo}
-                    alt="Categories"
-                    className="h-5 w-5"
-                  />
-                  <span>All Categories</span>
-                  <ChevronDown className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem>Electronics</DropdownMenuItem>
-                <DropdownMenuItem>Clothing</DropdownMenuItem>
-                <DropdownMenuItem>Home & Garden</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
             {/* Navigation Links (Hidden on small screens) */}
             <nav
               className={`hidden md:flex space-x-4 ${
@@ -65,9 +40,9 @@ function Navbar() {
               </Link>
               <Link
                 className="text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium"
-                to="/shop"
+                to="/tyre"
               >
-                Shop
+                Tyre Shop
               </Link>
 
               <Link
