@@ -104,13 +104,24 @@ class ProductController extends Controller
             $query->where('sub__category_id', $request->input('sub_category_id'));
         }
 
+        if($request->has('subcategory_title')) {
+            $query->whereHas('sub_category', function($q) use ($request) {
+                $q->where('title', $request->input('subcategory_title'));
+            });
+        }
+
         if ($request->has('brand_id')) {
             $query->where('brand_id', $request->input('brand_id'));
         }
 
         if ($request->has('search') && $request->filled('search')) {
-            $searchTerm = $request->input('search');
-            $query->where('title', 'like', "%$searchTerm%");
+            $searchTerms = explode(' ', $request->input('search'));
+            $query->where(function($q) use ($searchTerms) {
+            foreach ($searchTerms as $term) {
+                $q->orWhere('title', 'like', "%$term%")
+                  ->orWhere('description', 'like', "%$term%");
+            }
+            });
         }
 
          if ($request->has('min_price') && $request->filled('min_price')) {
