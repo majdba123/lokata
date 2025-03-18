@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Requests\registartion\RegisterUser ; // Ensure the namespace is correct
-use App\Services\registartion\register; // Ensure the namespace is correct\use Illuminate\Http\JsonResponse;
+use App\services\registartion\register; // Ensure the namespace is correct\use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendOtpMail;
 use App\Models\User;
