@@ -80,7 +80,7 @@ class CategoryController extends Controller
     {
         $subCategories = Sub_Category::all();
 
-        return response()->json(SubcategoryResource::collection($subCategories), 200);
+        return response()->json(SubCategoryResource::collection($subCategories), 200);
     }
 
 
