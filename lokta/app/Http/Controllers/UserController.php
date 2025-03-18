@@ -9,7 +9,7 @@ use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller
 {
-   
+
     public function update(Request $request)
     {
         $request->validate([
@@ -19,7 +19,7 @@ class UserController extends Controller
         $user = User::where('id', auth()->id())->firstOrFail();
         $user->update($request->all());
         return response()->json(['message' => 'Account Updated Successfully', 'data' => $user]);
-    } 
+    }
 
     public function changePassword(Request $request)
     {
@@ -29,7 +29,7 @@ class UserController extends Controller
         ]);
 
         $user = User::where('id', auth()->id())->firstOrFail();
-        
+
         if (!$user || !Hash::check($request['currentPassword'], $user->password)) {
             return response()->json(['message' => 'Invalid Credentials'], 401);
         }
@@ -42,8 +42,8 @@ class UserController extends Controller
 
     public function possibleChatUser(Request $request, int $vendor_id) : JsonResponse
     {
-        
-        
+
+
         $user = User::where('id', $vendor_id)->select('id', 'name')->firstOrFail();
 
         return response()->json($user);

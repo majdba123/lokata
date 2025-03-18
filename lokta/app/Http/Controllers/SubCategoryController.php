@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class SubCategoryController extends Controller
 {
-    
-    public function create(Request $request, int $category_id): JsonResponse 
+
+    public function create(Request $request, int $category_id): JsonResponse
     {
           // Check if the category exists
         $category = Category::find($category_id);
@@ -30,7 +30,7 @@ class SubCategoryController extends Controller
             ],
             'image' => 'required|string',
         ]);
-        
+
         $subCategory = new Sub_Category($validated);
         $subCategory->category_id = $category_id;
         $subCategory->save();
@@ -52,7 +52,7 @@ class SubCategoryController extends Controller
             return response()->json(['message' => 'Subcategory does not belong to the specified category.'], 400);
         }
 
-        
+
         $validated = $request->validateWithBag('default', [
             'title' => [
                 'nullable',
@@ -64,8 +64,8 @@ class SubCategoryController extends Controller
             ],
             'image' => 'nullable|string',
         ]);
-       
-    
+
+
         $subCategory->update($validated);
 
         return response()->json($subCategory, 200);
@@ -94,5 +94,5 @@ class SubCategoryController extends Controller
     }
 
 
-   
+
 }

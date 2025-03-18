@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Chat;
+use App\Models\chat;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Events\chat1;
@@ -14,7 +14,7 @@ class ChatController extends Controller
     public function sendMessage(Request $request ,$receiver_id)
     {
 
-        $message = Chat::create([
+        $message = chat::create([
             'sender_id' => auth()->id(),
             'receiver_id' => $receiver_id,
             'message' => $request->message,
@@ -30,7 +30,7 @@ class ChatController extends Controller
     public function getMessagesFromSender($sender_id)
     {
         $receiver_id = auth()->id(); // المستخدم الموثق هو المستقبل
-        $messages = Chat::where('sender_id', $sender_id)
+        $messages = chat::where('sender_id', $sender_id)
             ->where('receiver_id', $receiver_id)
             ->orderBy('created_at', 'desc')
             ->paginate(10, ['message', 'created_at']); // تقسيم النتائج إلى صفحات (10 رسائل لكل صفحة)
@@ -45,7 +45,7 @@ class ChatController extends Controller
         $receiver_id = auth()->id(); // المستخدم الموثق هو المستقبل
 
         // جلب الرسائل غير المقروءة
-        $unreadMessages = Chat::where('receiver_id', $receiver_id)
+        $unreadMessages = chat::where('receiver_id', $receiver_id)
             ->where('is_read', false) // شرط الرسائل غير المقروءة
             ->orderBy('created_at', 'desc')
             ->paginate(10, ['message', 'sender_id','created_at']); // تقسيم النتائج إلى صفحات (10 رسائل لكل صفحة)
@@ -67,7 +67,7 @@ class ChatController extends Controller
         $receiver_id = auth()->id(); // المستخدم الموثق هو المستقبل
 
         // تحديث حالة الرسائل غير المقروءة
-        $updatedRows = Chat::where('sender_id', $sender_id)
+        $updatedRows = chat::where('sender_id', $sender_id)
             ->where('receiver_id', $receiver_id)
             ->where('is_read', false)
             ->update(['is_read' => true]);
@@ -86,14 +86,14 @@ class ChatController extends Controller
     {
         $userId = auth()->id(); // المعرّف الخاص بالمستخدم الموثق
 
-        $interactedUsers = Chat::where(function ($query) use ($userId) {
+        $interactedUsers = chat::where(function ($query) use ($userId) {
             $query->where('sender_id', $userId)
                 ->orWhere('receiver_id', $userId);
         })
             ->selectRaw('
-                CASE 
-                    WHEN sender_id = ? THEN receiver_id 
-                    ELSE sender_id 
+                CASE
+                    WHEN sender_id = ? THEN receiver_id
+                    ELSE sender_id
                 END as other_user_id,
                 MAX(created_at) as last_message_at
             ', [$userId])
@@ -127,7 +127,7 @@ class ChatController extends Controller
         $sender_id = auth()->id(); // المستخدم الموثق هو المرسل
 
         // جلب الرسائل بين المرسل والمستقبل
-        $messages = Chat::where(function ($query) use ($sender_id, $receiver_id) {
+        $messages = chat::where(function ($query) use ($sender_id, $receiver_id) {
             $query->where('sender_id', $sender_id)
                   ->where('receiver_id', $receiver_id);
         })->orWhere(function ($query) use ($sender_id, $receiver_id) {
@@ -152,7 +152,7 @@ class ChatController extends Controller
         $authUserId = auth()->id(); // المعرّف الخاص بالمستخدم الحالي (الموثق)
 
         // جلب جميع الرسائل بين المستخدم الحالي والشخص الآخر
-        $conversation = Chat::where(function ($query) use ($authUserId, $user_id) {
+        $conversation = chat::where(function ($query) use ($authUserId, $user_id) {
                 $query->where('sender_id', $authUserId)
                     ->where('receiver_id', $user_id);
             })

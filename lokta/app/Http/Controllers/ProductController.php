@@ -28,11 +28,11 @@ class ProductController extends Controller
                 'price' => 'required|numeric|min:0',
                 'sub__category_id' => 'required|numeric|exists:sub__categories,id',
                 'description' => 'required|string',
-                'images' => 'required|array', 
-                'images.*' => 'string', 
+                'images' => 'required|array',
+                'images.*' => 'string',
                 'brand_id' => 'required|numeric|exists:brands,id',
             ]);
-            
+
             $imagesJson = json_encode($validatedData['images']);
             unset($validatedData['images']);
             $validatedData['images'] = $imagesJson;
@@ -41,7 +41,7 @@ class ProductController extends Controller
             $product->save();
 
     return response()->json(new ProductResource($product));
-            
+
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         }
@@ -51,7 +51,7 @@ class ProductController extends Controller
     {
         return response()->json(new ProductResource($product));
     }
-    
+
     public function update(Request $request, Product $product): JsonResponse
     {
         try {
@@ -60,8 +60,8 @@ class ProductController extends Controller
                 'price' => 'nullable|numeric|min:0',
                 'sub__category_id' => 'nullable|numeric|exists:sub__categories,id',
                 'description' => 'nullable|string',
-                'images' => 'nullable|array', 
-                'images.*' => 'string', 
+                'images' => 'nullable|array',
+                'images.*' => 'string',
                 'brand_id' => 'nullable|numeric|exists:brands,id',
             ]);
             if ($request->has('images')) {
@@ -70,7 +70,7 @@ class ProductController extends Controller
                 $validatedData['images'] = $imagesJson;
             }
 
-            
+
             $product->update($validatedData);
             if (isset($validatedData['sub__category_id'])) {
                 $product->sub_category()->associate($validatedData['sub__category_id']);
@@ -139,4 +139,4 @@ class ProductController extends Controller
         return response()->json(ProductResource::collection($products));
     }
 
-}    
+}

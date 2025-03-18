@@ -20,7 +20,7 @@ class FileUploadController extends Controller
 
         if ($request->hasFile('files')) {
             $files = is_array($request->file('files')) ? $request->file('files') : [$request->file('files')];
-            
+
             foreach ($files as $file) {
                 try {
                     $path = $file->store('uploads', 'public');

@@ -28,7 +28,7 @@ class CategoryController extends Controller
         return response()->json($category, 201);
     }
 
-   
+
 
     /**
      * Show the form for editing the specified resource.
@@ -61,7 +61,7 @@ class CategoryController extends Controller
 
     public function allCategories(): JsonResponse
     {
-       
+
         $categories = Category::with('subCategories')
             ->whereHas('subCategories')
             ->get();
