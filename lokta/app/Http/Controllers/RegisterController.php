@@ -28,7 +28,7 @@ class RegisterController extends Controller
         $user = $this->userService->register($validatedData);
 
         if (isset($validatedData['email'])) {
-            OtpHelper::sendOtpEmail($user->id);
+            // OtpHelper::sendOtpEmail($user->id);
         }
 
         return response()->json([
