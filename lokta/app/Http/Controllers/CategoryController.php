@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rule;
 use App\Http\Resources\CategoryResource;
-use App\Http\Resources\SubcategoryResource;
+use App\Http\Resources\SubCategoryResource;
 
 
 
