@@ -29,7 +29,7 @@ function Signup() {
         email: data.email,
         password: data.password,
         name: data.fullName,
-        type: data.type,
+        type: data.type ?? 0,
       });
       toast.success("Account created successfully");
       setLoading(false);
