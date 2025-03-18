@@ -48,7 +48,7 @@ class User extends Authenticatable
 
     public function vendor()
     {
-        return $this->hasOne(vendor::class);
+        return $this->hasOne(Vendor::class);
 
     }
 
