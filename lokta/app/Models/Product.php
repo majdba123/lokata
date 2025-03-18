@@ -11,11 +11,15 @@ class Product extends Model
     protected $fillable = [
         'title',
         'sub__category_id',
-        'image',
+        'images',
         'price',
-        'discreption',
+        'description',
         'vendor_id',
         'brand_id',
+    ];
+
+    protected $casts = [
+        'images' => 'array',
     ];
 
     public function OrderProduct()
@@ -40,3 +44,4 @@ class Product extends Model
     }
 
 }
+    

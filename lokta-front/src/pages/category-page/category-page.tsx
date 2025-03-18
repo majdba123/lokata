@@ -1,7 +1,8 @@
+import { API_URL } from "@/api/constants";
 import { getBrandsApi } from "@/api/services/brand/brand-service";
 import { Brand } from "@/api/services/brand/types";
 import { Subcategory } from "@/api/services/category/types";
-import { filterProductsApi } from "@/api/services/products/brand-service";
+import { filterProductsApi } from "@/api/services/products/product-service";
 import { Product } from "@/api/services/products/types";
 import PriceRangeSlider from "@/components/my-ui/double-price-range";
 import ProductCard from "@/components/my-ui/product-card";
@@ -10,6 +11,7 @@ import { useCategoryStore } from "@/zustand-stores/category-store";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import categoryBoard from "@/assets/Rectangle5.png";
 
 function CategoryPage() {
   const curCategory = useCategoryStore((state) => state.currentCategory);
@@ -26,6 +28,21 @@ function CategoryPage() {
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const navigate = useNavigate();
 
+  const fetchProducts = async () => {
+    try {
+      const data = await filterProductsApi({
+        brand_id: curBrandIdx == -1 ? undefined : brands[curBrandIdx]?.id,
+        sub_category_id:
+          curSubCategoryId! == -1 ? undefined : curSubCategoryId!,
+        min_price: priceRange[0],
+        max_price: priceRange[1],
+      });
+      setProducts(data);
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
   useEffect(() => {
     const fetchBrands = async () => {
       try {
@@ -39,19 +56,7 @@ function CategoryPage() {
   }, []);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const data = await filterProductsApi({
-          brand_id: brands[curBrandIdx]?.id,
-          sub_category_id: curSubCategoryId!,
-          min_price: priceRange[0],
-          max_price: priceRange[1],
-        });
-        setProducts(data);
-      } catch (error: any) {
-        toast.error(error.message);
-      }
-    };
+   
     fetchProducts();
   }, [curBrandIdx, curSubCategoryId, priceRange[0], priceRange[1]]);
 
@@ -75,11 +80,12 @@ function CategoryPage() {
 
   return (
     <>
-      <SalesBoard />
+      <SalesBoard boardImage={categoryBoard} />
       <div className="w-full flex flex-col justify-center items-center space-y-2">
         <p className="text-3xl font-semibold"> {curCategory?.title}</p>
-        <p className="text-3xl font-bold hidden">{curSubCategoryId}</p>
-        <p className="text-xl ">{curSubCategory?.title}</p>
+        <p className="text-xl ">
+          {curSubCategoryId == -1 ? "All" : curSubCategory?.title}
+        </p>
       </div>
       <div className="flex flex-col lg:flex-row min-h-screen">
         {/* Sidebar */}
@@ -90,6 +96,17 @@ function CategoryPage() {
               <h3 className="text-lg font-semibold">Subcategory</h3>
             </div>
             <div className="space-y-1">
+              <label key={0} className="flex items-center">
+                <input
+                  type="radio"
+                  className="mr-2"
+                  name="subcategory"
+                  value={-1}
+                  onClick={() => setCurSubCategoryId(-1)}
+                  checked={curSubCategoryId === -1}
+                />
+                All
+              </label>
               {curCategory?.subCategories.map((sc) => (
                 <label key={sc.id} className="flex items-center">
                   <input
@@ -112,6 +129,17 @@ function CategoryPage() {
               <h3 className="text-lg font-semibold">Brand</h3>
             </div>
             <div className="space-y-1">
+              <label key={0} className="flex items-center">
+                <input
+                  type="radio"
+                  className="mr-2"
+                  name="brand"
+                  value={-1}
+                  onClick={() => setCurBrandIdx(-1)}
+                  checked={curBrandIdx === -1}
+                />
+                All
+              </label>
               {brands.map((item, idx) => (
                 <label key={item.id} className="flex items-center">
                   <input
@@ -172,8 +200,9 @@ function CategoryPage() {
                 title={product.title}
                 originalPrice={product.price}
                 discountPrice={product.price}
-                imageUrl={product.image}
+                imageUrl={`${API_URL}/${product.images[0]}`}
                 discountPercentage={0}
+                vendor_id={product.vendor_id}
               />
             ))}
           </div>

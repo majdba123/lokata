@@ -3,6 +3,7 @@
 namespace App\Services\registartion;
 
 use App\Models\User;
+use App\Models\Vendor;
 use App\Models\Driver;
 use App\Models\Provider_Product; // Import your ProviderProduct model
 use App\Models\Provider_Service; // Import your ProviderService model
@@ -38,7 +39,12 @@ class login
 
         $token = $user->createToken($user->name . '-AuthToken')->plainTextToken;
 
-        return ["access_token" => $token, "user" => $user];
-    }
+        $isVendor = Vendor::where('user_id', $user->id)->exists();
+
+        // Add is_vendor to the user data
+        $userData = $user->toArray();
+        $userData['is_vendor'] = $isVendor;
+
+        return ["access_token" => $token, "user" => $userData];    }
 
 }

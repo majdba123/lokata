@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller
 {
@@ -13,6 +14,7 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'nullable|string|max:255|unique:users,name,' . auth()->id() . ',id',
+            'image' => 'nullable|string'
         ]);
         $user = User::where('id', auth()->id())->firstOrFail();
         $user->update($request->all());
@@ -36,5 +38,15 @@ class UserController extends Controller
         $user->save();
 
         return response()->json(['message' => 'Password Changed Successfully']);
+    }
+
+    public function possibleChatUser(Request $request, int $vendor_id) : JsonResponse
+    {
+        
+        
+        $user = User::where('id', $vendor_id)->select('id', 'name')->firstOrFail();
+
+        return response()->json($user);
+
     }
 }

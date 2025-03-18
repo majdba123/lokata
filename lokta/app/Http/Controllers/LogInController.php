@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\registartion\LoginRequest ; // Ensure the namespace is correct
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
-use App\Services\registartion\login;
+use App\services\registartion\login;
 
 class LogInController extends Controller
 {

@@ -11,3 +11,4 @@ export type Category = {
   subCategories: Subcategory[];
   description: string;
 };
+
