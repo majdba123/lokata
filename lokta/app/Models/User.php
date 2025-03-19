@@ -62,12 +62,12 @@ class User extends Authenticatable
 
     public function sentMessages()
     {
-        return $this->hasMany(Chat::class, 'sender_id');
+        return $this->hasMany(chat::class, 'sender_id');
     }
 
     // الرسائل المستلمة
     public function receivedMessages()
     {
-        return $this->hasMany(Chat::class, 'receiver_id');
+        return $this->hasMany(chat::class, 'receiver_id');
     }
 }
