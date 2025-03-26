@@ -1,24 +1,18 @@
-import { Category } from "@/api/services/category/types";
+import { Subcategory } from "@/api/services/category/types";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 
 type CategoryState = {
-  currentCategory: Category | null;
-  setCurrentCategory: (category: Category) => void;
-  curSubCategoryId: number | null;
+  curSubCategoryId: number;
   setCurSubCategoryId: (id: number | undefined) => void;
+  subcategories: Subcategory[];
+  setSubcategories: (subcategories: Subcategory[]) => void;
 };
 
-export const useCategoryStore = create<CategoryState>()(
-  persist(
-    (set) => ({
-      currentCategory: null,
-      setCurrentCategory: (category: Category) =>
-        set({ currentCategory: category }),
-      curSubCategoryId: null,
-      setCurSubCategoryId: (id: number | undefined) =>
-        set({ curSubCategoryId: id }),
-    }),
-    { name: "category-storage" }
-  )
-);
+export const useCategoryStore = create<CategoryState>()((set) => ({
+  curSubCategoryId: -1,
+  setCurSubCategoryId: (id: number | undefined) =>
+    set({ curSubCategoryId: id }),
+  subcategories: [],
+  setSubcategories: (subcategories: Subcategory[]) =>
+    set({ subcategories: subcategories }),
+}));

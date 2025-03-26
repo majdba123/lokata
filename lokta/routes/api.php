@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\LogInController;
 use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\BrandController;
@@ -47,15 +46,13 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
 
 Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
-    Route::post('/admin/create-category', [CategoryController::class, 'create']);
-    Route::put('/admin/update-category/{category}', [CategoryController::class, 'update']);
-    Route::delete('/admin/delete-category/{category}', [CategoryController::class, 'destroy']);
-    Route::post('/admin/categories/{category_id}/subcategories', [SubCategoryController::class, 'create']);
-    Route::put('/admin/categories/{category_id}/subcategories/{subCategory}', [SubCategoryController::class, 'update']);
-    Route::delete('/admin/categories/{category_id}/subcategories/{subCategory}', [SubCategoryController::class, 'destroy']);
+    Route::post('/admin/subcategories', [SubCategoryController::class, 'create']);
+    Route::put('/admin/subcategories/{subCategory}', [SubCategoryController::class, 'update']);
+    Route::delete('/admin/subcategories/{subCategory}', [SubCategoryController::class, 'destroy']);
 });
 
 Route::group(['middleware' => ['auth:sanctum', 'vendor']], function () {
+    Route::get('/my-products', [ProductController::class, 'myProducts']);
     Route::post('/products', [ProductController::class, 'store']);
     Route::put('/products/{product}', [ProductController::class, 'update']);
     Route::delete('/products/{product}', [ProductController::class, 'destroy']);
@@ -67,9 +64,9 @@ Route::group(['middleware' => ['auth:sanctum', 'vendor']], function () {
 });
 
 
-Route::get('/categories', [CategoryController::class, 'allCategories']);
-Route::get('/subcategories', [CategoryController::class, 'allSubCategories']);
-Route::get('/categories/{category}', [CategoryController::class, 'categoryById']);
+
+Route::get('/subcategories', [SubCategoryController::class, 'allSubCategories']);
+Route::get('/subcategories-with-products', [SubCategoryController::class, 'allSubCategoriesWithLatestProducts']);
 Route::get('/products/filter', [ProductController::class, 'filterProducts']);
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{product}', [ProductController::class, 'show']);

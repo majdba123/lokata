@@ -29,6 +29,14 @@ const tabs = [
   },
 
   {
+    name: "My Products Dashboard",
+    to: "/profile/my-products",
+    current: false,
+    onClick: () => {},
+    Icon: () => null,
+  },
+
+  {
     name: "Logout",
     to: "/login",
     current: false,

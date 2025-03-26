@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import Pusher from "pusher-js";
 import { Message } from "@/api/services/chat/types";
+import env from "@/environment/env";
 
 type Props = {
   userId: number;
@@ -14,9 +15,9 @@ function useListenToChannel({ onReceiveMessage, userId, otherUserId }: Props) {
   const initPusher = () => {
     console.log("✅ Connecting to Pusher... User:", userId);
     pusherRef.current = new Pusher(
-      import.meta.env.VITE_PUSHER_APP_KEY as string,
+      env.PUSHER_APP_KEY as string,
       {
-        cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER as string,
+        cluster: env.PUSHER_APP_CLUSTER as string,
         authEndpoint: "/pusher/auth",
         auth: { params: { userId } },
       }

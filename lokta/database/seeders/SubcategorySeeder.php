@@ -22,13 +22,11 @@ class SubcategorySeeder extends Seeder
             $subcategory = Sub_Category::create([
                 'title' => $faker->name,
                 'image' => "https://picsum.photos/seed/picsum/300/300",
-                'category_id' => rand(1, 20),
             ]);
         }
-        Sub_Category::create([
+        $subcategory = Sub_Category::create([
             'title' => "Tyre",
             'image' => "https://picsum.photos/seed/picsum/300/300",
-            'category_id' => rand(1),
         ]);
     }
 }

@@ -19,6 +19,7 @@ function ChatSidebar() {
 
   const fetchNewInteractedUser = async (arr : InteractedUser[]) => {
     try {
+      if (!id || id == "-1") return;
       const res = await getPossibleChatUserApi(fixInvalidUserId(id));
       setInteractedUsers(arr.filter((user) => user.id !== res.id));
       const newInteractedUser = {

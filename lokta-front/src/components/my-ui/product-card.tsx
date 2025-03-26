@@ -3,74 +3,77 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Heart, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/zustand-stores/auth.store";
 
 interface ProductCardProps {
   imageUrl: string;
   title: string;
   originalPrice: number;
-  discountPrice: number;
-  discountPercentage: number;
-  hasDiscountLabel: boolean;
-  vendor_id: number;
+  owner_id: number;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
   imageUrl,
   title,
   originalPrice,
-  discountPrice,
-  discountPercentage,
-  hasDiscountLabel,
-  vendor_id,
+  owner_id,
 }) => {
+  const myId = useAuthStore((state) => state.user?.id);
   const navigate = useNavigate();
   const handleChatWithSeller = async () => {
-    navigate("/chat/" + vendor_id);
+    navigate("/chat/" + owner_id);
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-md">
+    <div className="bg-white border border-gray-200 rounded-lg 
+    overflow-hidden shadow-md w-[250px] h-[350px] flex flex-col transition-all duration-200 hover:shadow-lg">
       {/* Image */}
-      <div className="relative aspect-w-4 aspect-h-3 min-h-60">
+      <div className="relative aspect-square w-full overflow-hidden">
         <img
-          src={imageUrl}
+          src={imageUrl || "/placeholder.svg?height=300&width=300"}
           alt={title}
-          className="w-full h-full object-cover rounded-t-lg"
+          className="w-full h-full object-cover rounded-t-lg transition-transform duration-300 hover:scale-105"
         />
-        {hasDiscountLabel && (
-          <div className="absolute top-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">
-            {discountPercentage}% OFF
-          </div>
-        )}
-        <Button variant="ghost" size="icon" className="absolute top-2 right-2">
-          <Heart className="h-4 w-4" strokeWidth={3} />
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute top-2 right-2 bg-white/80 backdrop-blur-sm hover:bg-white/90"
+        >
+          <Heart className="h-4 w-4" strokeWidth={2.5} />
         </Button>
       </div>
+
       {/* Content */}
-      <div className="p-4">
+      <div className="p-3 sm:p-4 flex-grow flex flex-col">
         {/* Title */}
-        <h3 className="text-lg font-semibold mb-2">{title}</h3>
+        <h3 className="text-sm sm:text-base md:text-lg font-semibold mb-1 sm:mb-2 line-clamp-2">
+          {title}
+        </h3>
 
         {/* Prices */}
         <div className="flex items-center mb-2">
-          <span className="text-lg font-bold text-blue-500">
-            ${discountPrice.toFixed(2)}
+          <span className="text-base sm:text-lg font-bold text-blue-500">
+            ${originalPrice.toFixed(2)}
           </span>
-          {discountPercentage > 0 && (
-            <span className="text-sm text-gray-500 line-through ml-2">
-              ${originalPrice.toFixed(2)}
-            </span>
-          )}
         </div>
-      </div>
-      <div className="p-4">
-        <Button
-          onClick={handleChatWithSeller}
-          className="w-full cursor-pointer"
-          variant={"outline"}
-        >
-          Message The Seller <MessageCircle />
-        </Button>
+
+        {/* Spacer to push button to bottom */}
+        <div className="flex-grow"></div>
+
+        {/* Button */}
+        {myId !== owner_id && (
+          <div className="mt-2">
+            <Button
+              onClick={handleChatWithSeller}
+              className="w-full cursor-pointer text-xs sm:text-sm"
+              variant="outline"
+              size="sm"
+            >
+              Message Seller{" "}
+              <MessageCircle className="ml-1 h-3 w-3 sm:h-4 sm:w-4" />
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

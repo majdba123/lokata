@@ -17,6 +17,7 @@ import ChatArea from "./pages/chat-page/chat-area";
 import PageLayout from "./layout/page-layout";
 import TyrePage from "./pages/tyre-page/tyre-page";
 import { Toaster } from "sonner";
+import MyProducts from "./pages/user-profile-page/my-products";
 
 function App() {
   return (
@@ -28,7 +29,7 @@ function App() {
         </Route>
 
         <Route element={<PageLayout />}>
-          <Route path="/category/:id" element={<CategoryPage />} />
+          <Route path="/category" element={<CategoryPage />} />
         </Route>
         <Route element={<PageLayout />}>
           <Route element={<RequireAuth />}>
@@ -36,6 +37,8 @@ function App() {
               <Route path="dashboard" element={<ProfileDashboard />} />
               <Route path="create-product" element={<CreateProduct />} />
               <Route path="create-brand" element={<CreateBrand />} />
+              <Route path="create-brand" element={<CreateBrand />} />
+              <Route path="my-products" element={<MyProducts />} />
             </Route>
           </Route>{" "}
         </Route>

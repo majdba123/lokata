@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
   ArrowLeftFromLineIcon,
   Heart,
-  Search,
   UserPlus,
   Menu,
   X,
@@ -44,20 +42,7 @@ const Header: React.FC = () => {
         <Link to="/" className="flex items-center">
           <img src={logo} alt="Lokta Logo" className="h-8" />
         </Link>
-        <div className="relative w-auto lg:w-[498px]">
-          <Input
-            type="text"
-            placeholder="search for product, delivered to your door..."
-            className="w-full pr-10"
-          />
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute right-0 top-0"
-          >
-            <Search className="h-4 w-4" />
-          </Button>
-        </div>
+       
         <div className="flex items-center space-x-2 md:space-x-4">
           {/* Burger Menu for Small Screens */}
           <Button

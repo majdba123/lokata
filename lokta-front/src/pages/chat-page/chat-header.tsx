@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, MoreVertical } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 type Props = {
@@ -18,11 +18,9 @@ function ChatHeader({ username }: Props) {
         </div>
       </div>
       <div>
-        <Button onClick={backHome} variant="ghost" size="icon">
+        <Button onClick={backHome} variant="ghost">
           <ArrowLeft />
-        </Button>
-        <Button variant="ghost" size="icon">
-          <MoreVertical className="text-gray-500" />
+          <p className="text-sm">Back</p>
         </Button>
       </div>
     </div>

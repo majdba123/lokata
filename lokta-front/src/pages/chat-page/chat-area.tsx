@@ -36,7 +36,7 @@ function ChatArea() {
 
   const fetchConversation = async () => {
     try {
-      if (!id) return;
+      if (!id || id.trim() === "" || Number.isNaN(fixInvalidUserId(id))) return;
       setLoadingChat(true);
       if (!Number.isNaN(fixInvalidUserId(id))) {
         const res = await getConversationApi(fixInvalidUserId(id));

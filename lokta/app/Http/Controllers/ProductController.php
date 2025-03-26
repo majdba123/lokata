@@ -23,6 +23,7 @@ class ProductController extends Controller
     public function store(Request $request): JsonResponse
     {
         try {
+            $ownerId = Auth::id();     
             $validatedData = $request->validate([
                 'title' => 'required|string|max:255|unique:products',
                 'price' => 'required|numeric|min:0',
@@ -35,10 +36,12 @@ class ProductController extends Controller
 
             $imagesJson = json_encode($validatedData['images']);
             unset($validatedData['images']);
+            $validatedData['owner_id'] = $ownerId;
             $validatedData['images'] = $imagesJson;
-            $product = Auth::user()->vendor->product()->create($validatedData);
-            $product->sub_category()->associate($validatedData['sub__category_id']);
-            $product->save();
+            
+            $product = Product::create($validatedData);
+
+            return response()->json(new ProductResource($product));
 
     return response()->json(new ProductResource($product));
 
@@ -47,8 +50,15 @@ class ProductController extends Controller
         }
     }
 
-    public function show(Product $product): JsonResponse
+    public function show(int $product): JsonResponse
     {
+        // if product not found
+        
+        $product = Product::find($product);
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+        
         return response()->json(new ProductResource($product));
     }
 
@@ -56,7 +66,7 @@ class ProductController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'title' => 'nullable|string|max:255|unique:products',
+                'title' => 'nullable|string|max:255',
                 'price' => 'nullable|numeric|min:0',
                 'sub__category_id' => 'nullable|numeric|exists:sub__categories,id',
                 'description' => 'nullable|string',
@@ -137,6 +147,17 @@ class ProductController extends Controller
         $products = $query->get();
 
         return response()->json(ProductResource::collection($products));
+    }
+
+    public function myProducts(): JsonResponse
+    {
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $products = Product::where('owner_id', Auth::id())->get();
+
+        return response()->json(ProductResource::collection($products), 200);
     }
 
 }

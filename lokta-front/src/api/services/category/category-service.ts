@@ -1,12 +1,18 @@
 import axios from "axios";
 import { resolveError } from "../helpers/error-resolver";
-import { Category, Subcategory } from "./types";
+import { Subcategory, SubcategoryWithProducts } from "./types";
 import { API_URL } from "@/api/constants";
+import { headerGenerator } from "../helpers/header-generator";
 
 class CategoryService {
-  allCategoriesApi = async () => {
+  subcategorIesWithProductsApi = async () => {
     try {
-      const { data } = await axios.get<Category[]>(`${API_URL}/api/categories`);
+      const { data } = await axios.get<SubcategoryWithProducts[]>(
+        `${API_URL}/api/subcategories-with-products`,
+        {
+          headers: headerGenerator([]),
+        }
+      );
       return data;
     } catch (error) {
       throw new Error(resolveError(error));
@@ -25,4 +31,5 @@ class CategoryService {
   };
 }
 
-export const { allCategoriesApi, allSubCategoriesApi } = new CategoryService();
+export const { subcategorIesWithProductsApi, allSubCategoriesApi } =
+  new CategoryService();

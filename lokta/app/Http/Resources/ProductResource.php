@@ -20,7 +20,8 @@ class ProductResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'sub__category_id' => $this->sub__category_id,
-            'vendor_id' => $this->vendor_id,
+            'owner_id' => $this->owner_id,
+            'brand_id' => $this->brand_id,
         ];
     }
 

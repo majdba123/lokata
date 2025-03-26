@@ -19,11 +19,11 @@ class ProductSeeder extends Seeder
         foreach (range(1, 20) as $index) {
             Product::create([
                 'title' => $faker->word,
-                'discreption' => $faker->sentence,
+                'description' => $faker->sentence,
                 'price' => $faker->randomFloat(2, 10, 1000),
-                'image' => "https://picsum.photos/seed/picsum/300/300",
+                'images' => json_encode(["https://picsum.photos/seed/picsum/300/300"]),
                 'sub__category_id' => rand(1, 20),
-                'vendor_id' => rand(1, 10),
+                'owner_id' => rand(1, 10),
                 'brand_id' => rand(1, 10),
             ]);
         }

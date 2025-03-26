@@ -16,7 +16,8 @@ export type Product = {
   created_at: Date;
   updated_at: Date;
   sub__category_id: number;
-  vendor_id: number;
+  owner_id: number;
+  brand_id: number;
 };
 
 export type CreateProductRequest = {
@@ -27,3 +28,12 @@ export type CreateProductRequest = {
   images: string[];
   brand_id: number;
 };
+
+export type UpdateProductRequest = {
+  title?: string;
+  description?: string;
+  price?: number;
+  sub__category_id?: number;
+  images?: string[];
+  brand_id?: number;
+}

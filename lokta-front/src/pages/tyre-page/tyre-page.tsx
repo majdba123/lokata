@@ -7,9 +7,8 @@ import { filterProductsApi } from "@/api/services/products/product-service";
 import { toast } from "sonner";
 import { tireSize } from "./constant";
 import useDebounce from "@/hooks/useDebounce";
-import ProductCard from "@/components/my-ui/product-card";
-import { IMAGES_API_URL } from "@/api/constants";
 import tyreSizeImg from "@/assets/reading-tyre-size-example.jpg";
+import { ProductGrid } from "@/components/my-ui/product-grid";
 
 function TyrePage() {
   const [priceRange, setPriceRange] = useState([0, 1000]);
@@ -113,20 +112,7 @@ function TyrePage() {
         </aside>
         {/* Main content */}
         <main className="flex-1 p-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                hasDiscountLabel={true}
-                title={product.title}
-                originalPrice={product.price}
-                discountPrice={product.price}
-                imageUrl={`${IMAGES_API_URL}/${product.images[0]}`}
-                discountPercentage={0}
-                vendor_id={product.vendor_id}
-              />
-            ))}
-          </div>
+          <ProductGrid products={products} />
         </main>
       </div>
     </>

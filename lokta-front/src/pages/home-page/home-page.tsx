@@ -1,19 +1,32 @@
+import { SubcategoryWithProducts } from "@/api/services/category/types";
 import Hero from "@/components/my-ui/hero-component";
-import Newsletter from "@/components/my-ui/newsletter";
-import CategoriesSection from "./_components/categories-section/categories-section";
-import { Category } from "@/api/services/category/types";
 import { useEffect, useState } from "react";
-import { allCategoriesApi } from "@/api/services/category/category-service";
+import CategoriesSection from "./_components/categories-section/categories-section";
+import { toast } from "sonner";
+import { subcategorIesWithProductsApi } from "@/api/services/category/category-service";
 
 function HomePage() {
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [subcategoriesWithProducts, setSubcategoriesWithProducts] = useState<
+    SubcategoryWithProducts[]
+  >([]);
+
   useEffect(() => {
-    const fetchCategories = async () => {
-      const response = await allCategoriesApi();
-      setCategories(response);
-    };
-    fetchCategories();
+    fetchSubcategoriesWithProducts();
   }, []);
+
+  const fetchSubcategoriesWithProducts = async () => {
+    try {
+      setLoading(true);
+      const data = await subcategorIesWithProductsApi();
+      setSubcategoriesWithProducts(data);
+      setLoading(false);
+    } catch (error: any) {
+      setLoading(false);
+      toast.error(error.message);
+    }
+  };
+
   return (
     <>
       <Hero />
@@ -21,12 +34,20 @@ function HomePage() {
         <p className="text-2xl md:text-4xl font-semibold text-center my-8 capitalize ">
           Shop All Categories
         </p>
-        {categories.map((category: Category) => {
-          return <CategoriesSection key={category.id} {...category} />;
-        })}
+        {subcategoriesWithProducts.length === 0 && (
+          <div className="flex items-center justify-center">
+            <p>No Products Found</p>
+          </div>
+        )}
       </div>
 
-      <Newsletter />
+      {loading && (
+        <div className="flex items-center justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+        </div>
+      )}
+      {!loading &&
+        subcategoriesWithProducts.map((sc) => <CategoriesSection {...sc} />)}
     </>
   );
 }

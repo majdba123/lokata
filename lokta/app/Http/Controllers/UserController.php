@@ -45,7 +45,9 @@ class UserController extends Controller
 
 
         $user = User::where('id', $vendor_id)->select('id', 'name')->firstOrFail();
-
+        if (!$user) {
+            return response()->json(['message' => 'User Not Found'], 404);
+        }
         return response()->json($user);
 
     }

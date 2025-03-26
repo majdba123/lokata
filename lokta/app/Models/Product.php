@@ -14,8 +14,8 @@ class Product extends Model
         'images',
         'price',
         'description',
-        'vendor_id',
         'brand_id',
+        'owner_id'
     ];
 
     protected $casts = [
@@ -32,9 +32,9 @@ class Product extends Model
         return $this->belongsTo(Sub_Category::class ,'sub__category_id');
     }
 
-    public function vendor()
+    public function owner()
     {
-        return $this->belongsTo(Vendor::class ,'vendor_id');
+        return $this->belongsTo(User::class, 'owner_id');
     }
 
     // generate relation with brand
