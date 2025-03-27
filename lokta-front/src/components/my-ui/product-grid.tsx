@@ -1,4 +1,3 @@
-import * as React from "react";
 import ProductCard from "./product-card";
 import { Product } from "@/api/services/products/types";
 import { IMAGES_API_URL } from "@/api/constants";
