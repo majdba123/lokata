@@ -5,7 +5,6 @@ import { Subcategory } from "@/api/services/category/types";
 import { uploadFileApi } from "@/api/services/file-upload/file-upload-service";
 import { updateProductApi } from "@/api/services/products/product-service";
 import { Product, UpdateProductRequest } from "@/api/services/products/types";
-import { useAuthStore } from "@/zustand-stores/auth.store";
 import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -32,9 +31,6 @@ function UpdateProduct(props: Props) {
   const [loadingCreateProduct, setLoadingCreateProduct] = useState(false);
   const [brands, setBrands] = useState<Brand[]>([]);
   const [subCategories, setSubCategories] = useState<Subcategory[]>([]);
-
-  const isVendor = useAuthStore((state) => state.user?.is_vendor);
-
   const {
     register,
     handleSubmit,
@@ -128,14 +124,7 @@ function UpdateProduct(props: Props) {
     }
   };
 
-  if (!isVendor) {
-    return (
-      <div className="text-center text-red-500 text-2xl font-bold mt-4 w-full">
-        {" "}
-        You are not a Seller{" "}
-      </div>
-    );
-  }
+  
   return (
     <div>
       <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>

@@ -12,7 +12,6 @@ import { toast } from "sonner";
 import {
   AlertDialog,
   AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -22,8 +21,10 @@ import {
 } from "@/components/ui/alert-dialog";
 import UpdateProduct from "./update-product";
 import { IMAGES_API_URL } from "@/api/constants";
+import { useAuthStore } from "@/zustand-stores/auth.store";
 
 function MyProducts() {
+  const isVendor = useAuthStore(s => s.user?.is_vendor)
   const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [updateProductId, setUpdateProductId] = useState<number | null>(null);
@@ -77,6 +78,15 @@ function MyProducts() {
   const onCancelDelete = () => {
     setDeleteProductId(null);
   };
+
+  if (!isVendor) {
+    return (
+      <div className="text-center text-red-500 text-2xl font-bold mt-4 w-full">
+        {" "}
+        You are not a Seller{" "}
+      </div>
+    );
+  }
 
   return (
     <div className="w-full p-6">
@@ -137,9 +147,7 @@ function MyProducts() {
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel onClick={onCancelDelete}>
-                      Cancel
-                    </AlertDialogCancel>
+                    <Button onClick={onCancelDelete}>cancel</Button>
                     <AlertDialogAction
                       onClick={() => onDelete(product.id)}
                       className="bg-red-500"
