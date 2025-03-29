@@ -45,7 +45,7 @@ function ChatArea() {
       setLoadingChat(false);
       clearLastMessages(fixInvalidUserId(id));
     } catch (error: any) {
-      toast.error("User Not Found" + error.message);
+      toast.error("لم يتم العثور على المستخدم" + error.message); // User Not Found
       setLoadingChat(false);
     }
   };
@@ -95,6 +95,7 @@ function ChatArea() {
 
   return (
     <main
+      dir="rtl"
       className="flex-1 flex flex-col"
       style={{ backgroundImage: `url(${chatBg})`, backgroundSize: "cover" }}
     >
@@ -111,7 +112,8 @@ function ChatArea() {
         </>
       ) : (
         <div className="flex-1 flex items-center justify-center">
-          <p className="text-gray-500">User Not Found</p>
+          <p className="text-gray-500">لم يتم العثور على المستخدم</p>{" "}
+          {/* User Not Found */}
         </div>
       )}
     </main>

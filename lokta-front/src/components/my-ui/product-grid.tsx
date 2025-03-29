@@ -8,7 +8,7 @@ interface ProductGridProps {
 
 export function ProductGrid({ products }: ProductGridProps) {
   return (
-    <div className="flex flex-wrap space-x-10 space-y-3">
+    <div dir="rtl" className="flex flex-wrap space-x-10 space-y-3">
       {products.map((product) => (
         <ProductCard
           key={product.id}

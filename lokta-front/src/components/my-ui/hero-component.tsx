@@ -47,13 +47,16 @@ const Hero: React.FC = () => {
   };
 
   return (
-    <div className="bg-gradient-to-r from-[#114CB0] to-[#BA69E1] py-8 sm:py-16">
+    <div
+      dir="rtl"
+      className="bg-gradient-to-r from-[#114CB0] to-[#BA69E1] py-8 sm:py-16"
+    >
       <div className="container mx-auto px-4 sm:px-8 text-center">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-white">
-          Buy & Sell Anything - Fast, Easy, And Secure
+          اشترِ وبع أي شيء - بسرعة وسهولة وأمان
         </h1>
         <p className="text-lg sm:text-xl mb-6 sm:mb-8 text-white">
-          Find great deals on cars, properties, electronics, and more
+          اعثر على صفقات رائعة على السيارات والعقارات والإلكترونيات والمزيد
         </p>
         <div className="max-w-2xl mx-auto">
           <div className="flex flex-col sm:flex-row items-center bg-white md:rounded-full overflow-hidden p-2 shadow-lg">
@@ -62,10 +65,10 @@ const Hero: React.FC = () => {
               onValueChange={(v) => setCurSubCategoryId(+v)}
             >
               <SelectTrigger className="w-full sm:w-40 border-none focus:ring-0 mb-2 sm:mb-0 sm:mr-2">
-                <SelectValue placeholder="All Categories" />
+                <SelectValue placeholder="جميع الفئات" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value={"-1"}>All Categories</SelectItem>
+                <SelectItem value={"-1"}>جميع الفئات</SelectItem>
                 {subcategories.map((subcategory) => (
                   <SelectItem
                     key={subcategory.id}
@@ -79,7 +82,7 @@ const Hero: React.FC = () => {
             <div className="flex-grow flex items-center">
               <Input
                 type="text"
-                placeholder="Search..."
+                placeholder="ابحث..."
                 className="flex-grow border-none focus:ring-0 outline-none px-4"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}

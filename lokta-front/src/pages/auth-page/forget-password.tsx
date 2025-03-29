@@ -19,14 +19,14 @@ function ForgetPassword() {
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
       await forgetPasswordApi(data);
-      toast.success("Email sent successfully");
+      toast.success("تم إرسال البريد الإلكتروني بنجاح");
       navigation("/verify-otp");
     } catch (error: any) {
       toast.error(error.message);
     }
   };
   return (
-    <div className="flex min-h-screen bg-white rounded-[10px]">
+    <div dir="rtl" className="flex min-h-screen bg-white rounded-[10px]">
       {/* Left side with illustration */}
       <div className="hidden lg:flex lg:w-1/2 items-center justify-center p-12"></div>
 
@@ -35,32 +35,32 @@ function ForgetPassword() {
         <div className="max-w-md w-full space-y-8 p-10 bg-gray-100 rounded-lg">
           <div>
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-              Forget Password
+              نسيت كلمة المرور
             </h2>
           </div>
           <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <div className=" flex flex-col space-y-4">
               <div className="relative">
                 <label htmlFor="email" className="sr-only">
-                  Email address
+                  البريد الإلكتروني
                 </label>
                 <Mail
-                  className="absolute top-3 left-3 text-gray-400"
+                  className="absolute top-3 right-3 text-gray-400"
                   size={20}
                 />
                 <input
                   id="email"
                   type="email"
                   autoComplete="email"
-                  className={`appearance-none rounded relative block w-full px-3 py-2 pl-10 border ${
+                  className={`appearance-none rounded relative block w-full px-3 py-2 pr-10 border ${
                     errors.email ? "border-red-500" : "border-gray-300"
                   } placeholder-gray-500 text-gray-900 rounded focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
-                  placeholder="Email address"
+                  placeholder="البريد الإلكتروني"
                   {...register("email", {
-                    required: "Email is required",
+                    required: "البريد الإلكتروني مطلوب",
                     pattern: {
                       value: /\S+@\S+\.\S+/,
-                      message: "Entered value does not match email format",
+                      message: "صيغة البريد الإلكتروني غير صحيحة",
                     },
                   })}
                 />
@@ -80,10 +80,10 @@ function ForgetPassword() {
               >
                 {isLoading ? (
                   <p className="flex items-center justify-center">
-                    Loading ...
+                    جاري التحميل ...
                   </p>
                 ) : (
-                  "Send Otp to Email"
+                  "إرسال رمز التحقق"
                 )}
               </Button>
             </div>

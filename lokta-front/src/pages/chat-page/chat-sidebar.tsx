@@ -12,15 +12,15 @@ function ChatSidebar({
   const interactedUsers = useChatStore((state) => state.interactedUsers);
 
   return (
-    <aside className="w-80 bg-white border-r border-gray-200 px-4 h-screen flex flex-col py-5">
+    <aside dir="rtl" className="w-80 bg-white border-l border-gray-200 px-4 h-screen flex flex-col py-5">
       <ChatNotifications />
       <div className="relative mb-4">
         <input
           type="text"
-          placeholder="Search"
-          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+          placeholder="ابحث" // Search
+          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300 pr-10"
         />
-        <Search className="absolute right-3 top-2.5 text-gray-400" />
+        <Search className="absolute left-3 top-2.5 text-gray-400" />
       </div>
       <div className="space-y-2 overflow-y-auto flex-1">
         <>

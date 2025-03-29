@@ -18,11 +18,11 @@ interface PriceRangeSliderProps {
 }
 
 const DEFAULT_PRICE_RANGES: PriceRange[] = [
-  { id: "all", label: "All Prices", range: [0, 1000] },
-  { id: "under-50", label: "Under $50", range: [0, 50] },
-  { id: "50-100", label: "$50 to $100", range: [50, 100] },
-  { id: "100-200", label: "$100 to $200", range: [100, 200] },
-  { id: "over-200", label: "Over $200", range: [200, 1000] },
+  { id: "all", label: "جميع الأسعار", range: [0, 1000] },
+  { id: "under-50", label: "أقل من 50$", range: [0, 50] },
+  { id: "50-100", label: "من 50$ إلى 100$", range: [50, 100] },
+  { id: "100-200", label: "من 100$ إلى 200$", range: [100, 200] },
+  { id: "over-200", label: "أكثر من 200$", range: [200, 1000] },
 ];
 
 const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
@@ -41,13 +41,13 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
   useEffect(() => {
     const debounceTimeout = setTimeout(() => {
       onChange?.(priceRange);
-    }, 400); 
+    }, 400);
 
     return () => clearTimeout(debounceTimeout);
   }, [priceRange, onChange]);
 
   const formatPrice = (value: number): string => {
-    return `${currency}${value.toLocaleString()}`;
+    return `${value.toLocaleString()}${currency}`;
   };
 
   const handleRangeChange = (rangeId: string) => {
@@ -70,11 +70,11 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
   };
 
   return (
-    <div className={`w-full max-w-md mb-6 space-y-6 ${className}`}>
+    <div dir="rtl" className={`w-full max-w-md mb-6 space-y-6 ${className}`}>
       {/* Preset Ranges Radio Group */}
       <div className="space-y-4">
         <div className="flex justify-between items-center mb-2">
-          <h3 className="text-lg font-semibold">Price Range</h3>
+          <h3 className="text-lg font-semibold">نطاق السعر</h3>
         </div>
 
         <RadioGroup.Root
@@ -83,7 +83,7 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
           className="space-y-2"
         >
           {DEFAULT_PRICE_RANGES.map((range) => (
-            <div key={range.id} className="flex items-center">
+            <div key={range.id} className="flex items-center flex-row-reverse">
               <RadioGroup.Item
                 id={range.id}
                 value={range.id}
@@ -95,7 +95,7 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
               </RadioGroup.Item>
               <label
                 htmlFor={range.id}
-                className="ml-3 text-sm font-medium text-gray-700 dark:text-gray-300"
+                className="mr-3 text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 {range.label}
               </label>
@@ -103,7 +103,7 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
           ))}
 
           {/* Custom Range Option */}
-          <div className="flex items-center">
+          <div className="flex items-center flex-row-reverse">
             <RadioGroup.Item
               id="custom"
               value="custom"
@@ -116,9 +116,9 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
             </RadioGroup.Item>
             <label
               htmlFor="custom"
-              className="ml-3 text-sm font-medium text-gray-700 dark:text-gray-300"
+              className="mr-3 text-sm font-medium text-gray-700 dark:text-gray-300"
             >
-              Custom Range
+              نطاق مخصص
             </label>
           </div>
         </RadioGroup.Root>
@@ -131,13 +131,13 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
         {/* Price Display */}
         <div className="flex items-center justify-between gap-4">
           <div className="flex-1 px-4 py-3 border rounded-lg shadow-sm bg-white">
-            <p className="text-xs text-gray-500">Min Price</p>
+            <p className="text-xs text-gray-500">الحد الأدنى للسعر</p>
             <p className="text-lg font-semibold">
               {formatPrice(priceRange[0])}
             </p>
           </div>
           <div className="flex-1 px-4 py-3 border rounded-lg shadow-sm bg-white">
-            <p className="text-xs text-gray-500">Max Price</p>
+            <p className="text-xs text-gray-500">الحد الأقصى للسعر</p>
             <p className="text-lg font-semibold">
               {formatPrice(priceRange[1])}
             </p>
@@ -194,7 +194,7 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
         <div className="flex gap-4">
           <div className="w-full">
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Min Price
+              الحد الأدنى للسعر
             </label>
             <input
               type="number"
@@ -212,12 +212,13 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
               min={min}
               max={priceRange[1] - step}
               step={step}
+              dir="ltr"
               disabled={!isCustomRange}
             />
           </div>
           <div className="w-full">
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Max Price
+              الحد الأقصى للسعر
             </label>
             <input
               type="number"
@@ -235,6 +236,7 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
               min={priceRange[0] + step}
               max={max}
               step={step}
+              dir="ltr"
               disabled={!isCustomRange}
             />
           </div>

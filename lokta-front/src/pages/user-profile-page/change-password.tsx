@@ -27,7 +27,7 @@ function ChangePassword() {
     try {
       setIsLoading(true);
       await changePasswordApi(data);
-      toast.success("Password changed successfully");
+      toast.success("تم تغيير كلمة المرور بنجاح");
       setIsLoading(false);
       reset();
     } catch (error: any) {
@@ -36,22 +36,22 @@ function ChangePassword() {
     }
   };
   return (
-    <Card>
+    <Card dir="rtl">
       <CardHeader>
-        <CardTitle>CHANGE PASSWORD</CardTitle>
+        <CardTitle>تغيير كلمة المرور</CardTitle>
       </CardHeader>
       <CardContent>
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
           <div>
             <div className="relative">
               <Input
-                {...register("currentPassword", { required: true })}
+                {...register("currentPassword", { required: "هذا الحقل مطلوب" })}
                 type={showPassword ? "text" : "password"}
-                placeholder="Current Password"
+                placeholder="كلمة المرور الحالية"
               />
               <button
                 type="button"
-                className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                className="absolute left-3 top-1/2 transform -translate-y-1/2"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? (
@@ -63,31 +63,31 @@ function ChangePassword() {
             </div>
             {errors.currentPassword && (
               <span className="text-red-500 text-sm">
-                This field is required
+                {errors.currentPassword.message}
               </span>
             )}
           </div>
           <div>
             <Input
-              {...register("newPassword", { required: true })}
+              {...register("newPassword", { required: "هذا الحقل مطلوب" })}
               type="password"
-              placeholder="New Password"
+              placeholder="كلمة المرور الجديدة"
             />
             {errors.newPassword && (
               <span className="text-red-500 text-sm">
-                This field is required
+                {errors.newPassword.message}
               </span>
             )}
           </div>
           <div>
             <Input
-              {...register("confirmPassword", { required: true })}
+              {...register("confirmPassword", { required: "هذا الحقل مطلوب" })}
               type="password"
-              placeholder="Confirm Password"
+              placeholder="تأكيد كلمة المرور"
             />
             {errors.confirmPassword && (
               <span className="text-red-500 text-sm">
-                This field is required
+                {errors.confirmPassword.message}
               </span>
             )}
           </div>
@@ -96,7 +96,7 @@ function ChangePassword() {
             className="w-full bg-blue-600 hover:bg-blue-700"
             disabled={isLoading}
           >
-            {isLoading ? "Loading..." : "Change Password"}
+            {isLoading ? "جاري التحميل..." : "تغيير كلمة المرور"}
           </Button>
         </form>
       </CardContent>

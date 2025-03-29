@@ -50,7 +50,7 @@ function UserUpdateProfile() {
       const res = await uploadFileApi(formData);
       setNewImageProfileUrl(res.urls[0]);
       setLoadingUpload(false);
-      toast.success("File uploaded successfully");
+      toast.success("تم رفع الملف بنجاح"); // File uploaded successfully
     } catch (error: any) {
       toast.error(error.message);
       setLoadingUpload(false);
@@ -78,19 +78,23 @@ function UserUpdateProfile() {
     }
   };
   return (
-    <>
+    <div dir="rtl">
       <Card className="mb-8">
         <CardHeader>
-          <CardTitle>EDIT ACCOUNT</CardTitle>
+          <CardTitle>تعديل الحساب</CardTitle>
         </CardHeader>
         <CardContent>
           <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
             <div className="w-full">
-              <Input className="w-full" placeholder="Username" {...register("name")} />
+              <Input
+                className="w-full"
+                placeholder="اسم المستخدم"
+                {...register("name")}
+              />
             </div>
             <div>
               <label htmlFor="files">
-                Profile Image {loadingUpload && "Loading..."}
+                صورة الملف الشخصي {loadingUpload && "جاري التحميل..."}
               </label>
               <input
                 name="files"
@@ -106,7 +110,7 @@ function UserUpdateProfile() {
                   <img
                     src={previewImage}
                     alt="Preview"
-                    className="mt-2 h[130px] w-[150px] rounded-full object-contain p-5 border-2"
+                    className="mt-2 h-[130px] w-[150px] rounded-full object-contain p-5 border-2"
                   />
                 )}
               </div>
@@ -116,14 +120,14 @@ function UserUpdateProfile() {
               className="w-full bg-blue-600 hover:bg-blue-700"
               type="submit"
             >
-              {isLoading ? "Loading..." : "Save"}
+              {isLoading ? "جاري التحميل..." : "حفظ"}
             </Button>
           </form>
         </CardContent>
       </Card>
 
       <ChangePassword />
-    </>
+    </div>
   );
 }
 

@@ -13,17 +13,18 @@ function ProfileDashboard() {
   };
 
   return (
-    <div className="mx-auto  p-8 ">
+    <div dir="rtl" className="mx-auto  p-8 ">
       <div className="flex-grow">
         <main className="flex-1">
-          <h1 className="text-2xl font-semibold mb-6">Hello, {user?.name}</h1>
+          <h1 className="text-2xl font-semibold mb-6">
+            مرحبا، {user?.name}
+          </h1>
           <p className="text-gray-600 mb-8">
-            From your account dashboard, you can easily check & view your Recent
-            Orders, manage your Shipping and Billing Addresses, and edit your
-            Password and Account Details
+            من لوحة تحكم حسابك، يمكنك بسهولة التحقق من أحدث طلباتك وعرضها، وإدارة
+            عناوين الشحن والفواتير، وتعديل كلمة المرور وتفاصيل الحساب
           </p>
           <div className="bg-white p-6 rounded-lg shadow mb-8">
-            <h2 className="text-xl font-semibold mb-4">ACCOUNT INFO</h2>
+            <h2 className="text-xl font-semibold mb-4">معلومات الحساب</h2>
             <div className="flex items-center space-x-4">
               {user?.image ? (
                 <img
@@ -33,16 +34,16 @@ function ProfileDashboard() {
                 />
               ) : (
                 <div className="h-20 w-20 rounded-full bg-gray-200 flex items-center justify-center">
-                  <span className="text-gray-400 text-4xl">?</span>
+                  <span className="text-gray-400 text-4xl">؟</span>
                 </div>
               )}
               <div>
                 <h3 className="font-semibold">{user?.name}</h3>
-                <p className="text-gray-500">Email: {user?.email}</p>
+                <p className="text-gray-500">البريد الإلكتروني: {user?.email}</p>
               </div>
             </div>
             <Button variant="outline" className="mt-4" onClick={handleEdit}>
-              {inEdit ? "Cancel" : "Edit Account"}
+              {inEdit ? "إلغاء" : "تعديل الحساب"}
             </Button>
           </div>
         </main>

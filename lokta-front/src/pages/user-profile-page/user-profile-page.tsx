@@ -3,12 +3,14 @@ import { Outlet } from "react-router-dom";
 
 function UserProfilePage() {
   return (
-    <>
+    <div dir="rtl">
       <div className="container mx-auto py-8 flex min-h-screen">
         <ProfileSidebar />
-        <Outlet />
+        <div className="flex-1">
+          <Outlet />
+        </div>
       </div>
-    </>
+    </div>
   );
 }
 

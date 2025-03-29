@@ -9,16 +9,19 @@ function ChatNotifications() {
   };
   if (counter === 0) return null;
   return (
-    <div className="flex flex-col items-center justify-between p-4 bg-gray-50 rounded-lg shadow-sm my-2.5">
+    <div
+      dir="rtl"
+      className="flex flex-col items-center justify-between p-4 bg-gray-50 rounded-lg shadow-sm my-2.5"
+    >
       <p className="flex items-center gap-2 font-medium text-gray-700">
         <MessageCircleQuestion className="w-5 h-5 text-blue-500" />
-        {counter} New Messages
+        {counter} رسائل جديدة
       </p>
       <button
         onClick={reloadPage}
         className="cursor-pointer text-xs text-blue-600 hover:text-blue-700 hover:underline transition-colors"
       >
-        Reload To See New Messages
+        إعادة التحميل لرؤية الرسائل الجديدة
       </button>
     </div>
   );

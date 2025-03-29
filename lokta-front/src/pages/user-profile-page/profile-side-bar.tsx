@@ -7,21 +7,21 @@ import { useNavigate } from "react-router-dom";
 
 const tabs = [
   {
-    name: "Dashboard",
+    name: "لوحة التحكم", // Dashboard
     to: "/profile/dashboard",
     current: true,
     onClick: () => {},
     Icon: () => null,
   },
   {
-    name: "Create Product",
+    name: "إنشاء منتج", // Create Product
     to: "/profile/create-product",
     current: false,
     onClick: () => {},
     Icon: () => null,
   },
   {
-    name: "Create Brand",
+    name: "إنشاء علامة تجارية", // Create Brand
     to: "/profile/create-brand",
     current: false,
     onClick: () => {},
@@ -29,7 +29,7 @@ const tabs = [
   },
 
   {
-    name: "My Products Dashboard",
+    name: "منتجاتي", // My Products Dashboard
     to: "/profile/my-products",
     current: false,
     onClick: () => {},
@@ -37,7 +37,7 @@ const tabs = [
   },
 
   {
-    name: "Logout",
+    name: "تسجيل الخروج", // Logout
     to: "/login",
     current: false,
     onClick: (cb: () => void) => {
@@ -52,7 +52,7 @@ function ProfileSidebar() {
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
   const handleClick = (tab: (typeof tabs)[number]) => {
-    if (tab.name === "Logout") {
+    if (tab.name === "تسجيل الخروج") {
       tab.onClick(logout);
     }
     navigate(tab.to);
@@ -67,12 +67,12 @@ function ProfileSidebar() {
     );
   };
   return (
-    <aside className="w-64 bg-white shadow-md h-fit ">
+    <aside dir="rtl" className="w-64 bg-white shadow-md h-fit ">
       <nav className="p-4">
         {curTabs.map((tab) => (
           <Button
             variant={tab.current ? "default" : "ghost"}
-            className={cn("w-full text-left mb-2 capitalize", {
+            className={cn("w-full text-right mb-2 capitalize flex items-center justify-between", {
               "bg-[#194EB4]": tab.current,
               "text-white": tab.current,
               "hover:bg-[#194EB4]": tab.current,
@@ -81,7 +81,6 @@ function ProfileSidebar() {
             onClick={() => handleClick(tab)}
           >
             {tab.name}
-            <tab.Icon />
           </Button>
         ))}
       </nav>

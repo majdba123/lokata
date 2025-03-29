@@ -18,10 +18,10 @@ function CategoriesSection({ id, title, products }: Props) {
   const setCurSubCategoryId = useCategoryStore((s) => s.setCurSubCategoryId);
 
   return (
-    <div key={id} className="container mx-auto w-full">
+    <div dir="rtl" key={id} className="container mx-auto w-full">
       <Link to={`/category`} onClick={() => setCurSubCategoryId(id)}>
         <p
-          className="text-2xl md:text-4xl font-semibold text-center md:text-left capitalize
+          className="text-2xl md:text-4xl font-semibold text-center md:text-right capitalize
         hover:underline hover:underline-offset-4 my-5"
         >
           {title}
@@ -35,27 +35,25 @@ function CategoriesSection({ id, title, products }: Props) {
         }}
         className="w-full"
       >
-        <CarouselContent className="-ml-4">
+        <CarouselContent className="-mr-4">
           {products.map((product: Product) => {
             return (
-              <>
-                <CarouselItem
-                  key={product.id}
-                  className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 flex w-[250px] h-[350px]"
-                >
-                  <ProductCard
-                    imageUrl={`${IMAGES_API_URL}/${product.images[0]}`}
-                    originalPrice={product.price}
-                    title={product.title}
-                    owner_id={product.owner_id}
-                  />
-                </CarouselItem>
-              </>
+              <CarouselItem
+                key={product.id}
+                className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 flex w-[250px] h-[350px]"
+              >
+                <ProductCard
+                  imageUrl={`${IMAGES_API_URL}/${product.images[0]}`}
+                  originalPrice={product.price}
+                  title={product.title}
+                  owner_id={product.owner_id}
+                />
+              </CarouselItem>
             );
           })}
         </CarouselContent>
-        <div className="flex justify-center mt-4 sm:justify-end">
-          <CarouselPrevious className="mr-2" />
+        <div className="flex justify-center mt-4 sm:justify-start">
+          <CarouselPrevious className="ml-2" />
           <CarouselNext />
         </div>
       </Carousel>

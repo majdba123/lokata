@@ -36,7 +36,7 @@ function Login() {
   };
 
   return (
-    <div className="flex min-h-screen bg-white rounded-[10px]">
+    <div dir="rtl" className="flex min-h-screen bg-white rounded-[10px]">
       {/* Left side with illustration */}
       <div className="hidden lg:flex lg:w-1/2 items-center justify-center p-12"></div>
 
@@ -45,35 +45,35 @@ function Login() {
         <div className="max-w-md w-full space-y-8 p-10 bg-gray-100 rounded-lg">
           <div className="text-center">
             <h2 className="mt-6 text-3xl font-bold text-gray-900">
-              Welcome Back
+              مرحبا بعودتك
             </h2>
             <p className="mt-2 text-sm text-gray-600">
-              Please sign in to your account
+              الرجاء تسجيل الدخول إلى حسابك
             </p>
           </div>
           <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <div className=" flex flex-col space-y-4">
               <div className="relative">
                 <label htmlFor="email" className="sr-only">
-                  Email address
+                  البريد الإلكتروني
                 </label>
                 <Mail
-                  className="absolute top-3 left-3 text-gray-400"
+                  className="absolute top-3 right-3 text-gray-400"
                   size={20}
                 />
                 <input
                   id="email"
                   type="email"
                   autoComplete="email"
-                  className={`appearance-none rounded relative block w-full px-3 py-2 pl-10 border ${
+                  className={`appearance-none rounded relative block w-full px-3 py-2 pr-10 border ${
                     errors.email ? "border-red-500" : "border-gray-300"
                   } placeholder-gray-500 text-gray-900 rounded focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
-                  placeholder="Email address"
+                  placeholder="البريد الإلكتروني"
                   {...register("email", {
-                    required: "Email is required",
+                    required: "البريد الإلكتروني مطلوب",
                     pattern: {
                       value: /\S+@\S+\.\S+/,
-                      message: "Entered value does not match email format",
+                      message: "صيغة البريد الإلكتروني غير صحيحة",
                     },
                   })}
                 />
@@ -85,25 +85,25 @@ function Login() {
               </div>
               <div className="relative">
                 <label htmlFor="password" className="sr-only">
-                  Password
+                  كلمة المرور
                 </label>
                 <Lock
-                  className="absolute top-3 left-3 text-gray-400"
+                  className="absolute top-3 right-3 text-gray-400"
                   size={20}
                 />
                 <input
                   id="password"
                   type="password"
                   autoComplete="current-password"
-                  className={`appearance-none rounded relative block w-full px-3 py-2 pl-10 border ${
+                  className={`appearance-none rounded relative block w-full px-3 py-2 pr-10 border ${
                     errors.password ? "border-red-500" : "border-gray-300"
                   } placeholder-gray-500 text-gray-900 rounded focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
-                  placeholder="Password"
+                  placeholder="كلمة المرور"
                   {...register("password", {
-                    required: "Password is required",
+                    required: "كلمة المرور مطلوبة",
                     minLength: {
                       value: 8,
-                      message: "Password must be at least 8 characters long",
+                      message: "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل",
                     },
                   })}
                 />
@@ -121,7 +121,7 @@ function Login() {
                   to="/forget-password"
                   className="font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer"
                 >
-                  Forgot your password?
+                  هل نسيت كلمة المرور؟
                 </Link>
               </div>
             </div>
@@ -134,10 +134,10 @@ function Login() {
               >
                 {isLoading ? (
                   <p className="flex items-center justify-center">
-                    Loading ...
+                    جاري التحميل ...
                   </p>
                 ) : (
-                  "Sign in"
+                  "تسجيل الدخول"
                 )}
               </Button>
             </div>
@@ -145,12 +145,12 @@ function Login() {
           <Separator />
           <div className="text-center">
             <p className="text-sm text-gray-500">
-              Don't have an account?{" "}
+              ليس لديك حساب؟{" "}
               <Link
                 to="/register"
                 className="font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer"
               >
-                Sign up
+                سجل الآن
               </Link>
             </p>
           </div>

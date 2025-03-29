@@ -1,6 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 @import "tailwindcss";
 @plugin 'tailwind-scrollbar' {
-    nocompatible: true;
+  nocompatible: true;
 }
 @plugin "tailwindcss-animate";
 
@@ -123,4 +124,8 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+html {
+  font-family: "Cairo", sans-serif;
 }

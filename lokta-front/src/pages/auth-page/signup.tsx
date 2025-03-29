@@ -31,7 +31,7 @@ function Signup() {
         name: data.fullName,
         type: data.type ?? 0,
       });
-      toast.success("Account created successfully");
+      toast.success("تم إنشاء الحساب بنجاح");
       setLoading(false);
     } catch (error: any) {
       toast.error(error.message);
@@ -40,7 +40,7 @@ function Signup() {
   };
 
   return (
-    <div className="flex min-h-screen ">
+    <div dir="rtl" className="flex min-h-screen ">
       {/* Left side with illustration */}
       <div className="hidden lg:flex lg:w-1/2  items-center justify-center p-12"></div>
 
@@ -48,29 +48,27 @@ function Signup() {
       <div className="w-full lg:w-1/2 flex items-center justify-center">
         <div className="max-w-md w-full space-y-8 p-10 bg-gray-100 rounded-xl shadow-lg">
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900">
-              Welcome To LOKTA
-            </h2>
-            <p className="mt-2 text-sm text-gray-600">Create New Account</p>
+            <h2 className="text-3xl font-bold text-gray-900">مرحبا بك في لوكتا</h2>
+            <p className="mt-2 text-sm text-gray-600">إنشاء حساب جديد</p>
           </div>
           <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <div className="relative">
               <label htmlFor="email" className="sr-only">
-                Email address
+                البريد الإلكتروني
               </label>
               <input
                 id="email"
                 type="email"
                 autoComplete="email"
-                className={`appearance-none rounded relative block w-full px-3 py-2 border ${
+                className={`appearance-none rounded relative block w-full px-3 py-2 pr-10 border ${
                   errors.email ? "border-red-500" : "border-gray-300"
                 } placeholder-gray-500 text-gray-900 rounded focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
-                placeholder="Email address"
+                placeholder="البريد الإلكتروني"
                 {...register("email", {
-                  required: "Email is required",
+                  required: "البريد الإلكتروني مطلوب",
                   pattern: {
                     value: /\S+@\S+\.\S+/,
-                    message: "Entered value does not match email format",
+                    message: "صيغة البريد الإلكتروني غير صحيحة",
                   },
                 })}
               />
@@ -83,18 +81,18 @@ function Signup() {
 
             <div className="relative">
               <label htmlFor="fullName" className="sr-only">
-                Full Name{" "}
+                الاسم الكامل
               </label>
               <input
                 id="fullName"
                 type="text"
                 autoComplete="fullName"
-                className={`appearance-none rounded relative block w-full px-3 py-2 border ${
-                  errors.email ? "border-red-500" : "border-gray-300"
+                className={`appearance-none rounded relative block w-full px-3 py-2 pr-10 border ${
+                  errors.fullName ? "border-red-500" : "border-gray-300"
                 } placeholder-gray-500 text-gray-900 rounded focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
-                placeholder="Full Name"
+                placeholder="الاسم الكامل"
                 {...register("fullName", {
-                  required: "full Name is required",
+                  required: "الاسم الكامل مطلوب",
                 })}
               />
               {errors.fullName && (
@@ -105,21 +103,21 @@ function Signup() {
             </div>
             <div className="relative">
               <label htmlFor="password" className="sr-only">
-                password
+                كلمة المرور
               </label>
               <input
                 id="password"
                 type="password"
                 autoComplete="password"
-                className={`appearance-none rounded relative block w-full px-3 py-2 border ${
-                  errors.email ? "border-red-500" : "border-gray-300"
+                className={`appearance-none rounded relative block w-full px-3 py-2 pr-10 border ${
+                  errors.password ? "border-red-500" : "border-gray-300"
                 } placeholder-gray-500 text-gray-900 rounded focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
-                placeholder="Password"
+                placeholder="كلمة المرور"
                 {...register("password", {
-                  required: "Password is required",
+                  required: "كلمة المرور مطلوبة",
                   minLength: {
                     value: 8,
-                    message: "Password must have at least 8 characters",
+                    message: "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل",
                   },
                 })}
               />
@@ -131,20 +129,20 @@ function Signup() {
             </div>
             <div className="relative">
               <label htmlFor="passwordConfirmation" className="sr-only">
-                Password Confirm
+                تأكيد كلمة المرور
               </label>
               <input
                 id="passwordConfirmation"
                 type="password"
                 autoComplete="password"
-                className={`appearance-none rounded relative block w-full px-3 py-2 border ${
-                  errors.email ? "border-red-500" : "border-gray-300"
+                className={`appearance-none rounded relative block w-full px-3 py-2 pr-10 border ${
+                  errors.passwordConfirmation ? "border-red-500" : "border-gray-300"
                 } placeholder-gray-500 text-gray-900 rounded focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
-                placeholder="Password Confirmation"
+                placeholder="تأكيد كلمة المرور"
                 {...register("passwordConfirmation", {
-                  required: "password Confirmation is required",
+                  required: "تأكيد كلمة المرور مطلوب",
                   validate: (value, formValues) =>
-                    value === formValues.password || "Passwords do not match",
+                    value === formValues.password || "كلمتا المرور غير متطابقتين",
                 })}
               />
               {errors.passwordConfirmation && (
@@ -156,31 +154,31 @@ function Signup() {
             {/* add radio button group for user type (client ot seller ) with values 0 ot 1 */}
             <div className="relative">
               <label htmlFor="type" className="sr-only">
-                User Type
+                نوع المستخدم
               </label>
               <div className="flex space-x-6 ">
                 <div className="flex items-center space-x-2">
                   <input
                     type="radio"
                     id="client"
-                    {...register("type", { required: "User Type is required" })}
+                    {...register("type", { required: "نوع المستخدم مطلوب" })}
                     value={0}
                     className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                   />
                   <label htmlFor="client" className="text-sm text-gray-700">
-                    Client
+                    عميل
                   </label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <input
                     type="radio"
                     id="seller"
-                    {...register("type", { required: "User Type is required" })}
+                    {...register("type", { required: "نوع المستخدم مطلوب" })}
                     value={1}
                     className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                   />
                   <label htmlFor="seller" className="text-sm text-gray-700">
-                    Seller
+                    بائع
                   </label>
                 </div>
               </div>
@@ -195,15 +193,15 @@ function Signup() {
               type="submit"
               disabled={loading}
             >
-              {loading ? "Loading..." : "Sign Up"}
+              {loading ? "جاري التحميل..." : "إنشاء حساب"}
             </Button>
 
             <Separator />
             <div className="text-center">
               <p className="text-sm text-gray-500">
-                Already have an account?{" "}
+                هل لديك حساب بالفعل؟{" "}
                 <Link to="/login" className="text-blue-500">
-                  Log in
+                  تسجيل الدخول
                 </Link>
               </p>
             </div>

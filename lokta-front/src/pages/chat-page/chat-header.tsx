@@ -11,16 +11,23 @@ function ChatHeader({ username }: Props) {
     navigate("/");
   };
   return (
-    <div className="flex items-center justify-between p-4 border-b border-gray-300 bg-white">
+    <div
+      dir="rtl"
+      className="flex items-center justify-between p-4 border-b border-gray-300 bg-white"
+    >
       <div className="flex items-center">
         <div>
           <h3 className="text-sm font-semibold">{username}</h3>
         </div>
       </div>
       <div>
-        <Button onClick={backHome} variant="ghost">
-          <ArrowLeft />
-          <p className="text-sm">Back</p>
+        <Button
+          onClick={backHome}
+          variant="ghost"
+          className="flex items-center"
+        >
+          <p className="text-sm">رجوع</p>
+          <ArrowLeft className="ml-2" />
         </Button>
       </div>
     </div>

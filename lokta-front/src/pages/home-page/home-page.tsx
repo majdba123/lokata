@@ -28,15 +28,15 @@ function HomePage() {
   };
 
   return (
-    <>
+    <div dir="rtl">
       <Hero />
       <div className="container mx-auto flex flex-col space-y-1.5">
         <p className="text-2xl md:text-4xl font-semibold text-center my-8 capitalize ">
-          Shop All Categories
+          تسوق جميع الفئات
         </p>
         {subcategoriesWithProducts.length === 0 && (
           <div className="flex items-center justify-center">
-            <p>No Products Found</p>
+            <p>لم يتم العثور على منتجات</p>
           </div>
         )}
       </div>
@@ -48,7 +48,7 @@ function HomePage() {
       )}
       {!loading &&
         subcategoriesWithProducts.map((sc) => <CategoriesSection {...sc} />)}
-    </>
+    </div>
   );
 }
 

@@ -74,35 +74,35 @@ function CategoryPage() {
   };
 
   return (
-    <>
+    <div dir="rtl">
       <SalesBoard boardImage={categoryBoard} />
       <div className="w-full flex flex-col justify-center items-center space-y-2">
         <p className="text-xl ">
-          {curSubCategoryId == -1 ? "All" : curSubCategory?.title}
+          {curSubCategoryId == -1 ? "الكل" : curSubCategory?.title}
         </p>
       </div>
       <div className="flex flex-col lg:flex-row min-h-screen">
         {/* Sidebar */}
-        <aside className="lg:w-1/4 p-4 bg-white border-r border-gray-200">
+        <aside className="lg:w-1/4 p-4 bg-white border-l border-gray-200">
           <div className="relative mb-4">
             <input
               type="text"
               className="w-full px-4 py-2 border border-gray-300 rounded-md 
           focus:outline-none focus:border-blue-500"
-              placeholder="Search"
+              placeholder="ابحث"
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
             />
             <button
-              className="absolute top-0 right-0 px-4 py-2 bg-blue-500 
-          text-white rounded-r-md hover:bg-blue-600"
+              className="absolute top-0 left-0 px-4 py-2 bg-blue-500 
+          text-white rounded-l-md hover:bg-blue-600"
             >
-              Search
+              ابحث
             </button>
           </div>
           <div className="mb-6">
             <div className="flex justify-between items-center mb-2">
-              <h3 className="text-lg font-semibold">Subcategory</h3>
+              <h3 className="text-lg font-semibold">الفئة الفرعية</h3>
             </div>
             <div className="space-y-1">
               <label key={0} className="flex items-center">
@@ -114,7 +114,7 @@ function CategoryPage() {
                   onClick={() => setCurSubCategoryId(-1)}
                   checked={curSubCategoryId === -1}
                 />
-                All
+                <span className="mr-2">الكل</span>
               </label>
               {subcategories.map((sc) => (
                 <label key={sc.id} className="flex items-center">
@@ -126,7 +126,7 @@ function CategoryPage() {
                     onClick={() => setCurSubCategoryId(sc.id)}
                     checked={sc.id === curSubCategoryId}
                   />
-                  {sc.title}
+                  <span className="mr-2">{sc.title}</span>
                 </label>
               ))}
             </div>
@@ -135,7 +135,7 @@ function CategoryPage() {
           {/* Brand Filter */}
           <div className="mb-6">
             <div className="flex justify-between items-center mb-2">
-              <h3 className="text-lg font-semibold">Brand</h3>
+              <h3 className="text-lg font-semibold">العلامة التجارية</h3>
             </div>
             <div className="space-y-1">
               <label key={0} className="flex items-center">
@@ -147,7 +147,7 @@ function CategoryPage() {
                   onClick={() => setCurBrandIdx(-1)}
                   checked={curBrandIdx === -1}
                 />
-                All
+                <span className="mr-2">الكل</span>
               </label>
               {brands.map((item, idx) => (
                 <label key={item.id} className="flex items-center">
@@ -159,7 +159,7 @@ function CategoryPage() {
                     onClick={() => setCurBrandIdx(idx)}
                     checked={idx === curBrandIdx}
                   />
-                  {item.name}
+                  <span className="mr-2">{item.name}</span>
                 </label>
               ))}
             </div>
@@ -178,7 +178,7 @@ function CategoryPage() {
           <ProductGrid products={products} />
         </main>
       </div>
-    </>
+    </div>
   );
 }
 

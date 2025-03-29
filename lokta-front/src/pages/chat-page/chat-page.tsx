@@ -86,12 +86,13 @@ function ChatPage() {
   }, []);
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div dir="rtl" className="flex h-screen bg-gray-100">
       <ChatSidebar loadingInteractedUsers={loadingInteractedUsers} />
       {id && <ChatArea />}
       {!id && (
         <div className="flex-1 flex items-center justify-center">
-          <p className="text-gray-500">Select a chat to start messaging</p>
+          <p className="text-gray-500">حدد محادثة لبدء المراسلة</p>{" "}
+          {/* Select a chat to start messaging */}
         </div>
       )}
     </div>

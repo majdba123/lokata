@@ -61,7 +61,7 @@ function CreateProduct() {
       const res = await uploadFileApi(formData);
       setNewImages(res.urls);
       setLoadingUpload(false);
-      toast.success("File uploaded successfully");
+      toast.success("تم رفع الملف بنجاح"); // File uploaded successfully
     } catch (error: any) {
       toast.error(error.message);
       setLoadingUpload(false);
@@ -104,7 +104,7 @@ function CreateProduct() {
 
       await createProductApi(req);
       setLoadingCreateProduct(false);
-      toast.success("Product created successfully");
+      toast.success("تم إنشاء المنتج بنجاح"); // Product created successfully
       reset();
       setPreviewImages(null);
       setNewImages(null);
@@ -117,25 +117,24 @@ function CreateProduct() {
   if (!isVendor) {
     return (
       <div className="text-center text-red-500 text-2xl font-bold mt-4 w-full">
-        {" "}
-        You are not a Seller{" "}
+        أنت لست بائعًا
       </div>
     );
   }
 
   return (
-    <div className="mx-auto p-8 w-[100%]">
+    <div dir="rtl" className="mx-auto p-8 w-[100%]">
       <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex gap-4">
-          <div className="w-[100%]">
-            <label htmlFor="productTitle">Product Title</label>
+        <div className="flex gap-4 flex-col md:flex-row">
+          <div className="w-full">
+            <label htmlFor="productTitle">عنوان المنتج</label>
             <input
               {...register("productTitle", {
-                required: "Product title is required",
+                required: "عنوان المنتج مطلوب", // Product title is required
               })}
               type="text"
               className="border border-gray-300 rounded-md p-2 w-full"
-              placeholder="Enter Product Title"
+              placeholder="أدخل عنوان المنتج" // Enter Product Title
             />
             {errors.productTitle && (
               <span className="text-red-500 text-sm">
@@ -144,19 +143,19 @@ function CreateProduct() {
             )}
           </div>
 
-          <div className="w-[100%]">
-            <label htmlFor="productPrice">Product Price</label>
+          <div className="w-full">
+            <label htmlFor="productPrice">سعر المنتج</label>
             <input
               {...register("productPrice", {
-                required: "Price is required",
+                required: "السعر مطلوب", // Price is required
                 pattern: {
                   value: /^\d+(\.\d{1,2})?$/,
-                  message: "Invalid price format",
+                  message: "صيغة السعر غير صحيحة", // Invalid price format
                 },
               })}
               type="number"
               className="border border-gray-300 rounded-md p-2 w-full"
-              placeholder="Enter Product Price"
+              placeholder="أدخل سعر المنتج" // Enter Product Price
             />
             {errors.productPrice && (
               <span className="text-red-500 text-sm">
@@ -167,13 +166,13 @@ function CreateProduct() {
         </div>
 
         <div>
-          <label htmlFor="productDescription">Product Description</label>
+          <label htmlFor="productDescription">وصف المنتج</label>
           <textarea
             {...register("productDescription", {
-              required: "Description is required",
+              required: "الوصف مطلوب", // Description is required
             })}
             className="border border-gray-300 rounded-md p-2 min-h-[100px] w-full"
-            placeholder="Enter Product Description"
+            placeholder="أدخل وصف المنتج" // Enter Product Description
           />
           {errors.productDescription && (
             <span className="text-red-500 text-sm">
@@ -184,10 +183,10 @@ function CreateProduct() {
 
         <div>
           <label htmlFor="productImage">
-            Product Image {loadingUpload && "Loading..."}
+            صورة المنتج {loadingUpload && "جاري التحميل..."}
           </label>
           <input
-            {...register("productImage", { required: "Image is required" })}
+            {...register("productImage", { required: "الصورة مطلوبة" })} // Image is required
             type="file"
             className="border border-gray-300 rounded-md p-2 w-full"
             onChange={handleChooseFile}
@@ -201,13 +200,13 @@ function CreateProduct() {
             </span>
           )}
           {previewImages && (
-            <div className="flex gap-4 mt-2">
+            <div className="flex gap-4 mt-2 flex-wrap">
               {previewImages.map((previewImage, index) => (
                 <img
                   key={index}
                   src={previewImage}
                   alt="Preview"
-                  className="max-h[190px] max-w-[200px] rounded-md"
+                  className="max-h-[190px] max-w-[200px] rounded-md"
                 />
               ))}
             </div>
@@ -215,12 +214,12 @@ function CreateProduct() {
         </div>
 
         <div>
-          <label htmlFor="brand_id">Brand</label>
+          <label htmlFor="brand_id">العلامة التجارية</label>
           <select
-            {...register("brand_id", { required: "Brand is required" })}
+            {...register("brand_id", { required: "العلامة التجارية مطلوبة" })} // Brand is required
             className="border border-gray-300 rounded-md p-2 w-full"
           >
-            <option value="">Select Brand</option>
+            <option value="">اختر العلامة التجارية</option> {/* Select Brand */}
             {brands.map((brand) => (
               <option key={brand.id} value={brand.id}>
                 {brand.name}
@@ -235,14 +234,14 @@ function CreateProduct() {
         </div>
 
         <div>
-          <label htmlFor="sub__category_id">Subcategory</label>
+          <label htmlFor="sub__category_id">الفئة الفرعية</label>
           <select
             {...register("sub__category_id", {
-              required: "Subcategory is required",
+              required: "الفئة الفرعية مطلوبة", // Subcategory is required
             })}
             className="border border-gray-300 rounded-md p-2 w-full"
           >
-            <option value="">Select Subcategory</option>
+            <option value="">اختر الفئة الفرعية</option> {/* Select Subcategory */}
             {subCategories.map((subcategory) => (
               <option key={subcategory.id} value={subcategory.id}>
                 {subcategory.title}
@@ -261,7 +260,7 @@ function CreateProduct() {
           className="bg-blue-500 text-white rounded-md p-2 hover:bg-blue-600"
           disabled={loadingCreateProduct}
         >
-          Create Product
+          {loadingCreateProduct ? "جاري التحميل..." : "إنشاء المنتج"}
         </button>
       </form>
     </div>

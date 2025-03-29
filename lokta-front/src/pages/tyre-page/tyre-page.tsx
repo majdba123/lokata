@@ -42,32 +42,32 @@ function TyrePage() {
   };
 
   return (
-    <>
+    <div dir="rtl">
       <SalesBoard boardImage={car_rect} />
       <div className="flex flex-col lg:flex-row min-h-screen">
         {/* Sidebar */}
-        <aside className="w-full lg:w-1/4 p-4 bg-white border-b lg:border-r border-gray-200">
+        <aside className="w-full lg:w-1/4 p-4 bg-white border-b lg:border-l border-gray-200">
           {/* search bar */}
           <div className="relative mb-4">
             <input
               type="text"
               className="w-full px-4 py-2 border border-gray-300 rounded-md 
           focus:outline-none focus:border-blue-500"
-              placeholder="Search"
+              placeholder="ابحث"
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
             />
             <button
-              className="absolute top-0 right-0 px-4 py-2 bg-blue-500 
-          text-white rounded-r-md hover:bg-blue-600"
+              className="absolute top-0 left-0 px-4 py-2 bg-blue-500 
+          text-white rounded-l-md hover:bg-blue-600"
             >
-              Search
+              ابحث
             </button>
           </div>
           {/* tyre size filter */}
           <div className="mb-6">
             <div className="flex flex-col justify-between items-center mb-2">
-              <h3 className="text-lg font-semibold">Tyre Size</h3>
+              <h3 className="text-lg font-semibold">حجم الإطار</h3>
               <img
                 src={tyreSizeImg}
                 alt="Tyre Size Example"
@@ -78,19 +78,19 @@ function TyrePage() {
               <label key={0} className="flex items-center">
                 <input
                   type="radio"
-                  className="mr-2"
+                  className="ml-2"
                   name="tyreSize"
                   value={-1}
                   onClick={() => setTyreSizeIdx(-1)}
                   checked={tyreSizeIdx === -1}
                 />
-                All
+                الكل
               </label>
               {tireSize.map((item, index) => (
                 <label key={item} className="flex items-center">
                   <input
                     type="radio"
-                    className="mr-2"
+                    className="ml-2"
                     name="tyreSize"
                     value={index}
                     onClick={() => setTyreSizeIdx(index)}
@@ -115,7 +115,7 @@ function TyrePage() {
           <ProductGrid products={products} />
         </main>
       </div>
-    </>
+    </div>
   );
 }
 

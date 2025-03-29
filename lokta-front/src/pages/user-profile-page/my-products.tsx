@@ -24,7 +24,7 @@ import { IMAGES_API_URL } from "@/api/constants";
 import { useAuthStore } from "@/zustand-stores/auth.store";
 
 function MyProducts() {
-  const isVendor = useAuthStore(s => s.user?.is_vendor)
+  const isVendor = useAuthStore((s) => s.user?.is_vendor);
   const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [updateProductId, setUpdateProductId] = useState<number | null>(null);
@@ -68,10 +68,10 @@ function MyProducts() {
       await deleteProductApi(productId);
       setDeleteProductId(null);
       setProducts((prev) => prev.filter((product) => product.id !== productId));
-      toast.success("Product deleted successfully");
+      toast.success("تم حذف المنتج بنجاح"); // Product deleted successfully
       setLoadingDelete(false);
     } catch (error: any) {
-      toast.error("Failed to delete product" + error.message);
+      toast.error("فشل حذف المنتج" + error.message); // Failed to delete product
       setLoadingDelete(false);
     }
   };
@@ -82,18 +82,17 @@ function MyProducts() {
   if (!isVendor) {
     return (
       <div className="text-center text-red-500 text-2xl font-bold mt-4 w-full">
-        {" "}
-        You are not a Seller{" "}
+        أنت لست بائعًا
       </div>
     );
   }
 
   return (
-    <div className="w-full p-6">
-      <div className="w-full flex flex-wrap space-x-10 space-y-3">
+    <div dir="rtl" className="w-full p-6">
+      <div className="w-full flex flex-wrap space-x-reverse space-x-10 space-y-3">
         {isLoading && (
           <div className="flex items-center justify-center w-full h-fit">
-            <Loading />{" "}
+            <Loading />
           </div>
         )}
 
@@ -109,7 +108,7 @@ function MyProducts() {
               imageUrl={`${IMAGES_API_URL}/${product.images[0]}`}
               key={product.id}
             />
-            <div className="flex justify-center space-x-3">
+            <div className="flex justify-center space-x-reverse space-x-3">
               <AlertDialog
                 open={updateProductId === product.id}
                 onOpenChange={() => setUpdateProductId(product.id)}
@@ -138,23 +137,25 @@ function MyProducts() {
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Are you absolutely sure?
-                    </AlertDialogTitle>
+                    <AlertDialogTitle>هل أنت متأكد تمامًا؟</AlertDialogTitle>{" "}
+                    {/* Are you absolutely sure? */}
                     <AlertDialogDescription>
-                      This action cannot be undone. This will permanently delete
-                      your Product.
-                    </AlertDialogDescription>
+                      لا يمكن التراجع عن هذا الإجراء. سيؤدي هذا إلى حذف منتجك
+                      بشكل دائم.
+                    </AlertDialogDescription>{" "}
+                    {/* This action cannot be undone... */}
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <Button onClick={onCancelDelete}>cancel</Button>
+                    <Button onClick={onCancelDelete}>إلغاء</Button>{" "}
+                    {/* cancel */}
                     <AlertDialogAction
                       onClick={() => onDelete(product.id)}
                       className="bg-red-500"
                       disabled={loadingDelete}
                     >
-                      Continue {loadingDelete && <Loading />}
-                    </AlertDialogAction>
+                      متابعة {loadingDelete && <Loading />}
+                    </AlertDialogAction>{" "}
+                    {/* Continue */}
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
