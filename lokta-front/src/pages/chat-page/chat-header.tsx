@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { useChatStore } from "@/zustand-stores/chat-store";
 import { ArrowLeft, MoreVertical } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -7,12 +6,9 @@ type Props = {
   username: string;
 };
 function ChatHeader({ username }: Props) {
-  const setCurChatUserId = useChatStore((state) => state.setCurChatUserId);
-
   const navigate = useNavigate();
   const backHome = () => {
     navigate("/");
-    setCurChatUserId(null);
   };
   return (
     <div className="flex items-center justify-between p-4 border-b border-gray-300 bg-white">

@@ -14,23 +14,20 @@ import ChatList from "./chat-list";
 import ChatHeader from "./chat-header";
 import { fixInvalidUserId } from "@/lib/helpers";
 import ChatInput from "./chat-input";
-import { getPossibleChatUserApi } from "@/api/services/user/user-service";
-import { InteractedUser } from "@/api/services/chat/types";
 
 function ChatArea() {
   const { id } = useParams();
 
   const myId = useAuthStore((s) => s.user?.id);
   const interactedUsers = useChatStore((state) => state.interactedUsers);
-  const clearLastMessages = useChatStore((state) => state.clearLastMessages);
-  const setCurChatUserId = useChatStore((state) => state.setCurChatUserId);
-  const addInteractedUser = useChatStore((state) => state.addInteractedUser);
   const curUser = interactedUsers.find(
-    (user) => user.id === fixInvalidUserId(id)
+    (user) => user.id == fixInvalidUserId(id)
   );
-
   const [loadingChat, setLoadingChat] = useState(false);
   const conversation = useConversationStore((state) => state.conversation);
+
+  const clearLastMessages = useChatStore((state) => state.clearLastMessages);
+
   const setConversation = useConversationStore(
     (state) => state.setConversation
   );
@@ -39,6 +36,7 @@ function ChatArea() {
 
   const fetchConversation = async () => {
     try {
+      if (!id) return;
       setLoadingChat(true);
       if (!Number.isNaN(fixInvalidUserId(id))) {
         const res = await getConversationApi(fixInvalidUserId(id));
@@ -47,7 +45,7 @@ function ChatArea() {
       setLoadingChat(false);
       clearLastMessages(fixInvalidUserId(id));
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error("User Not Found" + error.message);
       setLoadingChat(false);
     }
   };
@@ -87,32 +85,9 @@ function ChatArea() {
     }
   };
 
-  const fetchPossibleChatUser = async () => {
-    const exists = interactedUsers.find(
-      (user) => user.id === fixInvalidUserId(id)
-    );
-    if (exists) return;
-    try {
-      const res = await getPossibleChatUserApi(fixInvalidUserId(id));
-      const possibleChatUser: InteractedUser = {
-        id: res.id,
-        name: res.name,
-        last_message_at: new Date(),
-        last_messages: [],
-      };
-      addInteractedUser(possibleChatUser);
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  };
-
   useEffect(() => {
-    if (id) {
-      setCurChatUserId(fixInvalidUserId(id));
-    }
-    markMessagesAsRead();
     fetchConversation();
-    fetchPossibleChatUser();
+    markMessagesAsRead();
     return () => {
       setConversation([]);
     };

@@ -16,10 +16,12 @@ import ChatPage from "./pages/chat-page/chat-page";
 import ChatArea from "./pages/chat-page/chat-area";
 import PageLayout from "./layout/page-layout";
 import TyrePage from "./pages/tyre-page/tyre-page";
+import { Toaster } from "sonner";
 
 function App() {
   return (
     <>
+      <Toaster />
       <Routes>
         <Route element={<PageLayout />}>
           <Route path="/" element={<HomePage />} />

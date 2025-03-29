@@ -1,27 +1,15 @@
 import { InteractedUser } from "@/api/services/chat/types";
 import { formatTimestamp } from "@/lib/helpers";
-import { useChatStore } from "@/zustand-stores/chat-store";
-import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 type Props = InteractedUser;
 
 function ChatItem({ last_message_at, id, name, last_messages }: Props) {
-  const setCurChatUserId = useChatStore((state) => state.setCurChatUserId);
-  const { id: curChatUserId } = useParams();
   const navigate = useNavigate();
   const handleClick = () => {
-    setCurChatUserId(id);
     navigate("/chat/" + id);
   };
 
-  useEffect(() => {
-    if (curChatUserId) {
-      setCurChatUserId(+curChatUserId);
-    } else {
-      setCurChatUserId(null);
-    }
-  }, [curChatUserId]);
   return (
     <div
       key={id}

@@ -31,7 +31,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-md">
       {/* Image */}
-      <div className="relative aspect-w-4 aspect-h-3">
+      <div className="relative aspect-w-4 aspect-h-3 min-h-60">
         <img
           src={imageUrl}
           alt={title}
@@ -46,7 +46,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <Heart className="h-4 w-4" strokeWidth={3} />
         </Button>
       </div>
-
       {/* Content */}
       <div className="p-4">
         {/* Title */}

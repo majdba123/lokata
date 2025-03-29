@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { tireSize } from "./constant";
 import useDebounce from "@/hooks/useDebounce";
 import ProductCard from "@/components/my-ui/product-card";
-import { API_URL } from "@/api/constants";
+import { IMAGES_API_URL } from "@/api/constants";
 import tyreSizeImg from "@/assets/reading-tyre-size-example.jpg";
 
 function TyrePage() {
@@ -121,7 +121,7 @@ function TyrePage() {
                 title={product.title}
                 originalPrice={product.price}
                 discountPrice={product.price}
-                imageUrl={`${API_URL}/${product.images[0]}`}
+                imageUrl={`${IMAGES_API_URL}/${product.images[0]}`}
                 discountPercentage={0}
                 vendor_id={product.vendor_id}
               />

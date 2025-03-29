@@ -1,4 +1,4 @@
-import { API_URL } from "@/api/constants";
+import { IMAGES_API_URL } from "@/api/constants";
 import { getBrandsApi } from "@/api/services/brand/brand-service";
 import { Brand } from "@/api/services/brand/types";
 import { Subcategory } from "@/api/services/category/types";
@@ -56,7 +56,6 @@ function CategoryPage() {
   }, []);
 
   useEffect(() => {
-   
     fetchProducts();
   }, [curBrandIdx, curSubCategoryId, priceRange[0], priceRange[1]]);
 
@@ -162,32 +161,6 @@ function CategoryPage() {
             currency="$"
             onChange={handlePriceChange}
           />
-
-          {/* Watch Ad */}
-          <div className="bg-white p-4 border rounded-md">
-            <img
-              src="https://picsum.photos/300/400?random" // Replace with your image URL
-              alt="Watch Ad"
-              className="w-full mb-4"
-            />
-            <h3 className="text-lg font-semibold mb-2 text-center">
-              Heavy on Features.
-              <br /> Light on Price.
-            </h3>
-            <p className="text-md text-gray-600 mb-4 text-center">
-              Only for :{" "}
-              <span className="bg-[#F3DE6D] p-1 text-black font-bold">
-                {" "}
-                $299 USD
-              </span>{" "}
-            </p>
-            <button className="bg-blue-500 text-white px-4 py-2 rounded-md w-full mb-2">
-              ADD TO CART
-            </button>
-            <button className="border border-blue-500 text-blue-500 px-4 py-2 rounded-md w-full">
-              VIEW DETAILS
-            </button>
-          </div>
         </aside>
 
         {/* Product Grid */}
@@ -200,7 +173,7 @@ function CategoryPage() {
                 title={product.title}
                 originalPrice={product.price}
                 discountPrice={product.price}
-                imageUrl={`${API_URL}/${product.images[0]}`}
+                imageUrl={`${IMAGES_API_URL}/${product.images[0]}`}
                 discountPercentage={0}
                 vendor_id={product.vendor_id}
               />

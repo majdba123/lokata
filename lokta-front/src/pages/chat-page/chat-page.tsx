@@ -7,11 +7,9 @@ import { Message } from "@/api/services/chat/types";
 import { useConversationStore } from "@/zustand-stores/conversation-store";
 import { useParams } from "react-router-dom";
 import { fixInvalidUserId } from "@/lib/helpers";
-import { useEffect } from "react";
 
 function ChatPage() {
   const interactedUsers = useChatStore((state) => state.interactedUsers);
-  const setCurChatUserId = useChatStore((state) => state.setCurChatUserId);
   const increaseNewMessagesCounter = useChatStore(
     (state) => state.increaseNewMessagesCounter
   );
@@ -37,10 +35,6 @@ function ChatPage() {
       addLastMessage(message.sender_id, message.message);
     }
   };
-
-  useEffect(() => {
-    setCurChatUserId(fixInvalidUserId(id));
-  }, [id]);
 
   useListenToChannel({
     userId: myId!,

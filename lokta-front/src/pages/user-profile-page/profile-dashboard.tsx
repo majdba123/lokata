@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import UserUpdateProfile from "./user-update-profile";
 import { useAuthStore } from "@/zustand-stores/auth.store";
-import { API_URL } from "@/api/constants";
+import { IMAGES_API_URL } from "@/api/constants";
 
 function ProfileDashboard() {
   const [inEdit, setInEdit] = useState(false);
@@ -27,7 +27,7 @@ function ProfileDashboard() {
             <div className="flex items-center space-x-4">
               {user?.image ? (
                 <img
-                  src={`${API_URL}/${user?.image}`}
+                  src={`${IMAGES_API_URL}/${user?.image}`}
                   alt="Profile"
                   className="h-20 w-20 rounded-full object-contain"
                 />

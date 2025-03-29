@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import logo from "@/assets/lokta-logo.svg";
 import BadgeComponent from "@/components/my-ui/badge";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/zustand-stores/auth.store";
 
 const Header: React.FC = () => {
@@ -41,9 +41,9 @@ const Header: React.FC = () => {
   return (
     <header className="bg-white border-b py-2 md:py-3">
       <div className="container mx-auto px-4 flex items-center justify-between">
-        <div className="flex items-center">
+        <Link to="/" className="flex items-center">
           <img src={logo} alt="Lokta Logo" className="h-8" />
-        </div>
+        </Link>
         <div className="relative w-auto lg:w-[498px]">
           <Input
             type="text"
