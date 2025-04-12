@@ -28,19 +28,21 @@ function CategoriesSection({ id, title, products }: Props) {
         </p>
       </Link>
 
-      <Carousel
-        opts={{
-          align: "start",
-          loop: true,
-        }}
-        className="w-full"
-      >
-        <CarouselContent className="-mr-4">
-          {products.map((product: Product) => {
-            return (
+      <div className="relative">
+        <Carousel
+          opts={{
+            align: "start",
+            loop: true,
+            direction: "rtl", // Set direction to RTL for Embla Carousel
+          }}
+          className="w-full"
+        >
+          {/* For RTL, we use -ml-4 instead of -mr-4 because the carousel's internal logic still works in LTR */}
+          <CarouselContent className="-ml-2 sm:-ml-4">
+            {products.map((product: Product) => (
               <CarouselItem
                 key={product.id}
-                className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 flex w-[250px] h-[350px]"
+                className="pl-2 sm:pl-4 xs:basis-1/2 sm:basis-1/4 md:basis-1/3 lg:basis-1/4"
               >
                 <ProductCard
                   imageUrl={`${IMAGES_API_URL}/${product.images[0]}`}
@@ -49,14 +51,20 @@ function CategoriesSection({ id, title, products }: Props) {
                   owner_id={product.owner_id}
                 />
               </CarouselItem>
-            );
-          })}
-        </CarouselContent>
-        <div className="flex justify-center mt-4 sm:justify-start">
-          <CarouselPrevious className="ml-2" />
-          <CarouselNext />
-        </div>
-      </Carousel>
+            ))}
+          </CarouselContent>
+
+          {/* Navigation buttons positioned absolutely for better control */}
+          {products.length > 4 && (
+            <div className="flex justify-center w-full mt-4">
+              <div className="flex space-x-2 rtl:space-x-reverse">
+                <CarouselPrevious className="relative h-7 w-7 sm:h-8 sm:w-8 rtl:order-last" />
+                <CarouselNext className="relative h-7 w-7 sm:h-8 sm:w-8 rtl:order-first" />
+              </div>
+            </div>
+          )}
+        </Carousel>
+      </div>
     </div>
   );
 }

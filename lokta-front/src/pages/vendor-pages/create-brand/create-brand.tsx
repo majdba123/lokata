@@ -1,5 +1,4 @@
 import { createBrandApi } from "@/api/services/brand/brand-service";
-import { useAuthStore } from "@/zustand-stores/auth.store";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -9,7 +8,6 @@ type BrandData = {
 };
 
 function CreateBrand() {
-  const isVendor = useAuthStore((state) => state.user?.is_vendor);
   const [loadingCreateBrand, setLoadingCreateBrand] = useState(false);
   const {
     register,
@@ -31,13 +29,7 @@ function CreateBrand() {
     }
   };
 
-  if (!isVendor) {
-    return (
-      <div className="text-center text-red-500 text-2xl font-bold mt-4 w-full">
-        أنت لست بائعًا
-      </div>
-    );
-  }
+ 
   return (
     <div dir="rtl" className="mx-auto p-8 w-[100%]">
       {/* code for create new brand (name) , using tailwind and react hook form */}

@@ -21,10 +21,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import UpdateProduct from "./update-product";
 import { IMAGES_API_URL } from "@/api/constants";
-import { useAuthStore } from "@/zustand-stores/auth.store";
 
 function MyProducts() {
-  const isVendor = useAuthStore((s) => s.user?.is_vendor);
   const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [updateProductId, setUpdateProductId] = useState<number | null>(null);
@@ -79,17 +77,11 @@ function MyProducts() {
     setDeleteProductId(null);
   };
 
-  if (!isVendor) {
-    return (
-      <div className="text-center text-red-500 text-2xl font-bold mt-4 w-full">
-        أنت لست بائعًا
-      </div>
-    );
-  }
+ 
 
   return (
-    <div dir="rtl" className="w-full p-6">
-      <div className="w-full flex flex-wrap space-x-reverse space-x-10 space-y-3">
+    <div dir="rtl" className="w-full ">
+      <div className="w-full flex flex-wrap items-center  space-y-3">
         {isLoading && (
           <div className="flex items-center justify-center w-full h-fit">
             <Loading />

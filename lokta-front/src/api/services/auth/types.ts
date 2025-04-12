@@ -9,7 +9,6 @@ export type RegisterRequest = {
   name: string;
   email: string;
   password: string;
-  type: 0 | 1;
 };
 
 export type LoginResponse = {

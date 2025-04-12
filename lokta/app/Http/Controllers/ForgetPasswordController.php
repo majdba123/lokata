@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\registartion\register;
+use App\services\registartion\register;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendOtpMail;

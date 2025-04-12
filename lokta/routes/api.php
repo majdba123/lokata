@@ -51,7 +51,7 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
     Route::delete('/admin/subcategories/{subCategory}', [SubCategoryController::class, 'destroy']);
 });
 
-Route::group(['middleware' => ['auth:sanctum', 'vendor']], function () {
+Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/my-products', [ProductController::class, 'myProducts']);
     Route::post('/products', [ProductController::class, 'store']);
     Route::put('/products/{product}', [ProductController::class, 'update']);
@@ -60,7 +60,6 @@ Route::group(['middleware' => ['auth:sanctum', 'vendor']], function () {
     Route::delete('/brands/{brand}', [BrandController::class, 'destroy']);
     Route::put('/brands/{brand}', [BrandController::class, 'update']);
     Route::post('/brands', [BrandController::class, 'store']);
-
 });
 
 

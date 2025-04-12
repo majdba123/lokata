@@ -21,8 +21,8 @@ return new class extends Migration
             $table->integer('price');
             $table->string('discreption');
             $table->foreignIdFor(Sub_Category::class)->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignIdFor(Vendor::class)->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignIdFor(Brand::class)->nullable();
+            $table->foreignId('owner_id')->nullable()->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
 
         });

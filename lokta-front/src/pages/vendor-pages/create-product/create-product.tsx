@@ -5,7 +5,6 @@ import { Subcategory } from "@/api/services/category/types";
 import { uploadFileApi } from "@/api/services/file-upload/file-upload-service";
 import { createProductApi } from "@/api/services/products/product-service";
 import { CreateProductRequest } from "@/api/services/products/types";
-import { useAuthStore } from "@/zustand-stores/auth.store";
 import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -28,8 +27,6 @@ function CreateProduct() {
   const [loadingCreateProduct, setLoadingCreateProduct] = useState(false);
   const [brands, setBrands] = useState<Brand[]>([]);
   const [subCategories, setSubCategories] = useState<Subcategory[]>([]);
-
-  const isVendor = useAuthStore((state) => state.user?.is_vendor);
 
   const {
     register,
@@ -113,14 +110,6 @@ function CreateProduct() {
       setLoadingCreateProduct(false);
     }
   };
-
-  if (!isVendor) {
-    return (
-      <div className="text-center text-red-500 text-2xl font-bold mt-4 w-full">
-        أنت لست بائعًا
-      </div>
-    );
-  }
 
   return (
     <div dir="rtl" className="mx-auto p-8 w-[100%]">
@@ -241,7 +230,8 @@ function CreateProduct() {
             })}
             className="border border-gray-300 rounded-md p-2 w-full"
           >
-            <option value="">اختر الفئة الفرعية</option> {/* Select Subcategory */}
+            <option value="">اختر الفئة الفرعية</option>{" "}
+            {/* Select Subcategory */}
             {subCategories.map((subcategory) => (
               <option key={subcategory.id} value={subcategory.id}>
                 {subcategory.title}

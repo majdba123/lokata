@@ -26,7 +26,6 @@ class RegisterUser extends FormRequest
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users', // Make email nullable
             'password' => 'required|string|min:8',
-            'type' => 'required|integer|in:0,1',
         ];
     }
 

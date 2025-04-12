@@ -1,39 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
-import {
-  ArrowLeftFromLineIcon,
-  Heart,
-  UserPlus,
-  Menu,
-  X,
-} from "lucide-react";
+import { ArrowLeftFromLineIcon } from "lucide-react";
 import logo from "@/assets/lokta-logo.svg";
-import BadgeComponent from "@/components/my-ui/badge";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/zustand-stores/auth.store";
 
 const Header: React.FC = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  const isLogged = useAuthStore((state) => state.isAuthenticated);
   const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const handleLogout = () => {
     logout();
     navigate("/login");
-  };
-
-  const handleProfileClick = () => {
-    if (!isLogged) {
-      navigate("/login");
-      return;
-    }
-    navigate("/profile/dashboard");
   };
 
   return (
@@ -42,67 +20,11 @@ const Header: React.FC = () => {
         <Link to="/" className="flex items-center">
           <img src={logo} alt="Lokta Logo" className="h-8" />
         </Link>
-       
+
         <div className="flex items-center space-x-2 md:space-x-4">
-          {/* Burger Menu for Small Screens */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={toggleSidebar}
-          >
-            <Menu className="h-5 w-5" />
-          </Button>
+          <div className="flex items-center space-x-4">
+            <span>تسجيل {isAuthenticated ? "خروج" : "الدخول"}</span>
 
-          {/* Sidebar for Small Screens */}
-          <div
-            className={` z-20 fixed top-0 right-0 h-full w-64 bg-white border-l shadow-md transform transition-transform duration-300 ease-in-out ${
-              isSidebarOpen ? "translate-x-0" : "translate-x-full"
-            } md:hidden`}
-          >
-            <div className="p-4 flex justify-end">
-              <Button variant="ghost" size="icon" onClick={toggleSidebar}>
-                <X className="h-5 w-5" />
-              </Button>
-            </div>
-            <div className="p-4 flex flex-col space-y-4">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-4xl border"
-                onClick={handleProfileClick}
-              >
-                <UserPlus className="h-5 w-5" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-4xl border"
-                onClick={handleLogout}
-              >
-                <ArrowLeftFromLineIcon className="h-5 w-5 rotate-180" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-4xl border"
-              >
-                <Heart className="h-5 w-5" />
-              </Button>
-            </div>
-          </div>
-
-          {/* Buttons for Larger Screens */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-4xl border "
-              onClick={handleProfileClick}
-            >
-              <UserPlus className="h-5 w-5" />
-            </Button>
-            <div className="h-6 w-px bg-gray-300"></div>
             <Button
               onClick={handleLogout}
               variant="ghost"
@@ -111,16 +33,6 @@ const Header: React.FC = () => {
             >
               <ArrowLeftFromLineIcon className="h-5 w-5 rotate-180" />
             </Button>
-            <div className="h-6 w-px bg-gray-300"></div>
-            <BadgeComponent count={5} className="bg-[#194EB4]">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-4xl border"
-              >
-                <Heart className="h-5 w-5" />
-              </Button>
-            </BadgeComponent>
           </div>
         </div>
       </div>

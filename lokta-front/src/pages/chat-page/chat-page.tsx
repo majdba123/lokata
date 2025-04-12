@@ -17,6 +17,7 @@ function ChatPage() {
   const interactedUsers = useChatStore((state) => state.interactedUsers);
   const addInteractedUser = useChatStore((state) => state.addInteractedUser);
   const [loadingInteractedUsers, setLoadingInteractedUsers] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const increaseNewMessagesCounter = useChatStore(
     (state) => state.increaseNewMessagesCounter
@@ -85,16 +86,63 @@ function ChatPage() {
     fetchInteractedUsers();
   }, []);
 
+  const handleSidebarToggle = () => {
+    setIsSidebarOpen((prev) => !prev);
+  };
+
   return (
-    <div dir="rtl" className="flex h-screen bg-gray-100">
-      <ChatSidebar loadingInteractedUsers={loadingInteractedUsers} />
-      {id && <ChatArea />}
-      {!id && (
-        <div className="flex-1 flex items-center justify-center">
-          <p className="text-gray-500">حدد محادثة لبدء المراسلة</p>{" "}
-          {/* Select a chat to start messaging */}
-        </div>
+    <div dir="rtl" className="flex h-screen bg-gray-100 relative">
+      {/* Mobile Menu Button - Only visible on small screens */}
+      {!isSidebarOpen && (
+        <button
+          className="lg:hidden fixed top-4 right-4 z-20 p-2 rounded-md bg-white shadow-md"
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 6h16M4 12h16m-7 6h7"
+            />
+          </svg>
+        </button>
       )}
+
+      {/* Sidebar with responsive classes */}
+      <div
+        className={`
+      ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}
+      lg:translate-x-0
+      fixed lg:relative
+      top-0 right-0
+      h-full
+      z-10
+      transition-transform duration-300 ease-in-out
+      lg:block
+      `}
+      >
+        <ChatSidebar
+          handleSidebarToggle={handleSidebarToggle}
+          loadingInteractedUsers={loadingInteractedUsers}
+        />
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1">
+        {id && <ChatArea />}
+        {!id && (
+          <div className="flex-1 flex items-center justify-center">
+            <p className="text-gray-500">حدد محادثة لبدء المراسلة</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

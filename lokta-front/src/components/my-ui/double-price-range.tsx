@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import * as Slider from "@radix-ui/react-slider";
 import * as RadioGroup from "@radix-ui/react-radio-group";
+import { generatePriceRange } from "@/lib/utils";
 
 interface PriceRange {
   id: string;
@@ -18,16 +19,17 @@ interface PriceRangeSliderProps {
 }
 
 const DEFAULT_PRICE_RANGES: PriceRange[] = [
-  { id: "all", label: "جميع الأسعار", range: [0, 1000] },
-  { id: "under-50", label: "أقل من 50$", range: [0, 50] },
-  { id: "50-100", label: "من 50$ إلى 100$", range: [50, 100] },
-  { id: "100-200", label: "من 100$ إلى 200$", range: [100, 200] },
-  { id: "over-200", label: "أكثر من 200$", range: [200, 1000] },
+  { id: "all", label: "جميع الأسعار", range: [0, 10000] },
+  ...generatePriceRange(0, 10000, 1000).map((item) => ({
+    id: `${item[0]}-${item[1]}`,
+    label: `${item[0]} - ${item[1]}`,
+    range: item as [number, number],
+  })),
 ];
 
 const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
   min = 0,
-  max = 1000,
+  max = 10000,
   step = 1,
   currency = "$",
   onChange,
@@ -80,10 +82,11 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
         <RadioGroup.Root
           value={selectedRangeId}
           onValueChange={handleRangeChange}
-          className="space-y-2"
+          className="space-y-2 overflow-y-scroll max-h-50"
+          dir="rtl"
         >
           {DEFAULT_PRICE_RANGES.map((range) => (
-            <div key={range.id} className="flex items-center flex-row-reverse">
+            <div key={range.id} className="flex items-center">
               <RadioGroup.Item
                 id={range.id}
                 value={range.id}
@@ -103,7 +106,7 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
           ))}
 
           {/* Custom Range Option */}
-          <div className="flex items-center flex-row-reverse">
+          <div className="flex items-center ">
             <RadioGroup.Item
               id="custom"
               value="custom"

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\registartion;
+namespace App\services\registartion;
 
 use App\Models\User;
 use App\Models\Driver;
@@ -38,22 +38,7 @@ class register
         } else {
             // إذا كانت البيانات تحتوي على البريد الإلكتروني ورقم الهاتف أو لا تحتوي على أي منهما، يمكنك التعامل مع ذلك هنا
             throw new \Exception('يجب أن تحتوي البيانات إما على البريد الإلكتروني أو رقم الهاتف.');
-        }
-
-        // تحقق من نوع المستخدم وأنشئ السجلات الإضافية إذا لزم الأمر
-        switch ($data['type']) {
-            case 0:
-                // النوع 0: فقط إنشاء مستخدم
-                break;
-            case 1:
-                // النوع 1: إنشاء مستخدم وسجل provider_product
-                Vendor::create([
-                    'user_id' => $user->id,
-                ]);
-                break;
-            default:
-                throw new \InvalidArgumentException('نوع المستخدم غير صالح');
-        }
+        }       
 
         return $user;
     }

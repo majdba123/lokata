@@ -60,7 +60,7 @@ function Navbar() {
             onClick={handleChatClick}
           >
             <MessageCircleMore className="ml-1" />
-            مراسلة البائع
+            الدردشة{" "}
           </Button>
 
           {/* Burger Menu (Visible on small screens) */}

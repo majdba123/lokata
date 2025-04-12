@@ -2,13 +2,24 @@ import { InteractedUser } from "@/api/services/chat/types";
 import { fixInvalidUserId, formatTimestamp } from "@/lib/helpers";
 import { useNavigate, useParams } from "react-router-dom";
 
-type Props = InteractedUser;
+type Props = InteractedUser & {
+  handleSidebarToggle?: () => void;
+};
 
-function ChatItem({ last_message_at, id, name, last_messages }: Props) {
+function ChatItem({
+  last_message_at,
+  id,
+  name,
+  last_messages,
+  handleSidebarToggle,
+}: Props) {
   const { id: paramsId } = useParams();
   const navigate = useNavigate();
   const handleClick = () => {
     navigate("/chat/" + id);
+    if (handleSidebarToggle) {
+      handleSidebarToggle();
+    }
   };
 
   return (

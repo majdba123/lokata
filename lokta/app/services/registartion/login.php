@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\registartion;
+namespace App\services\registartion;
 
 use App\Models\User;
 use App\Models\Vendor;
@@ -39,11 +39,7 @@ class login
 
         $token = $user->createToken($user->name . '-AuthToken')->plainTextToken;
 
-        $isVendor = Vendor::where('user_id', $user->id)->exists();
-
-        // Add is_vendor to the user data
         $userData = $user->toArray();
-        $userData['is_vendor'] = $isVendor;
 
         return ["access_token" => $token, "user" => $userData];    }
 

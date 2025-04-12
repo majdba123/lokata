@@ -96,7 +96,7 @@ function ChatArea() {
   return (
     <main
       dir="rtl"
-      className="flex-1 flex flex-col"
+      className="flex-1 flex flex-col min-h-[100vh]"
       style={{ backgroundImage: `url(${chatBg})`, backgroundSize: "cover" }}
     >
       {curUser ? (
