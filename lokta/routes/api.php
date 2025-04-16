@@ -24,7 +24,6 @@ use App\Http\Controllers\FileUploadController;
 */
 
 
-Route::get('/verify-email', [RegisterController::class, 'verifyEmail']);
 
 
 Route::post('/register', [RegisterController::class, 'register']);

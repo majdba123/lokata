@@ -67,25 +67,6 @@ class RegisterController extends Controller
 
 
 
-    public function verifyEmail(Request $request)
-    {
-        $id = $request->query('id');
-        $token = $request->query('token');
 
-        $cachedToken = Cache::get('verify_' . $id);
-
-        if ($cachedToken && $cachedToken === $token) {
-            $user = User::findOrFail($id);
-            $user->email_verified_at = now();
-            $user->save();
-
-            // حذف الرمز من الكاش بعد التحقق
-            Cache::forget('verify_' . $id);
-
-            return response()->json(['message' => 'تم التحقق من البريد الإلكتروني بنجاح!'], 200);
-        }
-
-        return response()->json(['error' => 'رمز التحقق غير صالح أو منتهي الصلاحية.'], 400);
-    }
 }
 
