@@ -40,7 +40,7 @@ Route::get('/brands', [BrandController::class, 'index']);
 Route::get('/brands/{brand}', [BrandController::class, 'show']);
 
 // Authenticated routes with email verification
-Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
+Route::group(['middleware' => ['auth:sanctum', 'verified.email']], function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
