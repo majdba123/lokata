@@ -31,6 +31,9 @@ const Header: React.FC = () => {
   const resendVerificationEmail = async () => {
     try {
       await resendOtpApi();
+      toast.success(
+        "تم ارسال الرابط بنجاح , برجاء التحقق من بريدك الإلكتروني وتفعيل الحساب , وقم بالتسجيل الدخول مرة اخرى"
+      );
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -44,7 +47,7 @@ const Header: React.FC = () => {
         </Link>
 
         <div className="flex items-center space-x-2 md:space-x-4">
-          {!emailVerified && (
+          {isAuthenticated && !emailVerified && (
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <p className="w-fit cursor-pointer text-red-500 text-sm font-semibold">

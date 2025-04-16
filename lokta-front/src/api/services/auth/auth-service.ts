@@ -106,6 +106,7 @@ export class AuthService {
       const token = useAuthStore.getState().accessToken;
       const { data } = await axios.post<{ message: string }>(
         `${API_URL}/api/resend_verification`,
+        {},
         {
           headers: headerGenerator([
             {
