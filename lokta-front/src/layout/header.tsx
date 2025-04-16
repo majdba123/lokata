@@ -23,7 +23,6 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const emailVerified = useAuthStore((state) => state.user?.email_verified_at);
-  const email = useAuthStore((state) => state.user?.email);
   const handleLogout = () => {
     logout();
     navigate("/login");
@@ -31,7 +30,7 @@ const Header: React.FC = () => {
 
   const resendVerificationEmail = async () => {
     try {
-      await resendOtpApi(email!);
+      await resendOtpApi();
     } catch (error: any) {
       toast.error(error.message);
     }

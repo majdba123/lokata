@@ -11,6 +11,7 @@ import {
 } from "./types";
 import axios from "axios";
 import { useAuthStore } from "@/zustand-stores/auth.store";
+import { headerGenerator } from "../helpers/header-generator";
 
 export class AuthService {
   loginApi = async (loginReq: LoginRequest) => {
@@ -100,17 +101,17 @@ export class AuthService {
     }
   };
 
-  resendOtpApi = async (email: string) => {
+  resendOtpApi = async () => {
     try {
+      const token = useAuthStore.getState().accessToken;
       const { data } = await axios.post<{ message: string }>(
         `${API_URL}/api/resend_verification`,
         {
-          email,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: headerGenerator([
+            {
+              Authorization: `Bearer ${token}`,
+            },
+          ]),
         }
       );
       return data;
@@ -126,5 +127,5 @@ export const {
   forgetPasswordApi,
   verifyOtpApi,
   changePasswordApi,
-  resendOtpApi
+  resendOtpApi,
 } = new AuthService();
