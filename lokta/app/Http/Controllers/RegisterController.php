@@ -27,9 +27,11 @@ class RegisterController extends Controller
         $validatedData = $request->validated();
         $user = $this->userService->register($validatedData);
     
+        // إرسال الإيميل بعد إرجاع الاستجابة مباشرة
         if (isset($validatedData['email'])) {
-            // Dispatch the email sending to a queue (runs in background)
-            SendVerificationEmail::dispatch($user->id)->afterResponse();
+            dispatch(function () use ($user) {
+                OtpHelper::sendVerificationEmail($user->id);
+            })->afterResponse();
         }
     
         return response()->json([

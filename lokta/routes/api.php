@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\FileUploadController;
-
+use App\Helpers\OtpHelper;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -76,4 +76,10 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
     Route::post('/admin/subcategories', [SubCategoryController::class, 'create']);
     Route::put('/admin/subcategories/{subCategory}', [SubCategoryController::class, 'update']);
     Route::delete('/admin/subcategories/{subCategory}', [SubCategoryController::class, 'destroy']);
+});
+
+
+
+Route::middleware(['auth:sanctum'])->post('/resend_verification', function () {
+    return OtpHelper::resendVerificationEmail(auth()->id());
 });
