@@ -26,7 +26,6 @@ Route::get('/', function () {
 
 
 
-
 Route::get('/verify-email', function (Request $request) {
     $token = $request->query('token');
     $id = $request->query('id');
@@ -34,10 +33,10 @@ Route::get('/verify-email', function (Request $request) {
     if (Cache::get('verify_' . $id) === $token) {
         User::findOrFail($id)->update(['email_verified_at' => now()]);
         Cache::forget('verify_' . $id);
-        return response()->json(['message' => 'تم التحقق بنجاح']);
+        return view('emails.verify_success'); // Success view
     }
 
-    return response()->json(['error' => 'الرابط غير صالح'], 400);
+    return view('emails.verify_failed'); // Error view
 });
 
 Route::get('/chat', function () {

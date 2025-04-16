@@ -7,6 +7,8 @@ use App\Http\Requests\registartion\RegisterUser ; // Ensure the namespace is cor
 use App\services\registartion\register; // Ensure the namespace is correct\use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendOtpMail;
+use App\jobs\SendVerificationEmail;
+
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -23,20 +25,18 @@ class RegisterController extends Controller
     public function register(RegisterUser $request): JsonResponse
     {
         $validatedData = $request->validated();
-
-        // Pass the modified request data to the service
         $user = $this->userService->register($validatedData);
-
+    
         if (isset($validatedData['email'])) {
-             OtpHelper::sendVerificationEmail($user->id);
+            // Dispatch the email sending to a queue (runs in background)
+            SendVerificationEmail::dispatch($user->id)->afterResponse();
         }
-
+    
         return response()->json([
-            'message' => 'User  registered successfully',
+            'message' => 'User registered successfully',
             'user' => $user,
         ], 201);
     }
-
 
 
     public function verification_otp(Request $request)
