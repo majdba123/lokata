@@ -99,6 +99,25 @@ export class AuthService {
       throw new Error(resolveError(error));
     }
   };
+
+  resendOtpApi = async (email: string) => {
+    try {
+      const { data } = await axios.post<{ message: string }>(
+        `${API_URL}/api/resend_verification`,
+        {
+          email,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return data;
+    } catch (error) {
+      throw new Error(resolveError(error));
+    }
+  };
 }
 
 export const {
@@ -107,4 +126,5 @@ export const {
   forgetPasswordApi,
   verifyOtpApi,
   changePasswordApi,
+  resendOtpApi
 } = new AuthService();

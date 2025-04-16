@@ -5,6 +5,7 @@ export type BaseUser = {
   created_at: string;
   updated_at: string;
   image: string | null;
+  email_verified_at: string | null;
 };
 
 export type UpdateProfileRequest = {
