@@ -3,6 +3,7 @@ use App\Http\Controllers\ChatController;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +24,7 @@ Route::get('/', function () {
 
 
 
+Route::get('/verify-email', [RegisterController::class, 'verifyEmail']);
 
 
 Route::get('/chat', function () {

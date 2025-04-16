@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use App\Mail\SendOtpMail;
 use App\Mail\ResetPasswordMail;
+use App\Mail\EmailVerificationMail;
 use App\Models\User;
 
 class OtpHelper
@@ -31,4 +32,20 @@ class OtpHelper
         $user->save();
         Mail::to($user->email)->send(new ResetPasswordMail($newPassword));
     }
+
+    public static function sendVerificationEmail($id)
+    {
+        $user = User::findOrFail($id);
+        $token = Str::random(32);
+
+        // تخزين رمز التحقق في الكاش
+        Cache::put('verify_' . $user->id, $token, 3600);
+
+        // إنشاء رابط التحقق
+        $verificationLink = url('/verify-email?token=' . $token . '&id=' . $user->id);
+
+        // إرسال البريد الإلكتروني
+        Mail::to($user->email)->send(new EmailVerificationMail($verificationLink));
+    }
+
 }
