@@ -16,15 +16,11 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        //
-        $faker = Faker::create();
-        foreach (range(1, 10) as $index) {
-            User::create([
-                'name' => $faker->name,
-                'email' => $faker->unique()->safeEmail,
-                'password' => Hash::make('password'),
-                'role' => "admin",
-            ]);
-        }
+        User::create([
+            'name' => 'Admin',
+            'email' => 'admin@example.com',
+            'password' => Hash::make('12345678'), // كلمة السر مشفرة
+            'role' => 'admin',
+        ]);
     }
 }
