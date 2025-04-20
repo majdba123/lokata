@@ -12,11 +12,24 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->unsignedBigInteger('owner_id')->nullable()->after('brand_id'); // Add owner_id column
-            $table->foreign('owner_id')->references('id')->on('users')->onDelete('set null'); // Add foreign key constraint
-            $table->dropForeign(['vendor_id']); // Drop foreign key constraint
-            $table->dropColumn('vendor_id'); 
-        
+            // Add new column
+            $table->unsignedBigInteger('owner_id')->nullable()->after('brand_id');
+            $table->foreign('owner_id')->references('id')->on('users')->onDelete('set null');
+            
+            // Safely remove vendor_id
+            if (Schema::hasColumn('products', 'vendor_id')) {
+                // Check if foreign key exists
+                $sm = Schema::getConnection()->getDoctrineSchemaManager();
+                $foreignKeys = $sm->listTableForeignKeys('products');
+                $fkExists = collect($foreignKeys)->contains(function ($fk) {
+                    return $fk->getLocalColumns() === ['vendor_id'];
+                });
+                
+                if ($fkExists) {
+                    $table->dropForeign(['vendor_id']);
+                }
+                $table->dropColumn('vendor_id');
+            }
         });
     }
 
