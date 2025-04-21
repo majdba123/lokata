@@ -16,6 +16,7 @@ type ProductData = {
   productImage: string;
   brand_id: number;
   sub__category_id: number;
+  currency: "sy" | "us";
 };
 
 function CreateProduct() {
@@ -60,7 +61,7 @@ function CreateProduct() {
       setLoadingUpload(false);
       toast.success("تم رفع الملف بنجاح"); // File uploaded successfully
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error("برجاء تغيير نوع الصورة" + error.message);
       setLoadingUpload(false);
     }
   };
@@ -97,6 +98,7 @@ function CreateProduct() {
         images: newImages ?? [],
         brand_id: +data.brand_id,
         sub__category_id: +data.sub__category_id,
+        currency: data.currency,
       };
 
       await createProductApi(req);
@@ -151,6 +153,19 @@ function CreateProduct() {
                 {errors.productPrice.message}
               </span>
             )}
+          </div>
+          <div className="w-full">
+            <label htmlFor="currency">العملة</label>
+            <select
+              {...register("currency", {
+                required: "العملة مطلوبة", // Currency is required
+              })}
+              className="border border-gray-300 rounded-md p-1 w-full"
+              defaultValue="sy"
+            >
+              <option value="sy"> ليرة</option>
+              <option value="us">دولار</option>
+            </select>
           </div>
         </div>
 

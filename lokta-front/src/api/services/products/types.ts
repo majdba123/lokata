@@ -18,6 +18,7 @@ export type Product = {
   sub__category_id: number;
   owner_id: number;
   brand_id: number;
+  currency: "sy" | "us";
 };
 
 export type CreateProductRequest = {
@@ -27,6 +28,7 @@ export type CreateProductRequest = {
   sub__category_id: number;
   images: string[];
   brand_id: number;
+  currency: "sy" | "us";
 };
 
 export type UpdateProductRequest = {
@@ -36,4 +38,5 @@ export type UpdateProductRequest = {
   sub__category_id?: number;
   images?: string[];
   brand_id?: number;
-}
+  currency: "sy" | "us";
+};

@@ -19,7 +19,7 @@ function HomePage() {
     try {
       setLoading(true);
       const data = await subcategorIesWithProductsApi();
-      setSubcategoriesWithProducts(data);
+      setSubcategoriesWithProducts(data.filter((sc) => sc.products.length > 0));
       setLoading(false);
     } catch (error: any) {
       setLoading(false);

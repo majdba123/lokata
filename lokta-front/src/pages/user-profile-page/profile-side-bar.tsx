@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/zustand-stores/auth.store";
 import { LogOut } from "lucide-react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const tabs = [
   {
@@ -49,6 +49,7 @@ const tabs = [
 
 function ProfileSidebar() {
   const [curTabs, setCurTabs] = useState<typeof tabs>(tabs);
+  const location = useLocation();
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
   const handleClick = (tab: (typeof tabs)[number]) => {
@@ -66,17 +67,33 @@ function ProfileSidebar() {
       })
     );
   };
+
+  useEffect(() => {
+    setCurTabs(
+      tabs.map((t) => {
+        if (t.to === location.pathname) {
+          return { ...t, current: true };
+        } else {
+          return { ...t, current: false };
+        }
+      })
+    );
+  }, [location.pathname]);
+
   return (
     <aside dir="rtl" className="w-64 bg-white shadow-md h-fit ">
       <nav className="p-4">
         {curTabs.map((tab) => (
           <Button
             variant={tab.current ? "default" : "ghost"}
-            className={cn("w-full text-right mb-2 capitalize flex items-center justify-between", {
-              "bg-[#194EB4]": tab.current,
-              "text-white": tab.current,
-              "hover:bg-[#194EB4]": tab.current,
-            })}
+            className={cn(
+              "w-full text-right mb-2 capitalize flex items-center justify-between",
+              {
+                "bg-[#194EB4]": tab.current,
+                "text-white": tab.current,
+                "hover:bg-[#194EB4]": tab.current,
+              }
+            )}
             key={tab.name}
             onClick={() => handleClick(tab)}
           >

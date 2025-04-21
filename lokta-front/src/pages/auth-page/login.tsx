@@ -32,6 +32,7 @@ function Login() {
       navigate("/");
     } catch (error: any) {
       toast.error(error.message);
+      toast.error("خطأ في تسجيل الدخول");
     }
   };
 
