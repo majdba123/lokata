@@ -23,7 +23,7 @@ class ProductController extends Controller
     public function store(Request $request): JsonResponse
     {
         try {
-            $ownerId = Auth::id();     
+            $ownerId = Auth::id();
             $validatedData = $request->validate([
                 'title' => 'required|string|max:255|unique:products',
                 'price' => 'required|numeric|min:0',
@@ -38,7 +38,7 @@ class ProductController extends Controller
             unset($validatedData['images']);
             $validatedData['owner_id'] = $ownerId;
             $validatedData['images'] = $imagesJson;
-            
+
             $product = Product::create($validatedData);
 
             return response()->json(new ProductResource($product));
@@ -53,12 +53,12 @@ class ProductController extends Controller
     public function show(int $product): JsonResponse
     {
         // if product not found
-        
+
         $product = Product::find($product);
         if (!$product) {
             return response()->json(['message' => 'Product not found'], 404);
         }
-        
+
         return response()->json(new ProductResource($product));
     }
 
