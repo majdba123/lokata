@@ -23,6 +23,18 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('api/verify-email', function (Request $request) {
+    $token = $request->query('token');
+    $id = $request->query('id');
+
+    if (Cache::get('verify_' . $id) === $token) {
+        User::findOrFail($id)->update(['email_verified_at' => now()]);
+        Cache::forget('verify_' . $id);
+        return view('emails.verify_success'); // Success view
+    }
+
+    return view('emails.verify_failed'); // Error view
+});
 
 
 
