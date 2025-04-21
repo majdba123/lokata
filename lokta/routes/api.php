@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\FileUploadController;
 use App\Helpers\OtpHelper;
+
+use App\Models\User;
+use Illuminate\Support\Facades\Cache;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -44,24 +47,24 @@ Route::group(['middleware' => ['auth:sanctum', 'verified.email']], function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
-    
+
     Route::put('/user', [UserController::class, 'update']);
     Route::put('/user/change-password', [UserController::class, 'changePassword']);
     Route::get('/user/verify-otp', [RegisterController::class, 'verification_otp']);
     Route::post('/logout', [LogInController::class, 'logout']);
     Route::get('/possible-chat-user/{vendor_id}', [UserController::class, 'possibleChatUser']);
-    
+
     // Product routes for verified users
     Route::get('/my-products', [ProductController::class, 'myProducts']);
     Route::post('/products', [ProductController::class, 'store']);
     Route::put('/products/{product}', [ProductController::class, 'update']);
     Route::delete('/products/{product}', [ProductController::class, 'destroy']);
-    
+
     // Brand routes for verified users
     Route::post('/brands', [BrandController::class, 'store']);
     Route::put('/brands/{brand}', [BrandController::class, 'update']);
     Route::delete('/brands/{brand}', [BrandController::class, 'destroy']);
-    
+
     // Chat routes for verified users
     Route::post('/SendTo/{recive_id}', [ChatController::class, 'sendMessage']);
     Route::get('/unread-messages', [ChatController::class, 'getUnreadMessages']);
@@ -82,4 +85,18 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
 
 Route::middleware(['auth:sanctum'])->post('/resend_verification', function () {
     return OtpHelper::resendVerificationEmail(auth()->id());
+});
+
+
+Route::get('/verify-email', function (Request $request) {
+    $token = $request->query('token');
+    $id = $request->query('id');
+
+    if (Cache::get('verify_' . $id) === $token) {
+        User::findOrFail($id)->update(['email_verified_at' => now()]);
+        Cache::forget('verify_' . $id);
+        return view('emails.verify_success'); // Success view
+    }
+
+    return view('emails.verify_failed'); // Error view
 });

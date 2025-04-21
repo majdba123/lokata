@@ -42,7 +42,7 @@ class OtpHelper
         Cache::put('verify_' . $user->id, $token, 3600);
 
         // إنشاء رابط التحقق
-        $verificationLink = url('/verify-email?token=' . $token . '&id=' . $user->id);
+        $verificationLink = url('api/api/verify-email?token=' . $token . '&id=' . $user->id);
 
         // إرسال البريد الإلكتروني
         Mail::to($user->email)->send(new EmailVerificationMail($verificationLink));
@@ -67,7 +67,7 @@ class OtpHelper
         Cache::put('verify_' . $user->id, $token, 3600);
 
         // إنشاء رابط التحقق الجديد
-        $verificationLink = url('/verify-email?token=' . $token . '&id=' . $user->id);
+        $verificationLink = url('api/verify-email?token=' . $token . '&id=' . $user->id);
 
         // إرسال البريد الإلكتروني
         Mail::to($user->email)->send(new EmailVerificationMail($verificationLink));
