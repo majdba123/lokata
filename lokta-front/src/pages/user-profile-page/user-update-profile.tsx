@@ -52,7 +52,7 @@ function UserUpdateProfile() {
       setLoadingUpload(false);
       toast.success("تم رفع الملف بنجاح"); // File uploaded successfully
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error("برجاء تغيير نوع الصورة" + error.message);
       setLoadingUpload(false);
     }
   };

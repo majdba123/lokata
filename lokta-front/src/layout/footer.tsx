@@ -41,15 +41,7 @@ const Footer = () => {
             <ul className="space-y-2">
               <li>
                 <a
-                  href="#"
-                  className="text-sm text-gray-600 hover:text-gray-800"
-                >
-                  طلبك
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
+                  href="/profile/dashboard"
                   className="text-sm text-gray-600 hover:text-gray-800"
                 >
                   حسابك
@@ -57,10 +49,10 @@ const Footer = () => {
               </li>
               <li>
                 <a
-                  href="#"
+                  href="/chat"
                   className="text-sm text-gray-600 hover:text-gray-800"
                 >
-                  قائمة امنياتك
+                  الدردشة{" "}
                 </a>
               </li>
             </ul>
@@ -131,13 +123,19 @@ const Footer = () => {
             <div className="flex items-center mb-2 ">
               <PhoneCall className="h-4 w-4 ml-2 text-gray-500" />
               <span className="text-sm text-gray-600">
-                اتصل بنا: 123-456-7890
+                اتصل بنا:
+                <a href="tel:+963986900375" className="text-blue-500 px-2">
+                  <span className="text-blue-500">963986900375</span>
+                </a>
               </span>
             </div>
             <div className="flex items-center ">
               <Mail className="h-4 w-4 ml-2 text-gray-500" />
-              <span className="text-sm text-gray-600">
-                راسلنا عبر البريد الإلكتروني: lokta@123.com
+              <span className="text-sm text-gray-600 text-nowrap">
+                راسلنا عبر البريد الإلكتروني:
+                <a href="mailto:loktasyr@gmail.com" className="text-blue-500 px-2">
+                  <span className="text-blue-500">loktasyr@gmail.com</span>
+                </a>
               </span>
             </div>
           </div>

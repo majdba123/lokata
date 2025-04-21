@@ -77,11 +77,9 @@ function MyProducts() {
     setDeleteProductId(null);
   };
 
- 
-
   return (
-    <div dir="rtl" className="w-full ">
-      <div className="w-full flex flex-wrap items-center  space-y-3">
+    <div dir="rtl" className="w-full">
+      <div className="w-full flex flex-wrap gap-3 m-x-5">
         {isLoading && (
           <div className="flex items-center justify-center w-full h-fit">
             <Loading />
@@ -99,8 +97,10 @@ function MyProducts() {
               originalPrice={product.price}
               imageUrl={`${IMAGES_API_URL}/${product.images[0]}`}
               key={product.id}
+              currency={product.currency}
+              description={product.description ?? ""}
             />
-            <div className="flex justify-center space-x-reverse space-x-3">
+            <div className="flex justify-center space-x-3">
               <AlertDialog
                 open={updateProductId === product.id}
                 onOpenChange={() => setUpdateProductId(product.id)}
@@ -129,25 +129,21 @@ function MyProducts() {
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>هل أنت متأكد تمامًا؟</AlertDialogTitle>{" "}
-                    {/* Are you absolutely sure? */}
+                    <AlertDialogTitle>هل أنت متأكد تمامًا؟</AlertDialogTitle>
                     <AlertDialogDescription>
                       لا يمكن التراجع عن هذا الإجراء. سيؤدي هذا إلى حذف منتجك
                       بشكل دائم.
-                    </AlertDialogDescription>{" "}
-                    {/* This action cannot be undone... */}
+                    </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <Button onClick={onCancelDelete}>إلغاء</Button>{" "}
-                    {/* cancel */}
+                    <Button onClick={onCancelDelete}>إلغاء</Button>
                     <AlertDialogAction
                       onClick={() => onDelete(product.id)}
                       className="bg-red-500"
                       disabled={loadingDelete}
                     >
                       متابعة {loadingDelete && <Loading />}
-                    </AlertDialogAction>{" "}
-                    {/* Continue */}
+                    </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>

@@ -24,7 +24,7 @@ function Navbar() {
       <div className="container mx-auto px-4 py-2">
         <div className="flex items-center justify-between">
           {/* Categories Dropdown */}
-          <div className="flex items-center gap-2">
+          <div className="items-center gap-2 hidden md:flex">
             {/* Navigation Links (Hidden on small screens) */}
             <nav
               className={`hidden md:flex space-x-reverse space-x-4 ${
@@ -55,7 +55,7 @@ function Navbar() {
           <Button
             className={cn(
               "bg-[#194EB4] hover:bg-blue-700 text-white",
-              "px-4 py-2 text-sm font-medium rounded-md cursor-pointer flex items-center"
+              "px-4 py-2 text-sm font-medium rounded-md cursor-pointer "
             )}
             onClick={handleChatClick}
           >
