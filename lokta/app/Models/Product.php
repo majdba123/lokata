@@ -15,6 +15,7 @@ class Product extends Model
         'price',
         'description',
         'brand_id',
+        'currency',
         'owner_id'
     ];
 
@@ -44,4 +45,3 @@ class Product extends Model
     }
 
 }
-    

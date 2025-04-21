@@ -23,7 +23,7 @@ class ProductController extends Controller
     public function store(Request $request): JsonResponse
     {
         try {
-            $ownerId = Auth::id();     
+            $ownerId = Auth::id();
             $validatedData = $request->validate([
                 'title' => 'required|string|max:255|unique:products',
                 'price' => 'required|numeric|min:0',
@@ -32,13 +32,14 @@ class ProductController extends Controller
                 'images' => 'required|array',
                 'images.*' => 'string',
                 'brand_id' => 'required|numeric|exists:brands,id',
-            ]);
+                'currency' => 'required|string|in:sy,us', // تحقق باستخدام Validator
+                    ]);
 
             $imagesJson = json_encode($validatedData['images']);
             unset($validatedData['images']);
             $validatedData['owner_id'] = $ownerId;
             $validatedData['images'] = $imagesJson;
-            
+
             $product = Product::create($validatedData);
 
             return response()->json(new ProductResource($product));
@@ -53,12 +54,12 @@ class ProductController extends Controller
     public function show(int $product): JsonResponse
     {
         // if product not found
-        
+
         $product = Product::find($product);
         if (!$product) {
             return response()->json(['message' => 'Product not found'], 404);
         }
-        
+
         return response()->json(new ProductResource($product));
     }
 
@@ -73,6 +74,7 @@ class ProductController extends Controller
                 'images' => 'nullable|array',
                 'images.*' => 'string',
                 'brand_id' => 'nullable|numeric|exists:brands,id',
+                'currency' => 'nullable|string|in:sy,us', // تحقق باستخدام Validator
             ]);
             if ($request->has('images')) {
                 $imagesJson = json_encode($validatedData['images']);
@@ -125,6 +127,11 @@ class ProductController extends Controller
 
     if ($request->has('brand_id')) {
         $query->where('brand_id', $request->input('brand_id'));
+    }
+
+
+    if ($request->has('currency')) {
+        $query->where('currency', $request->input('currency'));
     }
 
     if ($request->has('search') && $request->filled('search')) {
