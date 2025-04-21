@@ -20,6 +20,7 @@ type ProductData = {
   productImage: string;
   brand_id: number;
   sub__category_id: number;
+  currency: "sy" | "us";
 };
 
 function UpdateProduct(props: Props) {
@@ -43,6 +44,7 @@ function UpdateProduct(props: Props) {
       productPrice: props.price.toString(),
       productTitle: props.title,
       sub__category_id: props.sub__category_id,
+      currency: props.currency,
     },
   });
 
@@ -71,7 +73,7 @@ function UpdateProduct(props: Props) {
       setLoadingUpload(false);
       toast.success("تم رفع الملف بنجاح"); // File uploaded successfully
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error("برجاء تغيير نوع الصورة" + error.message);
       setLoadingUpload(false);
     }
   };
@@ -108,6 +110,7 @@ function UpdateProduct(props: Props) {
         images: newImages ?? props.images,
         brand_id: +data.brand_id,
         sub__category_id: +data.sub__category_id,
+        currency: data.currency,
       };
 
       const res = await updateProductApi(props.id, req);
@@ -143,24 +146,37 @@ function UpdateProduct(props: Props) {
             )}
           </div>
 
-          <div className="w-full">
-            <label htmlFor="productPrice">سعر المنتج</label>
-            <input
-              {...register("productPrice", {
-                pattern: {
-                  value: /^\d+(\.\d{1,2})?$/,
-                  message: "صيغة السعر غير صحيحة", // Invalid price format
-                },
-              })}
-              type="number"
-              className="border border-gray-300 rounded-md p-2 w-full"
-              placeholder="أدخل سعر المنتج"
-            />
-            {errors.productPrice && (
-              <span className="text-red-500 text-sm">
-                {errors.productPrice.message}
-              </span>
-            )}
+          <div className="w-full flex gap-2">
+            <div>
+              <label htmlFor="productPrice">سعر المنتج</label>
+              <input
+                {...register("productPrice", {
+                  pattern: {
+                    value: /^\d+(\.\d{1,2})?$/,
+                    message: "صيغة السعر غير صحيحة", // Invalid price format
+                  },
+                })}
+                type="number"
+                className="border border-gray-300 rounded-md p-2 w-full"
+                placeholder="أدخل سعر المنتج"
+              />
+              {errors.productPrice && (
+                <span className="text-red-500 text-sm">
+                  {errors.productPrice.message}
+                </span>
+              )}
+            </div>
+            <div>
+              <label htmlFor="currency">العملة</label>
+              <select
+                {...register("currency")}
+                className="border border-gray-300 rounded-md p-1 w-full"
+                defaultValue={props.currency}
+              >
+                <option value="sy"> ليرة</option>
+                <option value="us">دولار</option>
+              </select>
+            </div>
           </div>
         </div>
 

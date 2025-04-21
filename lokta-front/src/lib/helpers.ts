@@ -23,3 +23,8 @@ export const fixInvalidUserId = (userId: string | undefined) => {
   if (Number.isNaN(id)) return -1;
   return id;
 };
+
+export const truncateString = (str: string, maxLength: number) => {
+  if (str.length <= maxLength) return str;
+  return str.slice(0, maxLength) + "...";
+};
