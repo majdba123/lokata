@@ -14,12 +14,13 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        
+
         $faker = Faker::create();
         foreach (range(1, 20) as $index) {
             Product::create([
                 'title' => $faker->word,
                 'description' => $faker->sentence,
+                'currency' => 'sy',
                 'price' => $faker->randomFloat(2, 10, 1000),
                 'images' => json_encode(["https://picsum.photos/seed/picsum/300/300"]),
                 'sub__category_id' => rand(1, 20),

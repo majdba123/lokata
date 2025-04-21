@@ -23,7 +23,6 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const emailVerified = useAuthStore((state) => state.user?.email_verified_at);
-
   const handleLogout = () => {
     logout();
     navigate("/login");

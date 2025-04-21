@@ -32,7 +32,8 @@ class ProductController extends Controller
                 'images' => 'required|array',
                 'images.*' => 'string',
                 'brand_id' => 'required|numeric|exists:brands,id',
-            ]);
+                'currency' => 'required|string|in:sy,us', // تحقق باستخدام Validator
+                    ]);
 
             $imagesJson = json_encode($validatedData['images']);
             unset($validatedData['images']);
@@ -73,6 +74,7 @@ class ProductController extends Controller
                 'images' => 'nullable|array',
                 'images.*' => 'string',
                 'brand_id' => 'nullable|numeric|exists:brands,id',
+                'currency' => 'nullable|string|in:sy,us', // تحقق باستخدام Validator
             ]);
             if ($request->has('images')) {
                 $imagesJson = json_encode($validatedData['images']);
@@ -125,6 +127,11 @@ class ProductController extends Controller
 
     if ($request->has('brand_id')) {
         $query->where('brand_id', $request->input('brand_id'));
+    }
+
+
+    if ($request->has('currency')) {
+        $query->where('currency', $request->input('currency'));
     }
 
     if ($request->has('search') && $request->filled('search')) {
