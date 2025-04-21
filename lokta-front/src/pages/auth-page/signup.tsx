@@ -29,7 +29,7 @@ function Signup() {
         password: data.password,
         name: data.fullName,
       });
-      toast.success("تم إنشاء الحساب بنجاح");
+      toast.success("تم إنشاء الحساب بنجاح , برجاء التحقق من الايميل وتفعيل الحساب ");
       setLoading(false);
     } catch (error: any) {
       toast.error(error.message);

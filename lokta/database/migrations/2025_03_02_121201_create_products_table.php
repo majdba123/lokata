@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('image');
             $table->integer('price');
-            $table->integer('currency');
+            $table->string('currency');
             $table->string('discreption');
             $table->foreignIdFor(Sub_Category::class)->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignIdFor(Brand::class)->nullable();

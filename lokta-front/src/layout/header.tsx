@@ -4,14 +4,39 @@ import { ArrowLeftFromLineIcon } from "lucide-react";
 import logo from "@/assets/lokta-logo.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/zustand-stores/auth.store";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
+import { resendOtpApi } from "@/api/services/auth/auth-service";
 
 const Header: React.FC = () => {
   const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const emailVerified = useAuthStore((state) => state.user?.email_verified_at);
   const handleLogout = () => {
     logout();
     navigate("/login");
+  };
+
+  const resendVerificationEmail = async () => {
+    try {
+      await resendOtpApi();
+      toast.success(
+        "تم ارسال الرابط بنجاح , برجاء التحقق من بريدك الإلكتروني وتفعيل الحساب , وقم بالتسجيل الدخول مرة اخرى"
+      );
+    } catch (error: any) {
+      toast.error(error.message);
+    }
   };
 
   return (
@@ -22,6 +47,31 @@ const Header: React.FC = () => {
         </Link>
 
         <div className="flex items-center space-x-2 md:space-x-4">
+          {isAuthenticated && !emailVerified && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <p className="w-fit cursor-pointer text-red-500 text-sm font-semibold">
+                  <span className="text-red-500">*</span> يرجى تفعيل حسابك من
+                  فضلك
+                </p>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>تفعيل الحساب</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    يرجى تفعيل حسابك من فضلك, سيتم ارسال رابط الى الايميل الحاص
+                    بك
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogAction onClick={resendVerificationEmail}>
+                    ارسال مرة اخرى
+                  </AlertDialogAction>
+                  <AlertDialogCancel>الغاء</AlertDialogCancel>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
           <div className="flex items-center space-x-4">
             <span>تسجيل {isAuthenticated ? "خروج" : "الدخول"}</span>
 

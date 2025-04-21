@@ -72,7 +72,7 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
   };
 
   return (
-    <div dir="rtl" className={`w-full max-w-md mb-6 space-y-6 ${className}`}>
+    <div dir="rtl" className={`w-full max-w-md px-1.5 mb-6 space-y-6 ${className}`}>
       {/* Preset Ranges Radio Group */}
       <div className="space-y-4">
         <div className="flex justify-between items-center mb-2">
@@ -82,20 +82,20 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
         <RadioGroup.Root
           value={selectedRangeId}
           onValueChange={handleRangeChange}
-          className="space-y-2 overflow-y-scroll max-h-50"
+          className="space-y-2 overflow-y-scroll max-h-50 p-1"
           dir="rtl"
         >
           {DEFAULT_PRICE_RANGES.map((range) => (
             <div key={range.id} className="flex items-center">
-              <RadioGroup.Item
+                <RadioGroup.Item
                 id={range.id}
                 value={range.id}
-                className="w-4 h-4 rounded-full border border-gray-300 
+                className="w-3 h-3 rounded-full border border-gray-300 
                   data-[state=checked]:border-blue-500 data-[state=checked]:bg-blue-500
                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              >
-                <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-2 after:h-2 after:rounded-full after:bg-white" />
-              </RadioGroup.Item>
+                >
+                <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-1 after:h-1 after:rounded-full after:bg-white" />
+                </RadioGroup.Item>
               <label
                 htmlFor={range.id}
                 className="mr-3 text-sm font-medium text-gray-700 dark:text-gray-300"
@@ -111,7 +111,7 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
               id="custom"
               value="custom"
               checked={isCustomRange}
-              className="w-4 h-4 rounded-full border border-gray-300 
+              className="w-3 h-3 rounded-full border border-gray-300 
                 data-[state=checked]:border-blue-500 data-[state=checked]:bg-blue-500
                 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
