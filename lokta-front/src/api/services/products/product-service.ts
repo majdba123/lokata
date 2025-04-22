@@ -93,6 +93,22 @@ class ProductService {
       throw new Error(resolveError(error));
     }
   };
+
+  getProductByIdApi = async (id: number) => {
+    try {
+      const { data } = await axios.get<Product>(
+        `${API_URL}/api/products/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return data;
+    } catch (error) {
+      throw new Error(resolveError(error));
+    }
+  };
 }
 
 export const {
@@ -101,4 +117,5 @@ export const {
   myProductsApi,
   updateProductApi,
   deleteProductApi,
+  getProductByIdApi,
 } = new ProductService();

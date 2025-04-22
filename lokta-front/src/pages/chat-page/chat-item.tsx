@@ -34,7 +34,7 @@ function ChatItem({
       <div className="flex flex-col justify-between w-[100%]">
         <div className="flex items-center justify-between w-[100%] flex-row-reverse">
           <h3 className="text-sm text-gray-600 font-semibold">{name}</h3>
-          <span>{formatTimestamp(last_message_at)}</span>
+          <span dir="ltr">{formatTimestamp(last_message_at)}</span>
         </div>
         {last_messages.length > 0 && (
           <div className="flex items-center justify-between flex-row-reverse">

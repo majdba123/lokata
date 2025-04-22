@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { MessageCircle } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/zustand-stores/auth.store";
 import { truncateString } from "@/lib/helpers";
 
@@ -13,6 +13,7 @@ interface ProductCardProps {
   owner_id: number;
   currency: "sy" | "us";
   description: string;
+  id: number | string;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -22,6 +23,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   owner_id,
   currency,
   description,
+  id,
 }) => {
   const myId = useAuthStore((state) => state.user?.id);
   const [screenSize, setScreenSize] = useState(0);
@@ -66,7 +68,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <div className="p-2 sm:p-3 flex-grow flex flex-col">
         {/* Title - Adjust font size for smaller screens */}
         <h3 className="text-xs sm:text-sm font-semibold mb-1 sm:mb-2 line-clamp-2 text-right">
-          {title}
+          <Link className="hover:underline" to={"/product/" + id}>
+            {title}
+          </Link>
         </h3>
 
         {/* Prices - Adjust font size for smaller screens */}
@@ -76,7 +80,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </span>
         </div>
         <p className="text-xs text-gray-500">
-          
           {screenSize >= 900 ? (
             <span>{truncateString(description, 30)}</span>
           ) : (

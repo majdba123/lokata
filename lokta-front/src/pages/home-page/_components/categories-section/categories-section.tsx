@@ -51,6 +51,7 @@ function CategoriesSection({ id, title, products }: Props) {
                   owner_id={product.owner_id}
                   currency={product.currency}
                   description={product.description ?? ""}
+                  id={product.id}
                 />
               </CarouselItem>
             ))}

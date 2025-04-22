@@ -22,6 +22,7 @@ function ChatList({ conversation, loadingChat }: Props) {
       dir="rtl"
       className="flex-1 p-4 space-y-2 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-transparent"
       ref={chatContainerRef}
+      style={{ maxHeight: "90vh" }}
     >
       {loadingChat ? (
         <div className="flex items-center justify-center">

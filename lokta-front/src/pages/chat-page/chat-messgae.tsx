@@ -38,7 +38,8 @@ function ChatMessage({ id, sender_id, message, created_at }: Props) {
         })}
       >
         {message}
-        <div className="flex items-center justify-end text-sm mt-1">
+        <div className="flex items-center justify-end text-sm mt-1" dir="ltr">
+          
           {formatTimestamp(created_at)}
         </div>
       </div>

@@ -18,6 +18,7 @@ export function ProductGrid({ products }: ProductGridProps) {
           owner_id={product.owner_id}
           currency={product.currency}
           description={product.description ?? ""}
+          id={product.id}
         />
       ))}
     </div>
