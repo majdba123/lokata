@@ -1,6 +1,7 @@
 import { signupApi } from "@/api/services/auth/auth-service";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
@@ -15,6 +16,8 @@ type Inputs = {
 
 function Signup() {
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const {
     register,
     handleSubmit,
@@ -29,7 +32,9 @@ function Signup() {
         password: data.password,
         name: data.fullName,
       });
-      toast.success("تم إنشاء الحساب بنجاح , برجاء التحقق من الايميل وتفعيل الحساب ");
+      toast.success(
+        "تم إنشاء الحساب بنجاح , برجاء التحقق من الايميل وتفعيل الحساب "
+      );
       setLoading(false);
     } catch (error: any) {
       toast.error(error.message);
@@ -61,7 +66,7 @@ function Signup() {
                 id="email"
                 type="email"
                 autoComplete="email"
-                className={`appearance-none rounded relative block w-full px-3 py-2 pr-10 border ${
+                className={`appearance-none rounded relative block w-full py-2 pr-2 pl-10 border ${
                   errors.email ? "border-red-500" : "border-gray-300"
                 } placeholder-gray-500 text-gray-900 rounded focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
                 placeholder="البريد الإلكتروني"
@@ -88,7 +93,7 @@ function Signup() {
                 id="fullName"
                 type="text"
                 autoComplete="fullName"
-                className={`appearance-none rounded relative block w-full px-3 py-2 pr-10 border ${
+                className={`appearance-none rounded relative block w-full py-2 pr-2 pl-10 border ${
                   errors.fullName ? "border-red-500" : "border-gray-300"
                 } placeholder-gray-500 text-gray-900 rounded focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
                 placeholder="الاسم الكامل"
@@ -108,9 +113,9 @@ function Signup() {
               </label>
               <input
                 id="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 autoComplete="password"
-                className={`appearance-none rounded relative block w-full px-3 py-2 pr-10 border ${
+                className={`appearance-none rounded relative block w-full py-2 pr-2 pl-10 border ${
                   errors.password ? "border-red-500" : "border-gray-300"
                 } placeholder-gray-500 text-gray-900 rounded focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
                 placeholder="كلمة المرور"
@@ -122,6 +127,14 @@ function Signup() {
                   },
                 })}
               />
+              {/* show password button */}
+              <button
+                type="button"
+                className="absolute top-2 left-3 text-gray-400 z-10"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff /> : <Eye />}
+              </button>
               {errors.password && (
                 <p className="mt-1 text-xs text-red-500">
                   {errors.password.message}
@@ -134,9 +147,9 @@ function Signup() {
               </label>
               <input
                 id="passwordConfirmation"
-                type="password"
+                type={showConfirmPassword ? "text" : "password"}
                 autoComplete="password"
-                className={`appearance-none rounded relative block w-full px-3 py-2 pr-10 border ${
+                className={`appearance-none rounded relative block w-full py-2 pr-2 pl-10 border ${
                   errors.passwordConfirmation
                     ? "border-red-500"
                     : "border-gray-300"
@@ -149,6 +162,13 @@ function Signup() {
                     "كلمتا المرور غير متطابقتين",
                 })}
               />
+              <button
+                type="button"
+                className="absolute top-2 left-3 text-gray-400 z-10"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? <EyeOff /> : <Eye />}
+              </button>
               {errors.passwordConfirmation && (
                 <p className="mt-1 text-xs text-red-500">
                   {errors.passwordConfirmation.message}

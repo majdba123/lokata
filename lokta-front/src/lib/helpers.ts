@@ -2,20 +2,20 @@ import dayjs from "dayjs";
 
 export const formatTimestamp = (timestamp: Date | string) => {
   const date = dayjs(timestamp);
-  const now = dayjs();
 
   if (date.isToday()) {
-    return date.format("HH:mm");
-  } else if (date.isYesterday()) {
-    return `Yesterday ${date.format("HH:mm")}`;
-  } else if (
-    date.isSameOrBefore(now.subtract(2, "day")) &&
-    date.isSameOrBefore(now.subtract(7, "day"))
-  ) {
-    return date.format("ddd HH:mm");
-  } else {
-    return date.format("DD/MM/YY");
+    return date.format("h:mm A");
   }
+  if (date.isYesterday()) {
+    if (dayjs().diff(date, "hour") < 24) {
+      return date.fromNow();
+    }
+    return "Yesterday";
+  }
+  if (dayjs().diff(date, "day") < 7) {
+    return date.fromNow();
+  }
+  return date.format("MMM D, YYYY");
 };
 
 export const fixInvalidUserId = (userId: string | undefined) => {

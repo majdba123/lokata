@@ -18,6 +18,7 @@ import PageLayout from "./layout/page-layout";
 import TyrePage from "./pages/tyre-page/tyre-page";
 import { Toaster } from "sonner";
 import MyProducts from "./pages/user-profile-page/my-products";
+import ProductPage from "./pages/product-page";
 
 function App() {
   return (
@@ -72,6 +73,9 @@ function App() {
         </Route>
         <Route element={<PageLayout />}>
           <Route path="/tyre" element={<TyrePage />} />
+        </Route>
+        <Route element={<PageLayout />}>
+          <Route path="/product/:id" element={<ProductPage />} />
         </Route>
         <Route element={<RequireAuth />}>
           <Route path="chat" element={<ChatPage />}>

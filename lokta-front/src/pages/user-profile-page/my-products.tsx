@@ -99,6 +99,7 @@ function MyProducts() {
               key={product.id}
               currency={product.currency}
               description={product.description ?? ""}
+              id={product.id}
             />
             <div className="flex justify-center space-x-3">
               <AlertDialog
