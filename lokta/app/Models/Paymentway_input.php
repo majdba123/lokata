@@ -12,7 +12,7 @@ class Paymentway_input extends Model
     protected $fillable = [
         'payment_id',
         'type',    // 0,1,2
-        'value',
+        'name',
     ];
 
     public function Paymentway_input()

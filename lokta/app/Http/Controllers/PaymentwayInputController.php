@@ -2,64 +2,103 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Paymentway;
 use App\Models\Paymentway_input;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class PaymentwayInputController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+
+    public function store(Request $request, $paymentwayId)
     {
-        //
+        $paymentway = Paymentway::find($paymentwayId);
+
+        if (!$paymentway) {
+            return response()->json([
+                'success' => false,
+                'message' => 'طريقة الدفع غير موجودة'
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'type' => 'required|in:0,1,2',
+            'name' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $input = $paymentway->Paymentway_input()->create([
+            'type' => $request->type,
+            'name' => $request->name,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'data' => $input,
+            'message' => 'تم إضافة حقل الإدخال بنجاح'
+        ], 201);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * عرض حقل إدخال معين
      */
-    public function create()
+    public function show($id)
     {
-        //
+        $paymentway_input = Paymentway_input::find($id);
+
+        return response()->json([
+            'success' => true,
+            'data' => $paymentway_input,
+            'message' => 'تفاصيل حقل الإدخال'
+        ], 200);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * تحديث حقل إدخال معين
      */
-    public function store(Request $request)
+    public function update(Request $request, $id)
     {
-        //
+        $paymentway_input = Paymentway_input::find($id);
+
+        $validator = Validator::make($request->all(), [
+            'type' => 'sometimes|in:0,1,2',
+            'name' => 'sometimes|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $paymentway_input->update($request->only(['type', 'name']));
+
+        return response()->json([
+            'success' => true,
+            'data' => $paymentway_input,
+            'message' => 'تم تحديث حقل الإدخال بنجاح'
+        ], 200);
     }
 
     /**
-     * Display the specified resource.
+     * حذف حقل إدخال معين
      */
-    public function show(Paymentway_input $paymentway_input)
+    public function destroy( $id)
     {
-        //
-    }
+        $paymentway_input = Paymentway_input::find($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Paymentway_input $paymentway_input)
-    {
-        //
-    }
+        $paymentway_input->delete();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Paymentway_input $paymentway_input)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Paymentway_input $paymentway_input)
-    {
-        //
+        return response()->json([
+            'success' => true,
+            'message' => 'تم حذف حقل الإدخال بنجاح'
+        ], 200);
     }
 }

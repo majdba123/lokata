@@ -24,5 +24,13 @@ class UserSeeder extends Seeder
             'role' => 'admin',
             'email_verified_at' => Carbon::now()->subDays(5), // تحقق منذ 5 أيام
         ]);
+
+        User::create([
+            'name' => 'user ',
+            'email' => 'user@example.com',
+            'password' => Hash::make('12345678'),
+            'role' => 'user',
+            'email_verified_at' => Carbon::now()->subDays(5), // تحقق منذ 5 أيام
+        ]);
     }
 }

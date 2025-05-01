@@ -7,6 +7,9 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ForgetPasswordController;
+use App\Http\Controllers\PaymentwayController;
+use App\Http\Controllers\PaymentwayInputController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChatController;
@@ -88,6 +91,12 @@ Route::group(['middleware' => ['auth:sanctum', 'verified.email']], function () {
     Route::get('/getInteractedUsers', [ChatController::class, 'getInteractedUsers']);
     Route::get('/getConversation/{reciver_id}', [ChatController::class, 'getConversation']);
     Route::post('/upload', [FileUploadController::class, 'upload']);
+
+    Route::prefix('paymentways')->group(function () {
+        Route::get('get_all/', [PaymentwayController::class, 'index']); // عرض الكل
+        Route::get('show/{id}', [PaymentwayController::class, 'show']); // عرض واحدة
+        Route::get('get_input_payment/{id}', [PaymentwayController::class, 'showInputs']); // عرض حقول واحدة
+    });
 });
 
 // Admin routes (don't require email verification)
@@ -98,13 +107,31 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
 
 
 
-    Route::prefix('admin/categories')->group(function () {
-        Route::get('get_all', [CategoryController::class, 'index']);
-        Route::post('store', [CategoryController::class, 'store']);
-        Route::post('update/{id}', [CategoryController::class, 'update']);
-        Route::delete('delete/{id}', [CategoryController::class, 'destroy']);
-        Route::get('show/{id}', [CategoryController::class, 'show']);
-        Route::get('get_sub_category_by_category/{category_id}/', [CategoryController::class, 'get_by_category']); // عرض جميع الفئات الفرعية
+    Route::prefix('admin')->group(function () {
+        Route::get('categories/get_all', [CategoryController::class, 'index']);
+        Route::post('categories/store', [CategoryController::class, 'store']);
+        Route::post('categories/update/{id}', [CategoryController::class, 'update']);
+        Route::delete('categories/delete/{id}', [CategoryController::class, 'destroy']);
+        Route::get('categories/show/{id}', [CategoryController::class, 'show']);
+        Route::get('categories/get_sub_category_by_category/{category_id}/', [CategoryController::class, 'get_by_category']); // عرض جميع
+
+        Route::prefix('paymentways')->group(function () {
+            Route::get('get_all/', [PaymentwayController::class, 'index']); // عرض الكل
+            Route::post('store/', [PaymentwayController::class, 'store']); // إنشاء جديد
+            Route::get('show/{id}', [PaymentwayController::class, 'show']); // عرض واحدة
+            Route::get('get_input_payment/{id}', [PaymentwayController::class, 'showInputs']); // عرض حقول واحدة
+            Route::put('update_payment/{id}', [PaymentwayController::class, 'update']); // تعديل
+            Route::delete('delete_payment/{id}', [PaymentwayController::class, 'destroy']); // حذف
+        });
+
+
+        Route::prefix('paymentways_inputs')->group(function () {
+            Route::post('store/{payment_id}', [PaymentwayInputController::class, 'store']);
+            Route::get('show/{input}', [PaymentwayInputController::class, 'show']);
+            Route::put('update/{input}', [PaymentwayInputController::class, 'update']);
+            Route::delete('delete/{input}', [PaymentwayInputController::class, 'destroy']);
+        });
+
 
     });
 
