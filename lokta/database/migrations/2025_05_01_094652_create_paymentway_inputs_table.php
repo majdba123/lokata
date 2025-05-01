@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Category;
+use App\Models\Paymentway;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,10 +12,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sub__categories', function (Blueprint $table) {
-            $table->id(); // Primary key
-            $table->string('title');
-            $table->string('image');
+        Schema::create('paymentway_inputs', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(Paymentway::class)->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('type');
+            $table->string('value');
+
             $table->timestamps();
         });
     }
@@ -25,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sub__categories');
+        Schema::dropIfExists('paymentway_inputs');
     }
 };

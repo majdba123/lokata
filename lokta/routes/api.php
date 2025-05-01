@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\FileUploadController;
 use App\Helpers\OtpHelper;
+use App\Http\Controllers\Category\CategoryController;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
@@ -41,6 +42,21 @@ Route::get('/products/{product}', [ProductController::class, 'show']);
 Route::get('/products/subcategories/{subCategoryId}', [ProductController::class, 'getProductsBySubCategory']);
 Route::get('/brands', [BrandController::class, 'index']);
 Route::get('/brands/{brand}', [BrandController::class, 'show']);
+
+
+
+
+
+
+/**majd here  */
+
+
+Route::prefix('categories')->group(function () {
+    Route::get('get_all', [CategoryController::class, 'index']);
+    Route::get('show/{id}', [CategoryController::class, 'show']);
+    Route::get('get_sub_category_by_category/{category_id}/', [CategoryController::class, 'get_by_category']); // عرض جميع الفئات الفرعية
+
+});
 
 // Authenticated routes with email verification
 Route::group(['middleware' => ['auth:sanctum', 'verified.email']], function () {
@@ -79,7 +95,25 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
     Route::post('/admin/subcategories', [SubCategoryController::class, 'create']);
     Route::put('/admin/subcategories/{subCategory}', [SubCategoryController::class, 'update']);
     Route::delete('/admin/subcategories/{subCategory}', [SubCategoryController::class, 'destroy']);
+
+
+
+    Route::prefix('admin/categories')->group(function () {
+        Route::get('get_all', [CategoryController::class, 'index']);
+        Route::post('store', [CategoryController::class, 'store']);
+        Route::post('update/{id}', [CategoryController::class, 'update']);
+        Route::delete('delete/{id}', [CategoryController::class, 'destroy']);
+        Route::get('show/{id}', [CategoryController::class, 'show']);
+        Route::get('get_sub_category_by_category/{category_id}/', [CategoryController::class, 'get_by_category']); // عرض جميع الفئات الفرعية
+
+    });
+
 });
+
+
+
+
+
 
 
 
@@ -100,3 +134,7 @@ Route::get('/verify-email', function (Request $request) {
 
     return view('emails.verify_failed'); // Error view
 });
+
+
+
+

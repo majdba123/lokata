@@ -12,11 +12,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sub__categories', function (Blueprint $table) {
-            $table->id(); // Primary key
-            $table->string('title');
-            $table->string('image');
-            $table->timestamps();
+        Schema::table('sub__categories', function (Blueprint $table) {
+            $table->foreignIdFor(Category::class)->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+
         });
     }
 
@@ -25,6 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sub__categories');
+        Schema::table('sub__categories', function (Blueprint $table) {
+            //
+        });
     }
 };

@@ -15,8 +15,9 @@ class SubCategoryController extends Controller
 
     public function create(Request $request): JsonResponse
     {
-        
+
         $validated = $request->validate([
+            'category_id' => 'required|exists:categories,id', // التحقق من وجود الفئة
             'title' => 'required|string|max:255|unique:sub__categories',
             'image' => 'required|string',
         ]);
@@ -29,6 +30,7 @@ class SubCategoryController extends Controller
     public function update(Request $request, Sub_Category $subCategory): JsonResponse
     {
         $validated = $request->validate([
+            'category_id' => 'sometimes|exists:categories,id|string|max:255',
             'title' => 'nullable|string|max:255|unique:sub__categories,title,' . $subCategory->id,
             'image' => 'nullable|string',
         ]);

@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Category;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sub__categories', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->id(); // Primary key
-            $table->string('title');
-            $table->string('image');
-            $table->timestamps();
+            $table->string('name'); // Name of the category
+            $table->string('imag')->nullable(); // Image path for the category
+            $table->timestamps(); // Created at and updated at
         });
     }
 
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sub__categories');
+        Schema::dropIfExists('categories');
     }
 };

@@ -9,6 +9,7 @@ class Sub_Category extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'category_id',
         'title',
         'image',
     ];
@@ -17,6 +18,12 @@ class Sub_Category extends Model
     public function product()
     {
         return $this->hasMany(Product::class);
+    }
+
+
+    public function user()
+    {
+        return $this->belongsTo(Category::class ,'category_id');
     }
 
 }
