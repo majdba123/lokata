@@ -13,7 +13,12 @@ return new class extends Migration
     {
         Schema::create('offers', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('title');
+            $table->tinyInteger('level')->comment('1, 2, 3'); // مستوى العرض (1، 2، 3)
+            $table->text('discription'); // وصف العرض
+            $table->integer('count_month'); // عدد الأشهر
+            $table->decimal('price', 10, 2); // السعر (مع تحديد 10 أرقام كحد أقصى و2 منازل عشرية)
+            $table->timestamps(); //
         });
     }
 
