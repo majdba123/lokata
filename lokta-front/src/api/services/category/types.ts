@@ -9,3 +9,11 @@ export type Subcategory = {
 export type SubcategoryWithProducts = Subcategory & {
   products: Product[];
 };
+
+export type Category = {
+  id: number;
+  name: string;
+  created_at: string;
+  updated_at: string;
+  sub_category: Subcategory[];
+};

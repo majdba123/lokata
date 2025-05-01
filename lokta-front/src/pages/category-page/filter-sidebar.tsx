@@ -1,12 +1,15 @@
 import { getBrandsApi } from "@/api/services/brand/brand-service";
 import { Brand } from "@/api/services/brand/types";
+import { getAllCategoriesApi } from "@/api/services/category/category-service";
+import { Category } from "@/api/services/category/types";
 import { filterProductsApi } from "@/api/services/products/product-service";
 import { Product, ProductsFilter } from "@/api/services/products/types";
 import PriceRangeSlider from "@/components/my-ui/double-price-range";
 import useDebounce from "@/hooks/useDebounce";
 import { useCategoryStore } from "@/zustand-stores/category-store";
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 type Props = {
@@ -16,7 +19,21 @@ type Props = {
 function FilterSidebar({ onFetchProducts }: Props) {
   const location = useLocation();
   const { search } = location.state ? location.state : { search: "" };
-
+  const { categoryName, subCategoryName } = useParams();
+  const queryClient = useQueryClient();
+  let categories = queryClient.getQueryData(["categories"]) as
+    | Category[]
+    | undefined;
+  if (!categories) {
+    queryClient.fetchQuery({
+      queryKey: ["categories"],
+      queryFn: async () => {
+        return getAllCategoriesApi();
+      },
+    });
+    categories = queryClient.getQueryData(["categories"]) as Category[];
+  }
+  const curCategory = categories?.find((item) => item.name == categoryName);
   const [searchText, setSearchText] = useState<string>(search ?? "");
   const debouncedSearch = useDebounce(searchText, 500);
 
@@ -24,7 +41,7 @@ function FilterSidebar({ onFetchProducts }: Props) {
   const setCurSubCategoryId = useCategoryStore(
     (state) => state.setCurSubCategoryId
   );
-  const subcategories = useCategoryStore((state) => state.subcategories);
+  const setSubcategories = useCategoryStore((state) => state.setSubcategories);
 
   const [brands, setBrands] = useState<Brand[]>([]);
   const [curBrandIdx, setCurBrandIdx] = useState(0);
@@ -64,7 +81,23 @@ function FilterSidebar({ onFetchProducts }: Props) {
 
   useEffect(() => {
     fetchProducts();
-  }, [curSubCategoryId, curBrandIdx, debouncedSearch, priceRange]);
+  }, [curSubCategoryId, curBrandIdx, debouncedSearch, priceRange, subCategoryName]);
+
+  useEffect(() => {
+    
+    if (subCategoryName) {
+      setCurSubCategoryId(
+        curCategory?.sub_category.find((sc) => sc.title === subCategoryName)?.id ??
+          -1
+      )
+      setSubcategories(curCategory?.sub_category ?? []);
+    } else {
+      setCurSubCategoryId(-1);
+      setSubcategories([]);
+    }
+    
+  }, [subCategoryName])
+  
 
   return (
     <aside className="lg:w-1/4 p-4 bg-white border-l border-gray-200">
@@ -100,7 +133,7 @@ function FilterSidebar({ onFetchProducts }: Props) {
             />
             <span className="mr-2">الكل</span>
           </label>
-          {subcategories.map((sc) => (
+          {curCategory?.sub_category.map((sc) => (
             <label key={sc.id} className="flex items-center">
               <input
                 type="radio"

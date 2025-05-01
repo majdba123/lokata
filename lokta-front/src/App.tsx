@@ -1,6 +1,5 @@
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
-import HomePage from "./pages/home-page/home-page";
 import CategoryPage from "./pages/category-page/category-page";
 import UserProfilePage from "./pages/user-profile-page/user-profile-page";
 import ProfileDashboard from "./pages/user-profile-page/profile-dashboard";
@@ -19,6 +18,7 @@ import TyrePage from "./pages/tyre-page/tyre-page";
 import { Toaster } from "sonner";
 import MyProducts from "./pages/user-profile-page/my-products";
 import ProductPage from "./pages/product-page";
+import AllCategoryPage from "./pages/all-category-page/all-category-page";
 
 function App() {
   return (
@@ -26,11 +26,10 @@ function App() {
       <Toaster />
       <Routes>
         <Route element={<PageLayout />}>
-          <Route path="/" element={<HomePage />} />
-        </Route>
-
-        <Route element={<PageLayout />}>
-          <Route path="/category" element={<CategoryPage />} />
+          {/* <Route path="/" element={<HomePage />} /> */}
+          <Route path="/" element={<AllCategoryPage />} />
+          <Route path="/:categoryName/:subCategoryName" element={<CategoryPage />} />
+          <Route path="/:categoryName/*" element={<CategoryPage />} />
         </Route>
         <Route element={<PageLayout />}>
           <Route element={<RequireAuth />}>
