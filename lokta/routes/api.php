@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ForgetPasswordController;
 use App\Http\Controllers\PaymentwayController;
 use App\Http\Controllers\PaymentwayInputController;
+use App\Http\Controllers\OfferController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -97,6 +98,14 @@ Route::group(['middleware' => ['auth:sanctum', 'verified.email']], function () {
         Route::get('show/{id}', [PaymentwayController::class, 'show']); // عرض واحدة
         Route::get('get_input_payment/{id}', [PaymentwayController::class, 'showInputs']); // عرض حقول واحدة
     });
+
+
+    Route::prefix('offers')->group(function () {
+        // عرض جميع العروض مع إمكانية الفلترة
+        Route::get('/fillter', [OfferController::class, 'index']);
+        Route::get('show/{id}', [OfferController::class, 'show']);
+
+    });
 });
 
 // Admin routes (don't require email verification)
@@ -132,6 +141,15 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
             Route::delete('delete/{input}', [PaymentwayInputController::class, 'destroy']);
         });
 
+
+        Route::prefix('offers')->group(function () {
+            // عرض جميع العروض مع إمكانية الفلترة
+            Route::get('/fillter', [OfferController::class, 'index']);
+            Route::post('store/', [OfferController::class, 'store']);
+            Route::get('show/{id}', [OfferController::class, 'show']);
+            Route::put('update/{id}', [OfferController::class, 'update']);
+            Route::delete('delete/{id}', [OfferController::class, 'destroy']);
+        });
 
     });
 
