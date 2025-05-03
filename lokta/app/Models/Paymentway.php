@@ -20,5 +20,9 @@ class Paymentway extends Model
     {
         return $this->hasMany(Paymentway_input::class);
     }
+    public function Product()
+    {
+        return $this->hasMany(Product::class);
+    }
 
 }

@@ -16,4 +16,10 @@ class Offer extends Model
         'count_month',
         'price'
     ];
+
+
+    public function Product()
+    {
+        return $this->hasMany(Product::class);
+    }
 }

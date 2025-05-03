@@ -7,20 +7,25 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rule;
 use App\Http\Resources\ProductResource;
+use App\Models\Offer;
+use App\Models\Paymentway;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
 
     public function index(): JsonResponse
     {
-        $products = Product::all();
+        $products = Product::where('status', 'complete')->get();
         return response()->json(ProductResource::collection($products));
     }
 
-    public function store(Request $request): JsonResponse
+  /*  public function store(Request $request): JsonResponse
     {
         try {
             $ownerId = Auth::id();
@@ -61,7 +66,266 @@ class ProductController extends Controller
         }
 
         return response()->json(new ProductResource($product));
+    }*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public function store(Request $request): JsonResponse
+    {
+        DB::beginTransaction();
+
+        try {
+            $ownerId = Auth::id();
+
+            $validatedData = $request->validate([
+                'title' => 'required|string|max:255|unique:products',
+                'price' => 'required|numeric|min:0',
+                'sub__category_id' => 'required|numeric|exists:sub__categories,id',
+                'description' => 'required|string',
+                'images' => 'required|array',
+                'images.*' => 'string', // أو 'image|mimes:jpeg,png,jpg,gif|max:2048' إذا كنت تستقبل ملفات
+                'brand_id' => 'required|numeric|exists:brands,id',
+                'currency' => 'required|string|in:sy,us',
+                'offer_id' => 'required|numeric|exists:offers,id',
+                'paymentway_id' => 'required|numeric|exists:paymentways,id',
+                'payment_inputs' => 'required|array'
+            ]);
+
+            $paymentway = Paymentway::with('Paymentway_input')->findOrFail($validatedData['paymentway_id']);
+            $offer = Offer::findOrFail($validatedData['offer_id']);
+
+            // معالجة حقول الدفع بما في ذلك الصور
+            $processedPaymentInputs = $this->processPaymentInputs($paymentway, $validatedData['payment_inputs'], $request);
+
+            $productData = [
+                'title' => $validatedData['title'],
+                'price' => $validatedData['price'],
+                'sub__category_id' => $validatedData['sub__category_id'],
+                'description' => $validatedData['description'],
+                'images' => json_encode($validatedData['images']),
+                'brand_id' => $validatedData['brand_id'],
+                'currency' => $validatedData['currency'],
+                'owner_id' => $ownerId,
+                'offer_id' => $validatedData['offer_id'],
+                'paymentway_id' => $validatedData['paymentway_id'],
+                'payment_inputs' => json_encode($processedPaymentInputs),
+                'status' => 'pending',
+                'start_date' => null,
+                'end_date' => null
+            ];
+
+            $product = Product::create($productData);
+            $product->load(['paymentway', 'offer', 'sub_category', 'brand']);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'data' => new ProductResource($product)
+            ]);
+
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Product creation failed: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'فشل في إنشاء المنتج: ' . $e->getMessage()
+            ], 500);
+        }
     }
+
+    protected function validatePaymentInputs(Paymentway $paymentway, array $paymentInputs, Request $request): void
+    {
+        $requiredInputs = $paymentway->Paymentway_input;
+
+        foreach ($requiredInputs as $input) {
+            if (!array_key_exists($input->name, $paymentInputs)) {
+                throw ValidationException::withMessages([
+                    'payment_inputs.' . $input->name => "حقل {$input->name} مطلوب لطريقة الدفع هذه"
+                ]);
+            }
+
+            $value = $paymentInputs[$input->name];
+
+            switch ($input->type) {
+                case '0': // نص
+                    if (!is_string($value)) {
+                        throw ValidationException::withMessages([
+                            'payment_inputs.' . $input->name => "حقل {$input->name} يجب أن يكون نصاً"
+                        ]);
+                    }
+                    break;
+
+                case '1': // رقم هاتف
+                    if (!preg_match('/^[0-9]{10,15}$/', $value)) {
+                        throw ValidationException::withMessages([
+                            'payment_inputs.' . $input->name => "حقل {$input->name} يجب أن يكون رقم هاتف صحيح (10-15 رقم)"
+                        ]);
+                    }
+                    break;
+
+                case '2': // صورة
+                    if (!$request->hasFile("payment_inputs.{$input->name}")) {
+                        throw ValidationException::withMessages([
+                            'payment_inputs.' . $input->name => "حقل {$input->name} يجب أن يكون صورة"
+                        ]);
+                    }
+                    break;
+            }
+        }
+    }
+
+    protected function processPaymentInputs(Paymentway $paymentway, array $paymentInputs, Request $request): array
+    {
+        $processedInputs = [];
+        $requiredInputs = $paymentway->Paymentway_input;
+
+        foreach ($requiredInputs as $input) {
+            $value = $paymentInputs[$input->name];
+
+            if ($input->type == '2') { // إذا كان نوع الحقل صورة
+                $imageFile = $request->file("payment_inputs.{$input->name}");
+
+                if ($imageFile) {
+                    $imageName = Str::random(32) . '.' . $imageFile->getClientOriginalExtension();
+                    $imagePath = 'payment_inputs/' . $imageName;
+                    Storage::disk('public')->put($imagePath, file_get_contents($imageFile));
+                    $value = asset('storage/payment_inputs/' . $imageName);
+                }
+            }
+
+            $processedInputs[$input->name] = $value;
+        }
+
+        return $processedInputs;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public function update(Request $request, Product $product): JsonResponse
     {
@@ -104,14 +368,17 @@ class ProductController extends Controller
 
     public function getProductsBySubCategory($subCategoryId): JsonResponse
     {
-        $products = Product::where('sub__category_id', $subCategoryId)->get();
+        $products = Product::where('sub__category_id', $subCategoryId)
+        ->where('status', 'complete')
+        ->get();
+
         return response()->json(ProductResource::collection($products));
     }
 
     public function filterProducts(Request $request): JsonResponse
 {
     // ... (other setup) ...
-    $query = Product::query();
+    $query = Product::query()->where('status', 'complete'); // إضافة شرط الحالة هنا
 
     // ... (sub_category_id, brand_id, search filters remain the same) ...
     // Ensure sub_category_id uses the correct column name (single underscore assumed fixed)
