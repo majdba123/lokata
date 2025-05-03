@@ -171,7 +171,6 @@ class ProductController extends Controller
                 'status' => 'pending',
                 'start_date' => null,
                 'end_date' => null,
-                'subscription_price' => $offer->price // إضافة سعر الاشتراك هنا
 
             ];
 

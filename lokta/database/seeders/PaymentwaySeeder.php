@@ -12,69 +12,31 @@ class PaymentwaySeeder extends Seeder
     {
         // مسح البيانات القديمة إذا وجدت
 
-
-        // 1. طريقة الدفع عبر البنك
-        $bankTransfer = Paymentway::create([
-            'title' => 'التحويل البنكي',
-            'description' => 'قم بإجراء تحويل بنكي إلى الحساب المحدد'
+        // إنشاء وسيلة دفع واحدة فقط
+        $paymentMethod = Paymentway::create([
+            'title' => 'الدفع الإلكتروني',
+            'description' => 'الدفع عبر التحويل الإلكتروني'
         ]);
 
-        // حقول إدخال طريقة التحويل البنكي
+        // حقول الإدخال المطلوبة
         Paymentway_input::create([
-            'paymentway_id' => $bankTransfer->id,
-            'name' => 'bank_name',
+            'paymentway_id' => $paymentMethod->id,
+            'name' => 'name',
             'type' => '0', // نص
         ]);
 
         Paymentway_input::create([
-            'paymentway_id' => $bankTransfer->id,
-            'name' => 'account_number',
-            'type' => '0', // نص
+            'paymentway_id' => $paymentMethod->id,
+            'name' => 'phone',
+            'type' => '1', // هاتف
         ]);
 
         Paymentway_input::create([
-            'paymentway_id' => $bankTransfer->id,
-            'name' => 'transfer_receipt',
+            'paymentway_id' => $paymentMethod->id,
+            'name' => 'image',
             'type' => '2', // صورة
         ]);
 
-        // 2. طريقة الدفع عبر ويسترن يونيون
-        $westernUnion = Paymentway::create([
-            'title' => 'ويسترن يونيون',
-            'description' => 'إرسال الأموال عبر ويسترن يونيون'
-        ]);
-
-        Paymentway_input::create([
-            'paymentway_id' => $westernUnion->id,
-            'name' => 'name',
-            'type' => '0', // نص
-        ]);
-
-        Paymentway_input::create([
-            'paymentway_id' => $westernUnion->id,
-            'name' => 'phone',
-            'type' => '1', // نص
-        ]);
-
-        // 3. الدفع عند الاستلام
-        $cashOnDelivery = Paymentway::create([
-            'title' => 'الدفع عند الاستلام',
-            'description' => 'سدد عند استلام المنتج'
-        ]);
-
-        Paymentway_input::create([
-            'paymentway_id' => $westernUnion->id,
-            'name' => 'name',
-            'type' => '0', // نص
-        ]);
-
-        Paymentway_input::create([
-            'paymentway_id' => $westernUnion->id,
-            'name' => 'image',
-            'type' => '2', // نص
-        ]);
-
-
-        $this->command->info('تم إنشاء بيانات طرق الدفع وحقول الإدخال بنجاح!');
+        $this->command->info('تم إنشاء وسيلة الدفع وحقول الإدخال بنجاح!');
     }
 }
