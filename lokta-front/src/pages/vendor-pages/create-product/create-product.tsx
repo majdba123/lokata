@@ -158,6 +158,7 @@ function CreateProduct() {
                     },
                   })}
                   type="number"
+                  step="any"
                   className="border border-gray-300 rounded-md p-2 w-full"
                   placeholder="أدخل سعر المنتج" // Enter Product Price
                 />
