@@ -24,6 +24,7 @@ class ProductResource extends JsonResource
             'sub_category' => $this->sub_category->title,
             'brand' => $this->brand?->name,
             'offer_id' => $this->offer->id,
+            'owner_id' => $this->owner->id,
             'payment_details' => [
                 'method' => $this->paymentway->title,
                 'inputs' => $this->getProcessedPaymentInputs(),
