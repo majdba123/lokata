@@ -109,13 +109,27 @@ class ProductService {
       throw new Error(resolveError(error));
     }
   };
+
+  createProductWithPlanApi = async (formData: FormData) => {
+    try {
+      const accessToken = useAuthStore.getState().accessToken;
+      await axios.post(`${API_URL}/api/products`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+    } catch (error) {
+      throw new Error(resolveError(error));
+    }
+  };
 }
 
 export const {
   filterProductsApi,
-  createProductApi,
   myProductsApi,
   updateProductApi,
   deleteProductApi,
   getProductByIdApi,
+  createProductWithPlanApi,
 } = new ProductService();

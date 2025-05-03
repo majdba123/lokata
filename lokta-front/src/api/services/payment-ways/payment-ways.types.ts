@@ -10,7 +10,7 @@ export type PaymentWay = {
 export type PaymentWayInput = {
   id: number;
   paymentway_id: number;
-  type: string;
+  type: "0" | "1" | "2";
   name: string;
   created_at: string;
   updated_at: string;
