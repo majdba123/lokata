@@ -151,6 +151,13 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
             Route::delete('delete/{id}', [OfferController::class, 'destroy']);
         });
 
+        Route::prefix('product')->group(function () {
+            Route::put('/update_status/{product_id}', [ProductController::class, 'updateStatus']);
+            Route::get('/get_all', [ProductController::class, 'adminProducts']);
+
+        });
+
+
     });
 
 });

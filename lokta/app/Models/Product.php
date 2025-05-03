@@ -22,13 +22,21 @@ class Product extends Model
         'start_date',
         'end_date',
         'paymentway_id',
-        'status', // pending, approved, rejected, completed
-        'payment_inputs' // JSON field to store payment inputs
+        'status', // pending, rejected, completed
+        'payment_inputs', // JSON field to store payment inputs
+        'subscription_price'
     ];
 
     protected $casts = [
         'images' => 'array',
     ];
+    protected $appends = ['subscription_price']; // لإضافة الحقل تلقائياً عند جلب المنتج
+
+    // علاقة الوصول لسعر الاشتراك من العرض
+    public function getSubscriptionPriceAttribute()
+    {
+        return $this->offer ? $this->offer->price : null;
+    }
 
     public function OrderProduct()
     {
@@ -129,5 +137,13 @@ class Product extends Model
             }
         }
     }
+
+    public function scopeExpired($query)
+    {
+        return $query->where('status', 'complete')
+                    ->where('end_date', '<=', now());
+    }
+
+    // يمكنك استدعاء هذا Scope في أي مكان: Product::expired()->get()
 
 }

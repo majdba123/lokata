@@ -28,7 +28,7 @@ return new class extends Migration
             $table->foreignIdFor(Offer::class)->nullable();
             $table->foreignIdFor(Paymentway::class)->nullable();
             $table->json('payment_inputs'); // لتخزين بيانات الدفع
-            $table->enum('status', ['pending', 'approved', 'rejected', 'completed'])->default('pending');
+            $table->enum('status', ['pending', 'approved', 'rejected', 'completed','expired'])->default('pending');
             $table->date('start_date')->nullable(); // تاريخ بداية العرض
             $table->date('end_date')->nullable(); // تاريخ نهاية العرض
             $table->timestamps();
