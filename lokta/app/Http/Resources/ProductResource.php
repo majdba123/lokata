@@ -18,6 +18,7 @@ class ProductResource extends JsonResource
             'currency' => $this->currency,
             'status' => $this->status,
             'images' => $this->formatImages(),
+            'subscription_price' => $this->subscription_price,
             'description' => $this->description,
             'sub_category_id' => $this->sub_category->id,
             'sub_category' => $this->sub_category->title,

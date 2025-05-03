@@ -21,7 +21,7 @@ class ProductController extends Controller
 
     public function index(): JsonResponse
     {
-        $products = Product::where('status', 'complete')->get();
+        $products = Product::where('status', 'completed')->get();
         return response()->json(ProductResource::collection($products));
     }
 
@@ -170,7 +170,8 @@ class ProductController extends Controller
                 'payment_inputs' => json_encode($processedPaymentInputs),
                 'status' => 'pending',
                 'start_date' => null,
-                'end_date' => null
+                'end_date' => null,
+
             ];
 
             $product = Product::create($productData);
@@ -369,7 +370,7 @@ class ProductController extends Controller
     public function getProductsBySubCategory($subCategoryId): JsonResponse
     {
         $products = Product::where('sub__category_id', $subCategoryId)
-        ->where('status', 'complete')
+        ->where('status', 'completed')
         ->get();
 
         return response()->json(ProductResource::collection($products));
@@ -378,7 +379,7 @@ class ProductController extends Controller
     public function filterProducts(Request $request): JsonResponse
 {
     // ... (other setup) ...
-    $query = Product::query()->where('status', 'complete'); // إضافة شرط الحالة هنا
+    $query = Product::query()->where('status', 'completed'); // إضافة شرط الحالة هنا
 
     // ... (sub_category_id, brand_id, search filters remain the same) ...
     // Ensure sub_category_id uses the correct column name (single underscore assumed fixed)
@@ -442,6 +443,115 @@ class ProductController extends Controller
         $products = Product::where('owner_id', Auth::id())->get();
 
         return response()->json(ProductResource::collection($products), 200);
+    }
+
+
+
+    /**
+ * تحديث حالة المنتج (للاستخدام من قبل الأدمن فقط)
+ *
+ * @param Request $request
+ * @param Product $product
+ * @return JsonResponse
+ */
+    public function updateStatus(Request $request, $id): JsonResponse
+    {
+        $product=Product::find($id);
+        try {
+            $request->validate([
+                'status' => 'required|string|in:completed,rejected',
+            ]);
+
+            DB::beginTransaction();
+
+            $product->status = $request->status;
+
+            if ($request->status === 'completed') {
+                // إذا كانت الحالة complete، نضيف تواريخ البدء والانتهاء
+                $product->start_date = now();
+
+                // جلب عدد أشهر العرض من الـ offer المرتبط
+                $offer = Offer::find($product->offer_id);
+                if ($offer) {
+                    $product->end_date = now()->addMonths($offer->count_month);
+                } else {
+                    throw new \Exception('لا يوجد عرض مرتبط بهذا المنتج');
+                }
+            } else {
+                // إذا كانت الحالة rejected، نلغي التواريخ
+                $product->start_date = null;
+                $product->end_date = null;
+            }
+
+            $product->save();
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'data' => new ProductResource($product)
+            ]);
+
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Product status update failed: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'فشل في تحديث حالة المنتج: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+    public function adminProducts(Request $request): JsonResponse
+    {
+        try {
+            $request->validate([
+                'status' => 'nullable|string|in:pending,rejected,completed,expired',
+                'offer_id' => 'nullable|numeric|exists:offers,id',
+            ]);
+
+            $query = Product::query();
+
+            // فلترة حسب الحالة إذا تم توفيرها
+            if ($request->has('status')) {
+                $query->where('status', $request->status);
+            }
+
+            // فلترة حسب offer_id إذا تم توفيره
+            if ($request->has('offer_id')) {
+                $query->where('offer_id', $request->offer_id);
+            }
+
+            // ترتيب النتائج حسب تاريخ الإنشاء (الأحدث أولاً)
+            $query->orderBy('created_at', 'desc');
+
+            // جلب النتائج مع العلاقات المطلوبة
+            $products = $query->with(['sub_category', 'brand', 'offer', 'paymentway'])
+                            ->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => ProductResource::collection($products)
+            ]);
+
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error('Admin products fetch failed: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'فشل في جلب المنتجات: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
 }
