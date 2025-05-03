@@ -56,7 +56,17 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
     }
   };
 
-  console.log(selectedPaymentWayDetails);
+  // Helper function to check if all required payment inputs for the selected method are filled
+  const arePaymentInputsValid = (): boolean => {
+    if (!selectedPaymentWayDetails) return false; // No payment method selected yet
+
+    return selectedPaymentWayDetails.paymentway_input.every((inputItem) => {
+      const value = paymentInputValues[inputItem.id];
+      // Check if value exists and is not an empty string (for text/tel) or null (for file)
+      return value !== null && value !== undefined && value !== '';
+    });
+  };
+
 
   const handleFinalSubmit = async () => {
     // Basic validation - ensure required selections are made
@@ -66,10 +76,16 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
       !selectedPaymentWayId ||
       !selectedPaymentWayDetails
     ) {
-      console.error("Missing required data for submission.");
-      // Optionally, show a user-friendly error message here
+      console.error("Missing required selections.");
+      toast.error("يرجى اختيار عرض وطريقة دفع أولاً.");
       return;
     }
+    // Check if payment inputs are valid
+    if (!arePaymentInputsValid()) {
+        toast.error("يرجى ملء جميع حقول الدفع المطلوبة لطريقة الدفع المختارة.");
+        return;
+    }
+
     const formData = new FormData();
 
     // 1. Append Product Data
@@ -204,6 +220,7 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
                                   htmlFor={`payment_input_${inputItem.id}`}
                                   className="block text-sm font-medium text-gray-700 mb-1"
                                 >
+                                  <span className="text-red-500 mr-1">*</span>
                                   {inputItem.name}
                                 </label>
                                 <input
@@ -239,6 +256,7 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
                                   htmlFor={`payment_input_${inputItem.id}`}
                                   className="block text-sm font-medium text-gray-700 mb-1"
                                 >
+                                  <span className="text-red-500 mr-1">*</span>
                                   {inputItem.name} {/* e.g., صورة الإيصال */}
                                 </label>
                                 <label
@@ -284,7 +302,8 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
                 disabled={
                   !selectedOfferId ||
                   !selectedPaymentWayId ||
-                  createProductMutation.isPending
+                  createProductMutation.isPending ||
+                  !arePaymentInputsValid() // Disable if inputs aren't valid
                 } // Also disable if payment way isn't selected
                 onClick={handleFinalSubmit} // Add your final submit handler here
               >

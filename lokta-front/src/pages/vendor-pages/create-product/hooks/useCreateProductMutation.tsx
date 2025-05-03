@@ -5,7 +5,7 @@ function useCreateProductMutation() {
   return useMutation({
     mutationKey: ["createProduct"],
     mutationFn: async (data: FormData) => {
-      createProductWithPlanApi(data);
+      await createProductWithPlanApi(data);
     },
   });
 }
