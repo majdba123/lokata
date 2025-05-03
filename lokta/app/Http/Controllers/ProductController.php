@@ -71,6 +71,20 @@ class ProductController extends Controller
 
 
 
+    public function show(int $product): JsonResponse
+    {
+        // if product not found
+
+        $product = Product::find($product);
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
+        return response()->json(new ProductResource($product));
+    }
+
+
+
 
 
 
