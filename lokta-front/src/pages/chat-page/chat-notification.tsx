@@ -3,9 +3,13 @@ import { MessageCircleQuestion } from "lucide-react";
 
 function ChatNotifications() {
   const counter = useChatStore((state) => state.newMessagesCounter);
+  const clearNewMessagesCounter = useChatStore(
+    (state) => state.clearNewMessagesCounter
+  );
 
   const reloadPage = () => {
     window.location.reload();
+    clearNewMessagesCounter();
   };
   if (counter === 0) return null;
   return (

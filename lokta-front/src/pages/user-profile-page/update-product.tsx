@@ -128,7 +128,7 @@ function UpdateProduct(props: Props) {
   };
 
   return (
-    <div dir="rtl">
+    <div dir="rtl" className="max-h-[90vh] overflow-y-auto">
       <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex gap-4 flex-col md:flex-row">
           <div className="w-full">

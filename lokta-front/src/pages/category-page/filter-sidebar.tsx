@@ -9,7 +9,7 @@ import useDebounce from "@/hooks/useDebounce";
 import { useCategoryStore } from "@/zustand-stores/category-store";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 type Props = {
@@ -44,7 +44,7 @@ function FilterSidebar({ onFetchProducts }: Props) {
   const setSubcategories = useCategoryStore((state) => state.setSubcategories);
 
   const [brands, setBrands] = useState<Brand[]>([]);
-  const [curBrandIdx, setCurBrandIdx] = useState(0);
+  const [curBrandIdx, setCurBrandIdx] = useState(-1);
   const [priceRange, setPriceRange] = useState([0, 1000]);
 
   const handlePriceChange = (newRange: number[]) => {
@@ -81,23 +81,23 @@ function FilterSidebar({ onFetchProducts }: Props) {
 
   useEffect(() => {
     fetchProducts();
-  }, [curSubCategoryId, curBrandIdx, debouncedSearch, priceRange, subCategoryName]);
+  }, [
+    curSubCategoryId,
+    curBrandIdx,
+    debouncedSearch,
+    priceRange,
+    subCategoryName,
+  ]);
 
   useEffect(() => {
-    
     if (subCategoryName) {
       setCurSubCategoryId(
-        curCategory?.sub_category.find((sc) => sc.title === subCategoryName)?.id ??
-          -1
-      )
+        curCategory?.sub_category.find((sc) => sc.title === subCategoryName)
+          ?.id ?? -1
+      );
       setSubcategories(curCategory?.sub_category ?? []);
-    } else {
-      setCurSubCategoryId(-1);
-      setSubcategories([]);
     }
-    
-  }, [subCategoryName])
-  
+  }, [subCategoryName]);
 
   return (
     <aside className="lg:w-1/4 p-4 bg-white border-l border-gray-200">
@@ -122,29 +122,35 @@ function FilterSidebar({ onFetchProducts }: Props) {
           <h3 className="text-lg font-semibold">الفئة الفرعية</h3>
         </div>
         <div className="space-y-1 overflow-y-scroll max-h-60">
-          <label key={0} className="flex items-center">
-            <input
-              type="radio"
-              className="mr-2"
-              name="subcategory"
-              value={-1}
-              onClick={() => setCurSubCategoryId(-1)}
-              checked={curSubCategoryId === -1}
-            />
-            <span className="mr-2">الكل</span>
-          </label>
-          {curCategory?.sub_category.map((sc) => (
-            <label key={sc.id} className="flex items-center">
+          <Link to={`/${categoryName}`} onClick={() => setCurSubCategoryId(-1)}>
+            <label key={0} className="flex items-center">
               <input
                 type="radio"
                 className="mr-2"
                 name="subcategory"
-                value={sc.id}
-                onClick={() => setCurSubCategoryId(sc.id)}
-                checked={sc.id === curSubCategoryId}
+                value={-1}
+                onClick={() => setCurSubCategoryId(-1)}
+                checked={curSubCategoryId === -1}
               />
-              <span className="mr-2">{sc.title}</span>
+
+              <span className="mr-2">الكل</span>
             </label>
+          </Link>
+          {curCategory?.sub_category.map((sc) => (
+            <Link to={`/${categoryName}/${sc.title}`} onClick={() => setCurSubCategoryId(-1)}>
+              <label key={sc.id} className="flex items-center">
+                <input
+                  type="radio"
+                  className="mr-2"
+                  name="subcategory"
+                  value={sc.id}
+                  onClick={() => setCurSubCategoryId(sc.id)}
+                  checked={sc.id === curSubCategoryId}
+                />
+
+                <span className="mr-2">{sc.title}</span>
+              </label>
+            </Link>
           ))}
         </div>
       </div>
@@ -155,7 +161,7 @@ function FilterSidebar({ onFetchProducts }: Props) {
           <h3 className="text-lg font-semibold">العلامة التجارية</h3>
         </div>
         <div className="space-y-1 overflow-y-scroll max-h-60">
-          <label key={0} className="flex items-center">
+          <label key={Math.random()} className="flex items-center">
             <input
               type="radio"
               className="mr-2"
