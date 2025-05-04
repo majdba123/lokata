@@ -7,8 +7,12 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rule;
 use App\Http\Resources\ProductResource;
+use App\Models\Brand;
+use App\Models\Category;
 use App\Models\Offer;
 use App\Models\Paymentway;
+use App\Models\Sub_Category;
+use App\Models\User;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -568,4 +572,82 @@ class ProductController extends Controller
         }
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+    public function getStats()
+    {
+        // إحصائيات المنتجات حسب الحالة
+        $productStats = [
+            'pending' => Product::where('status', 'pending')->count(),
+            'rejected' => Product::where('status', 'expired')->count(),
+            'completed' => Product::where('status', 'completed')->count(),
+            'total' => Product::count(),
+        ];
+
+        // إحصائيات الفئات والتصنيفات الفرعية
+        $categoryStats = [
+            'categories' => Category::count(),
+            'sub_categories' => Sub_Category::count(),
+        ];
+
+        // إجمالي الربح من المنتجات (بناءً على سعر العرض)
+        $totalProfit = Product::where('status', 'completed')
+            ->with('offer')
+            ->get()
+            ->sum(function ($product) {
+                return $product->offer ? $product->offer->price : 0;
+            });
+
+        // إحصائيات العروض
+        $offerStats = [
+            'level_1' => Product::whereHas('offer', function($q) {
+                $q->where('level', 1);
+            })->count(),
+            'level_2' => Product::whereHas('offer', function($q) {
+                $q->where('level', 2);
+            })->count(),
+            'level_3' => Product::whereHas('offer', function($q) {
+                $q->where('level', 3);
+            })->count(),
+        ];
+
+        // إحصائيات المستخدمين
+        $userStats = [
+            'total_users' => User::count(),
+            'vendors' => User::has('vendor')->count(),
+            'regular_users' => User::doesntHave('vendor')->count(),
+        ];
+
+        // إحصائيات البراندات
+        $brandStats = [
+            'total_brands' => Brand::count(),
+            'brands_with_products' => Brand::has('products')->count(),
+            'brands_without_products' => Brand::doesntHave('products')->count(),
+        ];
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'product_stats' => $productStats,
+                'category_stats' => $categoryStats,
+                'total_profit' => $totalProfit,
+                'offer_stats' => $offerStats,
+                'user_stats' => $userStats,
+                'brand_stats' => $brandStats,
+            ]
+        ]);
+    }
+
 }
+
+
