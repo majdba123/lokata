@@ -24,14 +24,14 @@ export function CategoryCarousel({ subcategories , categoryName}: CategoryCarous
       }}
       className="w-full"
     >
-      <CarouselContent className="-ml-4">
+      <CarouselContent className="-ml-1.5">
         {subcategories.map((subcategory) => (
-          <CarouselItem 
+            <CarouselItem 
             key={subcategory.id} 
-            className="pl-4 md:basis-1/3 lg:basis-1/5"
-          >
+            className="pl-2 md:basis-1/4 lg:basis-1/6"
+            >
             <CategoryItem categoryName={categoryName} subcategory={subcategory} />
-          </CarouselItem>
+            </CarouselItem>
         ))}
       </CarouselContent>
       <div className="hidden md:flex items-center justify-center gap-5 mt-4">

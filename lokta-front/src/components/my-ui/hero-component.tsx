@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -9,41 +9,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { toast } from "sonner";
-import { allSubCategoriesApi } from "@/api/services/category/category-service";
 import { useNavigate } from "react-router-dom";
-import { useCategoryStore } from "@/zustand-stores/category-store";
+import { useQueryClient } from "@tanstack/react-query";
+import { Category } from "@/api/services/category/types";
 
 const Hero: React.FC = () => {
-  const setSubcategories = useCategoryStore((s) => s.setSubcategories);
-  const subcategories = useCategoryStore((s) => s.subcategories);
-  const setCurSubCategoryId = useCategoryStore((s) => s.setCurSubCategoryId);
-  const curSubCategoryId = useCategoryStore((s) => s.curSubCategoryId);
+  const queryClient = useQueryClient();
+  const categories = queryClient.getQueryData(["categories"]) as
+    | Category[]
+    | undefined;
+
+  const [curCategoryIdx, setCurCategoryIdx] = useState(0);
 
   const [searchTerm, setSearchTerm] = useState("");
 
   const navigate = useNavigate();
 
-  const fetchSubcategories = async () => {
-    try {
-      if (subcategories.length > 0) return;
-      const response = await allSubCategoriesApi();
-      setSubcategories(response);
-    } catch (error: any) {
-      toast.error("Failed to fetch subcategories" + error.message);
-    }
-  };
-
-  useEffect(() => {
-    fetchSubcategories();
-  }, []);
-
   const handleSearch = () => {
-    navigate("/category", {
-      state: {
-        search: searchTerm,
-      },
-    });
+    if (categories) {
+      const name = categories[curCategoryIdx].name;
+      navigate("/" + name, {
+        state: {
+          search: searchTerm,
+        },
+      });
+    }
   };
 
   return (
@@ -61,20 +51,18 @@ const Hero: React.FC = () => {
         <div className="max-w-2xl mx-auto">
           <div className="flex flex-col sm:flex-row items-center bg-white md:rounded-full overflow-hidden p-2 shadow-lg">
             <Select
-              value={curSubCategoryId + ""}
-              onValueChange={(v) => setCurSubCategoryId(+v)}
+              value={curCategoryIdx + ""}
+              onValueChange={(v) => setCurCategoryIdx(+v)}
             >
               <SelectTrigger className="w-full sm:w-40 border-none focus:ring-0 mb-2 sm:mb-0 sm:mr-2">
-                <SelectValue placeholder="جميع الفئات" />
+                <SelectValue
+                  placeholder={categories ? categories[0].name : ""}
+                />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value={"-1"}>جميع الفئات</SelectItem>
-                {subcategories.map((subcategory) => (
-                  <SelectItem
-                    key={subcategory.id}
-                    value={String(subcategory.id)}
-                  >
-                    {subcategory.title}
+                {categories?.map((category, idx) => (
+                  <SelectItem key={category.id} value={String(idx)}>
+                    {category.name}
                   </SelectItem>
                 ))}
               </SelectContent>

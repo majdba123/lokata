@@ -2,6 +2,7 @@ import { CategoryCarousel } from "./category-carousel";
 import { useQuery } from "@tanstack/react-query";
 import { getAllCategoriesApi } from "@/api/services/category/category-service";
 import Loading from "@/components/my-ui/loading";
+import Hero from "@/components/my-ui/hero-component";
 
 function AllCategoryPage() {
   const { data, status } = useQuery({
@@ -23,6 +24,7 @@ function AllCategoryPage() {
 
   return (
     <div className="min-h-screen bg-background pb-12">
+       <Hero />
       {data && (
         <main className="max-w-7xl mx-auto px-4 md:px-6 pt-6 md:pt-10">
           {data.map((item) => (
