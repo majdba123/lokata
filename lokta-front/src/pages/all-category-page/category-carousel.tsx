@@ -8,30 +8,34 @@ import {
 import { Subcategory } from "@/api/services/category/types";
 import { CategoryItem } from "./category-item";
 
-
 interface CategoryCarouselProps {
   subcategories: Subcategory[];
-  categoryName : string
+  categoryName: string;
 }
 
-export function CategoryCarousel({ subcategories , categoryName}: CategoryCarouselProps) {
-
+export function CategoryCarousel({
+  subcategories,
+  categoryName,
+}: CategoryCarouselProps) {
   return (
-    <Carousel 
+    <Carousel
       opts={{
         align: "start",
         loop: true,
       }}
       className="w-full"
     >
-      <CarouselContent className="-ml-1.5">
+      <CarouselContent dir="rtl" className="-ml-1.5">
         {subcategories.map((subcategory) => (
-            <CarouselItem 
-            key={subcategory.id} 
+          <CarouselItem
+            key={subcategory.id}
             className="pl-2 md:basis-1/4 lg:basis-1/6"
-            >
-            <CategoryItem categoryName={categoryName} subcategory={subcategory} />
-            </CarouselItem>
+          >
+            <CategoryItem
+              categoryName={categoryName}
+              subcategory={subcategory}
+            />
+          </CarouselItem>
         ))}
       </CarouselContent>
       <div className="hidden md:flex items-center justify-center gap-5 mt-4">

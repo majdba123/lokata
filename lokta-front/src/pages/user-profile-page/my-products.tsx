@@ -101,6 +101,33 @@ function MyProducts() {
               description={product.description ?? ""}
               id={product.id}
             />
+            <div className="flex justify-between flex-col">
+              {/* status */}
+              <p>
+                الحالة :{" "}
+                <span
+                  className={`${
+                    product.status == "pending"
+                      ? "text-yellow-500"
+                      : product.status == "rejected"
+                      ? "text-red-600"
+                      : "text-green-500"
+                  } text-sm`}
+                >
+                  {product.status}
+                </span>{" "}
+              </p>
+              {product.status == "completed" && (
+                <div>
+                  <p className="text-sm text-gray-500">
+                     تم النشر فى : {product.dates.start_date}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    باقى الايام : {product.dates.remaining_days} يوم
+                  </p>
+                </div>
+              )}
+            </div>
             <div className="flex justify-center space-x-3">
               <AlertDialog
                 open={updateProductId === product.id}

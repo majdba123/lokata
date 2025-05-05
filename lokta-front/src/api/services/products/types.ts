@@ -19,6 +19,14 @@ export type Product = {
   owner_id: number;
   brand_id: number;
   currency: "sy" | "us";
+  status: "rejected" | "completed" | "pending";
+  dates: ProductDates;
+};
+
+export type ProductDates = {
+  end_date: null | string;
+  remaining_days: null | number;
+  start_date: null | string;
 };
 
 export type CreateProductRequest = {

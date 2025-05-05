@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useEffect, useMemo } from "react";
 import { ProductData } from "./create-product"; // Import the type from the form component
 import Loading from "@/components/my-ui/loading";
 import usePaymentsWayQuery from "./hooks/usePaymentsWayQuery";
@@ -31,6 +31,26 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
     Record<string, string | File | null>
   >({}); // Key: PaymentWayInput.id, Value: input value
 
+  // Find the selected offer details
+  const selectedOffer = useMemo(() => {
+    return offersQuery.data?.find(offer => String(offer.id) === selectedOfferId);
+  }, [selectedOfferId, offersQuery.data]);
+
+  // Determine if the selected offer is free
+  const isFreeOfferSelected = useMemo(() => {
+    // Use Number() to handle both numeric 0 and string "0"
+    return selectedOffer ? Number(selectedOffer.price) === 0 : false;
+  }, [selectedOffer]);
+
+  // Reset payment selection if a free offer is chosen
+  useEffect(() => {
+    if (isFreeOfferSelected) {
+      setSelectedPaymentWayId(null);
+      setSelectedPaymentWayDetails(null);
+      setPaymentInputValues({});
+    }
+  }, [isFreeOfferSelected]);
+
   const handleInputChange = (inputId: string, value: string) => {
     setPaymentInputValues((prev) => ({
       ...prev,
@@ -58,7 +78,8 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
 
   // Helper function to check if all required payment inputs for the selected method are filled
   const arePaymentInputsValid = (): boolean => {
-    if (!selectedPaymentWayDetails) return false; // No payment method selected yet
+    // If the offer is free, payment inputs are not relevant/required
+    if (isFreeOfferSelected || !selectedPaymentWayDetails) return true;
 
     return selectedPaymentWayDetails.paymentway_input.every((inputItem) => {
       const value = paymentInputValues[inputItem.id];
@@ -69,21 +90,22 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
 
 
   const handleFinalSubmit = async () => {
-    // Basic validation - ensure required selections are made
-    if (
-      !productData ||
-      !selectedOfferId ||
-      !selectedPaymentWayId ||
-      !selectedPaymentWayDetails
-    ) {
-      console.error("Missing required selections.");
-      toast.error("يرجى اختيار عرض وطريقة دفع أولاً.");
+    // 1. Validate Offer Selection
+    if (!productData || !selectedOfferId) {
+      toast.error("يرجى اختيار عرض أولاً.");
       return;
     }
-    // Check if payment inputs are valid
-    if (!arePaymentInputsValid()) {
+
+    // 2. Validate Payment Selection (only if offer is not free)
+    if (!isFreeOfferSelected) {
+      if (!selectedPaymentWayId || !selectedPaymentWayDetails) {
+        toast.error("يرجى اختيار طريقة دفع أولاً.");
+        return;
+      }
+      if (!arePaymentInputsValid()) {
         toast.error("يرجى ملء جميع حقول الدفع المطلوبة لطريقة الدفع المختارة.");
         return;
+      }
     }
 
     const formData = new FormData();
@@ -107,20 +129,24 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
     // 3. Append Offer ID
     formData.append("offer_id", selectedOfferId);
 
-    // 4. Append Payment Way ID
-    formData.append("paymentway_id", selectedPaymentWayId);
+    // 4. Append Payment Way ID and Inputs (conditionally)
+    if (isFreeOfferSelected) {
+      formData.append("paymentway_id", "1"); // Hardcode ID 1 for free offers
+      // Do not append payment_inputs for free offers
+    } else {
+      // Append selected payment way ID and inputs for paid offers
+      formData.append("paymentway_id", selectedPaymentWayId!); // Non-null assertion safe due to validation above
 
-    // 5. Append Payment Input Values
-    selectedPaymentWayDetails.paymentway_input.forEach((inputItem) => {
-      const value = paymentInputValues[inputItem.id];
-      if (value !== null && value !== undefined) {
-        // Use a consistent key naming, e.g., payment_input_[id]
-        let key = "name";
-        if (inputItem.type == "1") key = "phone";
-        if (inputItem.type == "2") key = "image";
-        formData.append(`payment_inputs[${key}]`, value); // FormData handles File objects automatically
-      }
-    });
+      selectedPaymentWayDetails!.paymentway_input.forEach((inputItem) => { // Non-null assertion safe
+        const value = paymentInputValues[inputItem.id];
+        if (value !== null && value !== undefined) {
+          let key = "name"; // Default or type '0'
+          if (inputItem.type == "1") key = "phone";
+          if (inputItem.type == "2") key = "image";
+          formData.append(`payment_inputs[${key}]`, value); // FormData handles File objects automatically
+        }
+      });
+    }
     createProductMutation.mutate(formData, {
       onError: (error) => toast.error(error.message),
       onSuccess: () => toast.success("تم إنشاء المنتج بنجاح"),
@@ -168,7 +194,7 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
                         المدة: {offer.count_month} شهر
                       </p>
                       <p className="text-lg font-bold text-blue-700">
-                        {offer.price} ل.س{" "}
+                        {Number(offer.price) === 0 ? "مجاني" : `${offer.price} ل.س`}
                       </p>{" "}
                       {/* Assuming currency might be in offer data, else default */}
                       {/* Add more offer details here if needed */}
@@ -179,115 +205,128 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
               {/* You can add error handling display here if needed */}
             </div>
 
-            {/* Payment Way Selection Section */}
-            <div className="mt-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">
-                اختر طريقة الدفع
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {paymentsWayQuery.data?.map((paymentWay) => (
-                  <div
-                    key={paymentWay.id}
-                    onClick={() => {
-                      setSelectedPaymentWayId(String(paymentWay.id));
-                      setSelectedPaymentWayDetails(paymentWay); // Store the whole selected payment way object
-                    }}
-                    className={`
-                      border rounded-lg p-4 cursor-pointer transition-all duration-200 ease-in-out
-                      hover:shadow-md hover:border-purple-500
-                      ${
-                        selectedPaymentWayId === String(paymentWay.id)
-                          ? "border-purple-600 ring-2 ring-purple-300 bg-purple-50"
-                          : "border-gray-300 bg-white"
-                      }
-                    `}
-                  >
-                    {" "}
-                    {/* Main Card Div */}
-                    <h4 className="font-semibold text-md mb-2 text-center">
-                      {paymentWay.title}
-                    </h4>
-                    {/* Render inputs only if this card is selected */}
-                    {selectedPaymentWayId === String(paymentWay.id) && (
-                      <div className="mt-3 space-y-3">
-                        {paymentWay.paymentway_input.map((inputItem) => (
-                          <div key={inputItem.id}>
-                            {/* Text Input */}
-                            {(inputItem.type === "0" ||
-                              inputItem.type === "1") && (
-                              <div>
-                                <label
-                                  htmlFor={`payment_input_${inputItem.id}`}
-                                  className="block text-sm font-medium text-gray-700 mb-1"
-                                >
-                                  <span className="text-red-500 mr-1">*</span>
-                                  {inputItem.name}
-                                </label>
-                                <input
-                                  // Use "tel" for phone numbers (type 1), "text" for type 0
-                                  type={inputItem.type === "1" ? "tel" : "text"}
-                                  id={`payment_input_${inputItem.id}`}
-                                  placeholder={`${inputItem.name}`} // e.g., رقم الحساب
-                                  pattern={
-                                    inputItem.type === "1"
-                                      ? "[0-9]{10}"
-                                      : undefined
-                                  } // Example: 10 digits
-                                  className="border border-gray-300 rounded-md p-2 w-full text-sm focus:ring-purple-500 focus:border-purple-500"
-                                  value={
-                                    (paymentInputValues[
-                                      inputItem.id
-                                    ] as string) ?? ""
-                                  }
-                                  onChange={(e) =>
-                                    handleInputChange(
-                                      String(inputItem.id),
-                                      e.target.value
-                                    )
-                                  }
-                                  onClick={(e) => e.stopPropagation()} // Prevent card click when clicking input
-                                />
-                              </div>
-                            )}
-                            {/* File Input */}
-                            {inputItem.type === "2" && (
-                              <div className="text-center">
-                                <label
-                                  htmlFor={`payment_input_${inputItem.id}`}
-                                  className="block text-sm font-medium text-gray-700 mb-1"
-                                >
-                                  <span className="text-red-500 mr-1">*</span>
-                                  {inputItem.name} {/* e.g., صورة الإيصال */}
-                                </label>
-                                <label
-                                  htmlFor={`payment_input_${inputItem.id}`}
-                                  className={`inline-block px-4 py-2 text-sm rounded-md border bg-purple-100 border-purple-400 hover:bg-purple-200 cursor-pointer w-full truncate`}
-                                >
-                                  {paymentInputValues[inputItem.id]
-                                    ? (paymentInputValues[inputItem.id] as File)
-                                        .name
-                                    : `اختر ملف ${inputItem.name}`}
-                                </label>
-                                <input
-                                  type="file"
-                                  id={`payment_input_${inputItem.id}`}
-                                  accept="image/*" // Only accept images
-                                  className="hidden" // Hide the default file input
-                                  onChange={(e) =>
-                                    handleFileChange(String(inputItem.id), e)
-                                  }
-                                  onClick={(e) => e.stopPropagation()} // Prevent card click
-                                />
-                              </div>
-                            )}
-                          </div>
-                        ))}
+            {/* Payment Way Selection Section - Conditionally Rendered */}
+            {!isFreeOfferSelected && selectedOfferId && ( // Only show if a non-free offer is selected
+              <div className="mt-6">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">
+                  اختر طريقة الدفع
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {paymentsWayQuery.data?.map((paymentWay) => (
+                    <div
+                      key={paymentWay.id}
+                      onClick={() => {
+                        setSelectedPaymentWayId(String(paymentWay.id));
+                        setSelectedPaymentWayDetails(paymentWay); // Store the whole selected payment way object
+                      }}
+                      className={`
+                        border rounded-lg p-4 cursor-pointer transition-all duration-200 ease-in-out
+                        hover:shadow-md hover:border-purple-500
+                        ${
+                          selectedPaymentWayId === String(paymentWay.id)
+                            ? "border-purple-600 ring-2 ring-purple-300 bg-purple-50"
+                            : "border-gray-300 bg-white"
+                        }
+                      `}
+                    >
+                      {/* Main Card Div */}
+                      <div className="flex flex-col items-center text-center"> {/* Center content */}
+                        <div className="flex items-center justify-center gap-2 mb-1"> {/* Title and Icon */}
+                          {paymentWay.image && (
+                            <img
+                              src={paymentWay.image}
+                              alt={`${paymentWay.title} icon`}
+                              className="w-6 h-6 object-contain" // Adjust size as needed
+                            />
+                          )}
+                          <h4 className="font-semibold text-md">
+                            {paymentWay.title}
+                          </h4>
+                        </div>
+                        <p className="text-xs text-gray-500 mb-2">{paymentWay.description}</p> {/* Description */}
                       </div>
-                    )}
-                  </div>
-                ))}
+                      {/* Render inputs only if this card is selected */}
+                      {selectedPaymentWayId === String(paymentWay.id) && (
+                        <div className="mt-3 space-y-3">
+                          {paymentWay.paymentway_input.map((inputItem) => (
+                            <div key={inputItem.id}>
+                              {/* Text Input */}
+                              {(inputItem.type === "0" ||
+                                inputItem.type === "1") && (
+                                <div>
+                                  <label
+                                    htmlFor={`payment_input_${inputItem.id}`}
+                                    className="block text-sm font-medium text-gray-700 mb-1"
+                                  >
+                                    <span className="text-red-500 mr-1">*</span>
+                                    {inputItem.name}
+                                  </label>
+                                  <input
+                                    // Use "tel" for phone numbers (type 1), "text" for type 0
+                                    type={inputItem.type === "1" ? "tel" : "text"}
+                                    id={`payment_input_${inputItem.id}`}
+                                    placeholder={`${inputItem.name}`} // e.g., رقم الحساب
+                                    pattern={
+                                      inputItem.type === "1"
+                                        ? "[0-9]{10}"
+                                        : undefined
+                                    } // Example: 10 digits
+                                    className="border border-gray-300 rounded-md p-2 w-full text-sm focus:ring-purple-500 focus:border-purple-500"
+                                    value={
+                                      (paymentInputValues[
+                                        inputItem.id
+                                      ] as string) ?? ""
+                                    }
+                                    onChange={(e) =>
+                                      handleInputChange(
+                                        String(inputItem.id),
+                                        e.target.value
+                                      )
+                                    }
+                                    onClick={(e) => e.stopPropagation()} // Prevent card click when clicking input
+                                  />
+                                </div>
+                              )}
+                              {/* File Input */}
+                              {inputItem.type === "2" && (
+                                <div className="text-center">
+                                  <label
+                                    htmlFor={`payment_input_${inputItem.id}`}
+                                    className="block text-sm font-medium text-gray-700 mb-1"
+                                  >
+                                    <span className="text-red-500 mr-1">*</span>
+                                    {inputItem.name} {/* e.g., صورة الإيصال */}
+                                  </label>
+                                  <label
+                                    htmlFor={`payment_input_${inputItem.id}`}
+                                    className={`inline-block px-4 py-2 text-sm rounded-md border bg-purple-100 border-purple-400 hover:bg-purple-200 cursor-pointer w-full truncate`}
+                                  >
+                                    {paymentInputValues[inputItem.id]
+                                      ? (paymentInputValues[inputItem.id] as File)
+                                          .name
+                                      : `اختر ملف ${inputItem.name}`}
+                                  </label>
+                                  <input
+                                    type="file"
+                                    id={`payment_input_${inputItem.id}`}
+                                    accept="image/*" // Only accept images
+                                    className="hidden" // Hide the default file input
+                                    onChange={(e) =>
+                                      handleFileChange(String(inputItem.id), e)
+                                    }
+                                    onClick={(e) => e.stopPropagation()} // Prevent card click
+                                  />
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 mt-6">
@@ -300,11 +339,11 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
               <button
                 className="bg-green-500 text-white rounded-md py-2 px-4 hover:bg-green-600 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto flex-grow"
                 disabled={
-                  !selectedOfferId ||
-                  !selectedPaymentWayId ||
+                  !selectedOfferId || // Always require an offer
                   createProductMutation.isPending ||
-                  !arePaymentInputsValid() // Disable if inputs aren't valid
-                } // Also disable if payment way isn't selected
+                  (!isFreeOfferSelected && // If not free, require payment way and valid inputs
+                    (!selectedPaymentWayId || !arePaymentInputsValid()))
+                }
                 onClick={handleFinalSubmit} // Add your final submit handler here
               >
                 {createProductMutation.isPending
