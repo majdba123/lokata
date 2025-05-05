@@ -26,14 +26,14 @@ class RegisterController extends Controller
     {
         $validatedData = $request->validated();
         $user = $this->userService->register($validatedData);
-    
+
         // إرسال الإيميل بعد إرجاع الاستجابة مباشرة
         if (isset($validatedData['email'])) {
             dispatch(function () use ($user) {
                 OtpHelper::sendVerificationEmail($user->id);
             })->afterResponse();
         }
-    
+
         return response()->json([
             'message' => 'User registered successfully',
             'user' => $user,

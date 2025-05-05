@@ -156,6 +156,7 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
             Route::get('/get_all', [ProductController::class, 'adminProducts']);
 
         });
+        Route::get('/dashboard', [ProductController::class, 'getStats']);
 
 
     });
