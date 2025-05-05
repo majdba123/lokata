@@ -358,7 +358,6 @@
                             }
                         } catch (error) {
                             // معالجة الخطأ وعرض رسالة للمستخدم
-                            console.error('Login error:', error);
                             coloredToast('danger', error.message || 'Login failed. Please try again.');
                             this.errorMessage = error.message || 'Login failed. Please try again.';
                         } finally {
