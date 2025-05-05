@@ -4,7 +4,7 @@ use App\Http\Controllers\Controller;
 
 use App\Http\Requests\Category\StoreCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
-use App\Services\Category\CategoryService;
+use App\services\Category\CategoryService;
 use App\Models\Category;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

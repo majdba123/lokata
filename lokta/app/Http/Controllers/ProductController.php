@@ -154,25 +154,34 @@ class ProductController extends Controller
         try {
             $ownerId = Auth::id();
 
-            $validatedData = $request->validate([
+            $validationRules = [
                 'title' => 'required|string|max:255|unique:products',
                 'price' => 'required|numeric|min:0',
                 'sub__category_id' => 'required|numeric|exists:sub__categories,id',
                 'description' => 'required|string',
                 'images' => 'required|array',
-                'images.*' => 'string', // أو 'image|mimes:jpeg,png,jpg,gif|max:2048' إذا كنت تستقبل ملفات
+                'images.*' => 'string',
                 'brand_id' => 'required|numeric|exists:brands,id',
                 'currency' => 'required|string|in:sy,us',
                 'offer_id' => 'required|numeric|exists:offers,id',
                 'paymentway_id' => 'required|numeric|exists:paymentways,id',
-                'payment_inputs' => 'required|array'
-            ]);
+            ];
+
+            // فقط إذا لم يكن paymentway_id = 1 نطلب payment_inputs
+            if ($request->paymentway_id != 1) {
+                $validationRules['payment_inputs'] = 'required|array';
+            }
+
+            $validatedData = $request->validate($validationRules);
 
             $paymentway = Paymentway::with('Paymentway_input')->findOrFail($validatedData['paymentway_id']);
             $offer = Offer::findOrFail($validatedData['offer_id']);
 
-            // معالجة حقول الدفع بما في ذلك الصور
-            $processedPaymentInputs = $this->processPaymentInputs($paymentway, $validatedData['payment_inputs'], $request);
+            // معالجة حقول الدفع فقط إذا لم يكن paymentway_id = 1
+            $processedPaymentInputs = [];
+            if ($validatedData['paymentway_id'] != 1) {
+                $processedPaymentInputs = $this->processPaymentInputs($paymentway, $validatedData['payment_inputs'], $request);
+            }
 
             $productData = [
                 'title' => $validatedData['title'],
@@ -185,11 +194,10 @@ class ProductController extends Controller
                 'owner_id' => $ownerId,
                 'offer_id' => $validatedData['offer_id'],
                 'paymentway_id' => $validatedData['paymentway_id'],
-                'payment_inputs' => json_encode($processedPaymentInputs),
+                'payment_inputs' => json_encode($processedPaymentInputs), // سيكون فارغًا إذا كان paymentway_id = 1
                 'status' => 'pending',
                 'start_date' => null,
                 'end_date' => null,
-
             ];
 
             $product = Product::create($productData);
@@ -217,7 +225,6 @@ class ProductController extends Controller
             ], 500);
         }
     }
-
     protected function validatePaymentInputs(Paymentway $paymentway, array $paymentInputs, Request $request): void
     {
         $requiredInputs = $paymentway->Paymentway_input;
@@ -491,7 +498,7 @@ class ProductController extends Controller
                 // جلب عدد أشهر العرض من الـ offer المرتبط
                 $offer = Offer::find($product->offer_id);
                 if ($offer) {
-                    $product->end_date = now()->addMonths($offer->count_month);
+                    $product->end_date = now()->addDays($offer->count_month);
                 } else {
                     throw new \Exception('لا يوجد عرض مرتبط بهذا المنتج');
                 }
