@@ -114,13 +114,17 @@ function MyProducts() {
                       : "text-green-500"
                   } text-sm`}
                 >
-                  {product.status}
+                  {product.status == "pending"
+                    ? "قيد الانتظار"
+                    : product.status == "rejected"
+                    ? "مرفوض"
+                    : "مقبول"}
                 </span>{" "}
               </p>
               {product.status == "completed" && (
                 <div>
                   <p className="text-sm text-gray-500">
-                     تم النشر فى : {product.dates.start_date}
+                    تم النشر فى : {product.dates.start_date}
                   </p>
                   <p className="text-sm text-gray-500">
                     باقى الايام : {product.dates.remaining_days} يوم

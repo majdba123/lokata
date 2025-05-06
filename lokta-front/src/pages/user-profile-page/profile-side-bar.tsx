@@ -21,14 +21,6 @@ const tabs = [
     Icon: () => null,
   },
   {
-    name: "إنشاء علامة تجارية", // Create Brand
-    to: "/profile/create-brand",
-    current: false,
-    onClick: () => {},
-    Icon: () => null,
-  },
-
-  {
     name: "منتجاتي", // My Products Dashboard
     to: "/profile/my-products",
     current: false,

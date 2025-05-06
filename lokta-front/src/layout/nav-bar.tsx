@@ -14,7 +14,7 @@ function Navbar() {
   const [msgsCount, setMsgsCount] = useState(0);
 
   useListenToChannel({
-    onReceiveMessage: () => setMsgsCount(prev => prev + 1),
+    onReceiveMessage: () => setMsgsCount((prev) => prev + 1),
     userId: userId!,
     otherUserId: userId!,
   });
@@ -103,9 +103,9 @@ function Navbar() {
             </Link>
             <Link
               className="text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium"
-              to="/shop"
+              to="/tyre"
             >
-              المتجر
+              إطارات السيارات
             </Link>
             <Link
               className="text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium"

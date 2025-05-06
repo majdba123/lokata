@@ -1,4 +1,4 @@
-import { getBrandsApi } from "@/api/services/brand/brand-service";
+import { getBrandsBySubcategoryApi } from "@/api/services/brand/brand-service";
 import { Brand } from "@/api/services/brand/types";
 import { getAllCategoriesApi } from "@/api/services/category/category-service";
 import { Category } from "@/api/services/category/types";
@@ -70,24 +70,18 @@ function FilterSidebar({ onFetchProducts }: Props) {
   useEffect(() => {
     const fetchBrands = async () => {
       try {
-        const data = await getBrandsApi();
-        setBrands(data.brands);
+        const data = await getBrandsBySubcategoryApi(curSubCategoryId);
+        setBrands(data);
       } catch (error: any) {
         toast.error(error.message);
       }
     };
     fetchBrands();
-  }, []);
+  }, [curSubCategoryId]);
 
   useEffect(() => {
     fetchProducts();
-  }, [
-    curSubCategoryId,
-    curBrandIdx,
-    debouncedSearch,
-    priceRange,
-    subCategoryName,
-  ]);
+  }, [curBrandIdx, debouncedSearch, priceRange, subCategoryName]);
 
   useEffect(() => {
     if (subCategoryName) {
@@ -137,7 +131,10 @@ function FilterSidebar({ onFetchProducts }: Props) {
             </label>
           </Link>
           {curCategory?.sub_category.map((sc) => (
-            <Link to={`/${categoryName}/${sc.title}`} onClick={() => setCurSubCategoryId(-1)}>
+            <Link
+              to={`/${categoryName}/${sc.title}`}
+              onClick={() => setCurSubCategoryId(-1)}
+            >
               <label key={sc.id} className="flex items-center">
                 <input
                   type="radio"

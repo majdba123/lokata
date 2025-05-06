@@ -22,14 +22,16 @@ export function CategoryCarousel({
       opts={{
         align: "start",
         loop: true,
+        direction : "rtl"
       }}
       className="w-full"
+      dir="rtl"
     >
-      <CarouselContent dir="rtl" className="-ml-1.5">
+      <CarouselContent  className="-ml-2">
         {subcategories.map((subcategory) => (
           <CarouselItem
             key={subcategory.id}
-            className="pl-2 md:basis-1/4 lg:basis-1/6"
+            className="basis-1/2 pl-2 md:basis-1/4 lg:basis-1/6"
           >
             <CategoryItem
               categoryName={categoryName}

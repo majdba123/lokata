@@ -7,7 +7,6 @@ import AuthPage from "./pages/auth-page/auth-page";
 import Login from "./pages/auth-page/login";
 import Signup from "./pages/auth-page/signup";
 import ForgetPassword from "./pages/auth-page/forget-password";
-import CreateBrand from "./pages/vendor-pages/create-brand/create-brand";
 import CreateProduct from "./pages/vendor-pages/create-product/create-product";
 import RequireAuth from "./pages/require-auth/require-auth";
 import VerifyOtp from "./pages/auth-page/verify-otp";
@@ -36,8 +35,6 @@ function App() {
             <Route path="/profile" element={<UserProfilePage />}>
               <Route path="dashboard" element={<ProfileDashboard />} />
               <Route path="create-product" element={<CreateProduct />} />
-              <Route path="create-brand" element={<CreateBrand />} />
-              <Route path="create-brand" element={<CreateBrand />} />
               <Route path="my-products" element={<MyProducts />} />
             </Route>
           </Route>{" "}

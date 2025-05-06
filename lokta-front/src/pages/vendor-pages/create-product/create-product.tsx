@@ -1,4 +1,4 @@
-import { getBrandsApi } from "@/api/services/brand/brand-service";
+import { getBrandsBySubcategoryApi } from "@/api/services/brand/brand-service";
 import { Brand } from "@/api/services/brand/types";
 import { allSubCategoriesApi } from "@/api/services/category/category-service";
 import { Subcategory } from "@/api/services/category/types";
@@ -16,7 +16,25 @@ export type ProductData = {
   brand_id: number;
   sub__category_id: number;
   currency: "sy" | "us";
+  city: string;
 };
+
+const SY_CITIES = [
+  "دمشق",
+  "حلب",
+  "حمص",
+  "حماة",
+  "اللاذقية",
+  "طرطوس",
+  "إدلب",
+  "دير الزور",
+  "الرقة",
+  "الحسكة",
+  "درعا",
+  "السويداء",
+  "القنيطرة",
+  "ريف دمشق",
+];
 
 type Step = "form" | "plan";
 
@@ -36,6 +54,7 @@ function CreateProduct() {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm<ProductData>();
 
   const handleChooseFile = async (
@@ -81,13 +100,17 @@ function CreateProduct() {
 
   useEffect(() => {
     fetchSubCategories();
-    fetchBrands();
   }, []);
 
-  const fetchBrands = async () => {
+  useEffect(() => {
+    fetchBrands(watch("sub__category_id"));
+  }, [watch("sub__category_id")]);
+
+  const fetchBrands = async (sub__category_id: number) => {
     try {
-      const data = await getBrandsApi();
-      setBrands(data.brands);
+      if (!sub__category_id) return;
+      const data = await getBrandsBySubcategoryApi(sub__category_id);
+      setBrands(data);
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -128,6 +151,82 @@ function CreateProduct() {
             className="flex flex-col gap-4"
             onSubmit={handleSubmit(onFormSubmit)}
           >
+            <div>
+              <label htmlFor="city"> المدينة</label>
+              <select
+                {...register("city", {
+                  required: " المدينة مطلوبة",
+                })}
+                className="border border-gray-300 rounded-md p-2 w-full"
+                defaultValue=""
+              >
+                <option value="" disabled>
+                  اختر المدينة
+                </option>{" "}
+                {SY_CITIES.map((city) => (
+                  <option key={city} value={city}>
+                    {city}
+                  </option>
+                ))}
+              </select>
+              {errors.city && (
+                <span className="text-red-500 text-sm">
+                  {errors.city.message}
+                </span>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="sub__category_id">الفئة الفرعية</label>
+              <select
+                {...register("sub__category_id", {
+                  required: "الفئة الفرعية مطلوبة", // Subcategory is required
+                })}
+                className="border border-gray-300 rounded-md p-2 w-full"
+              >
+                <option value="" disabled>
+                  اختر الفئة الفرعية
+                </option>{" "}
+                {/* Select Subcategory */}
+                {subCategories.map((subcategory) => (
+                  <option key={subcategory.id} value={subcategory.id}>
+                    {subcategory.title}
+                  </option>
+                ))}
+              </select>
+              {errors.sub__category_id && (
+                <span className="text-red-500 text-sm">
+                  {errors.sub__category_id.message}
+                </span>
+              )}
+            </div>
+
+            <div className={`${!watch("sub__category_id") && "opacity-[0.4]"}`}>
+              <label htmlFor="brand_id">العلامة التجارية</label>
+              <select
+                {...register("brand_id", {
+                  required: "العلامة التجارية مطلوبة",
+                })} // Brand is required
+                className="border border-gray-300 rounded-md p-2 w-full"
+                defaultValue=""
+                disabled={!watch("sub__category_id")}
+              >
+                <option value="" disabled>
+                  اختر العلامة التجارية
+                </option>{" "}
+                {brands.map((brand) => (
+                  <option key={brand.id} value={brand.id}>
+                    {brand.name}
+                  </option>
+                ))}
+              </select>
+              {errors.brand_id && (
+                <span className="text-red-500 text-sm">
+                  {errors.brand_id.message}
+                </span>
+              )}
+            </div>
+
             <div className="flex gap-4 flex-col md:flex-row">
               <div className="w-full">
                 <label htmlFor="productTitle">عنوان المنتج</label>
@@ -241,56 +340,6 @@ function CreateProduct() {
                     />
                   ))}
                 </div>
-              )}
-            </div>
-
-            <div>
-              <label htmlFor="brand_id">العلامة التجارية</label>
-              <select
-                {...register("brand_id", {
-                  required: "العلامة التجارية مطلوبة",
-                })} // Brand is required
-                className="border border-gray-300 rounded-md p-2 w-full"
-                defaultValue=""
-              >
-                <option value="" disabled>
-                  اختر العلامة التجارية
-                </option>{" "}
-                {brands.map((brand) => (
-                  <option key={brand.id} value={brand.id}>
-                    {brand.name}
-                  </option>
-                ))}
-              </select>
-              {errors.brand_id && (
-                <span className="text-red-500 text-sm">
-                  {errors.brand_id.message}
-                </span>
-              )}
-            </div>
-
-            <div>
-              <label htmlFor="sub__category_id">الفئة الفرعية</label>
-              <select
-                {...register("sub__category_id", {
-                  required: "الفئة الفرعية مطلوبة", // Subcategory is required
-                })}
-                className="border border-gray-300 rounded-md p-2 w-full"
-              >
-                <option value="" disabled>
-                  اختر الفئة الفرعية
-                </option>{" "}
-                {/* Select Subcategory */}
-                {subCategories.map((subcategory) => (
-                  <option key={subcategory.id} value={subcategory.id}>
-                    {subcategory.title}
-                  </option>
-                ))}
-              </select>
-              {errors.sub__category_id && (
-                <span className="text-red-500 text-sm">
-                  {errors.sub__category_id.message}
-                </span>
               )}
             </div>
 
