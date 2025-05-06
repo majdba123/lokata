@@ -117,6 +117,7 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
     formData.append("sub__category_id", String(productData.sub__category_id));
     formData.append("brand_id", String(productData.brand_id));
     formData.append("currency", productData.currency);
+    formData.append("city", productData.city);
 
     // 2. Append Image URLs (assuming these are strings to be sent)
     // Adjust if you need to handle File objects for images instead
