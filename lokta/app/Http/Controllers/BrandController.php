@@ -15,16 +15,33 @@ class BrandController extends Controller
 
     public function index()
     {
-        $brands = Brand::all();
+        $brands = Brand::with('subcategory')->get();
+
         return response()->json([
             'brands' => $brands
         ], 200);
     }
 
+
+
+    public function by_sub_category($subcategory_id)
+    {
+        $brands = Brand::where('sub__category_id', $subcategory_id)
+        ->with('subcategory')
+        ->paginate(10);
+
+        return response()->json([
+        'brands' => $brands
+        ], 200);
+    }
+
+
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255|unique:brands,name',
+            'sub__category_id' => 'required|exists:sub__categories,id', // تأكد أن الـ Subcategory موجودة
         ]);
 
         if ($validator->fails()) {
@@ -33,20 +50,21 @@ class BrandController extends Controller
             ], 422);
         }
 
-
-        $brand = new Brand();
-        $brand->name = $request->name;
-        $brand->save();
+        $brand = Brand::create([
+            'name' => $request->name,
+            'sub__category_id' => $request->sub__category_id, // تعيين الـ Subcategory
+        ]);
 
         return response()->json([
             'message' => 'Brand created successfully',
-            'brand' => $brand
+            'brand' => $brand->load('subcategory') // تحميل العلاقة
         ], 201);
     }
 
+
     public function show($brand)
     {
-        $brand = Brand::find($brand);
+        $brand = Brand::with('subcategory')->find($brand); // مع العلاقة
 
         if (!$brand) {
             return response()->json([
@@ -62,7 +80,8 @@ class BrandController extends Controller
     public function update(Request $request, Brand $brand)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'nullable|string|max:255|unique:brands,name',
+            'name' => 'nullable|string|max:255|unique:brands,name,' . $brand->id,
+            'sub__category_id' => 'nullable|exists:sub__categories,id', // يمكن تحديثها أو تركها كما هي
         ]);
 
         if ($validator->fails()) {
@@ -71,16 +90,22 @@ class BrandController extends Controller
             ], 422);
         }
 
-    
-        $brand->name = $request->name;
+        // تحديث الحقول إذا كانت موجودة في الطلب
+        if ($request->has('name')) {
+            $brand->name = $request->name;
+        }
+
+        if ($request->has('sub__category_id')) {
+            $brand->sub__category_id = $request->sub__category_id;
+        }
+
         $brand->save();
 
         return response()->json([
             'message' => 'Brand updated successfully',
-            'brand' => $brand
+            'brand' => $brand->load('subcategory') // مع العلاقة
         ], 200);
     }
-
     public function destroy(Brand $brand)
     {
 

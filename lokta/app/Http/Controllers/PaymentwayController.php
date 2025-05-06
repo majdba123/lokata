@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+
 class PaymentwayController extends Controller
 {
     /**
@@ -75,7 +76,7 @@ class PaymentwayController extends Controller
         $paymentway = Paymentway::create([
             'title' => $request->title,
             'description' => $request->description,
-            'image' => $imagePath ? asset('storage/' . $imagePath) : null, // تخزين المسار الكامل
+            'image' => $imagePath ? asset('api/storage/' . $imagePath) : null, // تخزين المسار الكامل
         ]);
 
         foreach ($request->inputs as $input) {
@@ -188,5 +189,4 @@ class PaymentwayController extends Controller
             'message' => 'تم حذف طريقة الدفع بنجاح'
         ], 200);
     }
-
 }
