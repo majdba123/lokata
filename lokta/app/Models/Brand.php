@@ -10,11 +10,17 @@ class Brand extends Model
     use HasFactory;
 
     protected $fillable = [
+        'sub__category_id',
         'name',
     ];
 
     public function products()
     {
         return $this->hasMany(Product::class);
+    }
+
+    public function subcategory()
+    {
+        return $this->belongsTo(Sub_Category::class ,'sub__category_id');
     }
 }

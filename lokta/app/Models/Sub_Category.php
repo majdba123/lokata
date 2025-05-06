@@ -20,6 +20,12 @@ class Sub_Category extends Model
         return $this->hasMany(Product::class);
     }
 
+    public function brand()
+    {
+        return $this->hasMany(Brand::class);
+    }
+
+
 
     public function user()
     {

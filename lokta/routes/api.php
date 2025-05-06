@@ -46,6 +46,8 @@ Route::get('/products/{product}', [ProductController::class, 'show']);
 Route::get('/products/subcategories/{subCategoryId}', [ProductController::class, 'getProductsBySubCategory']);
 Route::get('/brands', [BrandController::class, 'index']);
 Route::get('/brands/{brand}', [BrandController::class, 'show']);
+Route::get('/brands/by_sub_category/{sub_category_id}', [BrandController::class, 'by_sub_category']);
+
 
 
 
@@ -81,9 +83,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified.email']], function () {
     Route::delete('/products/{product}', [ProductController::class, 'destroy']);
 
     // Brand routes for verified users
-    Route::post('/brands', [BrandController::class, 'store']);
-    Route::put('/brands/{brand}', [BrandController::class, 'update']);
-    Route::delete('/brands/{brand}', [BrandController::class, 'destroy']);
+
 
     // Chat routes for verified users
     Route::post('/SendTo/{recive_id}', [ChatController::class, 'sendMessage']);
@@ -156,6 +156,15 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
             Route::get('/get_all', [ProductController::class, 'adminProducts']);
 
         });
+
+        Route::post('/brands/store', [BrandController::class, 'store']);
+        Route::put('/brands/update/{brand}', [BrandController::class, 'update']);
+        Route::delete('/brands/delete/{brand}', [BrandController::class, 'destroy']);
+
+
+
+
+
         Route::get('/dashboard', [ProductController::class, 'getStats']);
 
 

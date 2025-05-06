@@ -173,7 +173,13 @@ class ProductController extends Controller
             }
 
             $validatedData = $request->validate($validationRules);
+            $brand = Brand::findOrFail($validatedData['brand_id']);
 
+            if ($brand->sub__category_id != $validatedData['sub__category_id']) {
+                throw ValidationException::withMessages([
+                    'brand_id' => ['البراند المحدد لا ينتمي إلى التصنيف الفرعي المحدد.']
+                ]);
+            }
             $paymentway = Paymentway::with('Paymentway_input')->findOrFail($validatedData['paymentway_id']);
             $offer = Offer::findOrFail($validatedData['offer_id']);
 
@@ -352,7 +358,6 @@ class ProductController extends Controller
 
 
 
-
     public function update(Request $request, Product $product): JsonResponse
     {
         try {
@@ -364,16 +369,35 @@ class ProductController extends Controller
                 'images' => 'nullable|array',
                 'images.*' => 'string',
                 'brand_id' => 'nullable|numeric|exists:brands,id',
-                'currency' => 'nullable|string|in:sy,us', // تحقق باستخدام Validator
+                'currency' => 'nullable|string|in:sy,us',
             ]);
+
+            // التحقق من أن البراند ينتمي إلى التصنيف الفرعي إذا تم توفيرهما
+            if (isset($validatedData['brand_id']) && isset($validatedData['sub__category_id'])) {
+                $brand = Brand::find($validatedData['brand_id']);
+                if ($brand->sub__category_id != $validatedData['sub__category_id']) {
+                    throw ValidationException::withMessages([
+                        'brand_id' => ['البراند المحدد لا ينتمي إلى التصنيف الفرعي المحدد.']
+                    ]);
+                }
+            } elseif (isset($validatedData['brand_id'])) {
+                // إذا تم تحديث البراند فقط، تحقق من أنه ينتمي إلى تصنيف المنتج الحالي
+                $brand = Brand::find($validatedData['brand_id']);
+                if ($brand->sub__category_id != $product->sub__category_id) {
+                    throw ValidationException::withMessages([
+                        'brand_id' => ['البراند المحدد لا ينتمي إلى تصنيف المنتج الحالي.']
+                    ]);
+                }
+            }
+
             if ($request->has('images')) {
                 $imagesJson = json_encode($validatedData['images']);
                 unset($validatedData['images']);
                 $validatedData['images'] = $imagesJson;
             }
 
-
             $product->update($validatedData);
+
             if (isset($validatedData['sub__category_id'])) {
                 $product->sub_category()->associate($validatedData['sub__category_id']);
                 $product->save();
