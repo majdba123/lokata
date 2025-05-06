@@ -6,7 +6,8 @@ use App\Models\Paymentway;
 use App\Models\PaymentwayInput;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 class PaymentwayController extends Controller
 {
     /**
@@ -50,6 +51,7 @@ class PaymentwayController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // إضافة التحقق من الصورة
             'inputs' => 'required|array',
             'inputs.*.type' => 'required|in:0,1,2',
             'inputs.*.name' => 'required|string',
@@ -62,9 +64,18 @@ class PaymentwayController extends Controller
             ], 422);
         }
 
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imageFile = $request->file('image');
+            $imageName = Str::random(32) . '.' . $imageFile->getClientOriginalExtension();
+            $imagePath = 'paymentways/' . $imageName;
+            Storage::disk('public')->put($imagePath, file_get_contents($imageFile));
+        }
+
         $paymentway = Paymentway::create([
             'title' => $request->title,
             'description' => $request->description,
+            'image' => $imagePath ? asset('storage/' . $imagePath) : null, // تخزين المسار الكامل
         ]);
 
         foreach ($request->inputs as $input) {
@@ -98,6 +109,7 @@ class PaymentwayController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'sometimes|string|max:255',
             'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // إضافة التحقق من الصورة
         ]);
 
         if ($validator->fails()) {
@@ -107,7 +119,23 @@ class PaymentwayController extends Controller
             ], 422);
         }
 
-        $paymentway->update($request->only(['title', 'description']));
+        $data = $request->only(['title', 'description']);
+
+        if ($request->hasFile('image')) {
+            // حذف الصورة القديمة إذا كانت موجودة
+            if ($paymentway->image) {
+                $oldImagePath = str_replace(asset('storage/'), '', $paymentway->image);
+                Storage::disk('public')->delete($oldImagePath);
+            }
+
+            $imageFile = $request->file('image');
+            $imageName = Str::random(32) . '.' . $imageFile->getClientOriginalExtension();
+            $imagePath = 'paymentways/' . $imageName;
+            Storage::disk('public')->put($imagePath, file_get_contents($imageFile));
+            $data['image'] = asset('storage/' . $imagePath);
+        }
+
+        $paymentway->update($data);
 
         return response()->json([
             'success' => true,

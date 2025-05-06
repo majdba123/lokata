@@ -13,6 +13,13 @@ class PaymentwaySeeder extends Seeder
         // مسح البيانات القديمة إذا وجدت
 
         // إنشاء وسيلة دفع واحدة فقط
+
+        $paymentMethod = Paymentway::create([
+            'id'  => 1,
+            'title' => 'الدفع الإلكتروني',
+            'description' => 'الدفع عبر التحويل الإلكتروني'
+        ]);
+
         $paymentMethod = Paymentway::create([
             'title' => 'الدفع الإلكتروني',
             'description' => 'الدفع عبر التحويل الإلكتروني'

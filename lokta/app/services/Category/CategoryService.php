@@ -1,5 +1,5 @@
 <?php
-namespace App\Services\Category;
+namespace App\services\Category;
 
 use App\Models\Category;
 use App\Models\Sub_Category;
