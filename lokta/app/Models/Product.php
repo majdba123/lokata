@@ -15,6 +15,7 @@ class Product extends Model
         'price',
         'description',
         'brand_id',
+        'city',
         'currency',
         'owner_id',
         'offer_id',

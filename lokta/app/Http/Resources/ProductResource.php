@@ -20,6 +20,8 @@ class ProductResource extends JsonResource
             'images' => $this->formatImages(),
             'subscription_price' => $this->subscription_price,
             'description' => $this->description,
+            'city' => $this->city,
+
             'sub_category_id' => $this->sub_category->id,
             'sub_category' => $this->sub_category->title,
             'brand' => $this->brand?->name,
