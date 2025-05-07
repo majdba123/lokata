@@ -33,7 +33,9 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
 
   // Find the selected offer details
   const selectedOffer = useMemo(() => {
-    return offersQuery.data?.find(offer => String(offer.id) === selectedOfferId);
+    return offersQuery.data?.find(
+      (offer) => String(offer.id) === selectedOfferId
+    );
   }, [selectedOfferId, offersQuery.data]);
 
   // Determine if the selected offer is free
@@ -84,10 +86,9 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
     return selectedPaymentWayDetails.paymentway_input.every((inputItem) => {
       const value = paymentInputValues[inputItem.id];
       // Check if value exists and is not an empty string (for text/tel) or null (for file)
-      return value !== null && value !== undefined && value !== '';
+      return value !== null && value !== undefined && value !== "";
     });
   };
-
 
   const handleFinalSubmit = async () => {
     // 1. Validate Offer Selection
@@ -138,13 +139,11 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
       // Append selected payment way ID and inputs for paid offers
       formData.append("paymentway_id", selectedPaymentWayId!); // Non-null assertion safe due to validation above
 
-      selectedPaymentWayDetails!.paymentway_input.forEach((inputItem) => { // Non-null assertion safe
+      selectedPaymentWayDetails!.paymentway_input.forEach((inputItem) => {
+        // Non-null assertion safe
         const value = paymentInputValues[inputItem.id];
         if (value !== null && value !== undefined) {
-          let key = "name"; // Default or type '0'
-          if (inputItem.type == "1") key = "phone";
-          if (inputItem.type == "2") key = "image";
-          formData.append(`payment_inputs[${key}]`, value); // FormData handles File objects automatically
+          formData.append(`payment_inputs[${inputItem.name}]`, value); // FormData handles File objects automatically
         }
       });
     }
@@ -195,7 +194,9 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
                         المدة: {offer.count_month} شهر
                       </p>
                       <p className="text-lg font-bold text-blue-700">
-                        {Number(offer.price) === 0 ? "مجاني" : `${offer.price} ل.س`}
+                        {Number(offer.price) === 0
+                          ? "مجاني"
+                          : `${offer.price} ل.س`}
                       </p>{" "}
                       {/* Assuming currency might be in offer data, else default */}
                       {/* Add more offer details here if needed */}
@@ -207,20 +208,21 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
             </div>
 
             {/* Payment Way Selection Section - Conditionally Rendered */}
-            {!isFreeOfferSelected && selectedOfferId && ( // Only show if a non-free offer is selected
-              <div className="mt-6">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">
-                  اختر طريقة الدفع
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {paymentsWayQuery.data?.map((paymentWay) => (
-                    <div
-                      key={paymentWay.id}
-                      onClick={() => {
-                        setSelectedPaymentWayId(String(paymentWay.id));
-                        setSelectedPaymentWayDetails(paymentWay); // Store the whole selected payment way object
-                      }}
-                      className={`
+            {!isFreeOfferSelected &&
+              selectedOfferId && ( // Only show if a non-free offer is selected
+                <div className="mt-6">
+                  <h3 className="text-lg font-medium text-gray-900 mb-4">
+                    اختر طريقة الدفع
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {paymentsWayQuery.data?.map((paymentWay) => (
+                      <div
+                        key={paymentWay.id}
+                        onClick={() => {
+                          setSelectedPaymentWayId(String(paymentWay.id));
+                          setSelectedPaymentWayDetails(paymentWay); // Store the whole selected payment way object
+                        }}
+                        className={`
                         border rounded-lg p-4 cursor-pointer transition-all duration-200 ease-in-out
                         hover:shadow-md hover:border-purple-500
                         ${
@@ -229,105 +231,125 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
                             : "border-gray-300 bg-white"
                         }
                       `}
-                    >
-                      {/* Main Card Div */}
-                      <div className="flex flex-col items-center text-center"> {/* Center content */}
-                        <div className="flex items-center justify-center gap-2 mb-1"> {/* Title and Icon */}
-                          {paymentWay.image && (
-                            <img
-                              src={paymentWay.image}
-                              alt={`${paymentWay.title} icon`}
-                              className="w-6 h-6 object-contain" // Adjust size as needed
-                            />
-                          )}
-                          <h4 className="font-semibold text-md">
-                            {paymentWay.title}
-                          </h4>
+                      >
+                        {/* Main Card Div */}
+                        <div className="flex flex-col items-center text-center">
+                          {" "}
+                          {/* Center content */}
+                          <div className="flex items-center justify-center gap-2 mb-1">
+                            {" "}
+                            {/* Title and Icon */}
+                            {paymentWay.image && (
+                              <img
+                                src={paymentWay.image}
+                                alt={`${paymentWay.title} icon`}
+                                className="w-6 h-6 object-contain" // Adjust size as needed
+                              />
+                            )}
+                            <h4 className="font-semibold text-md">
+                              {paymentWay.title}
+                            </h4>
+                          </div>
+                          <p className="text-xs text-gray-500 mb-2">
+                            {paymentWay.description}
+                          </p>{" "}
+                          {/* Description */}
                         </div>
-                        <p className="text-xs text-gray-500 mb-2">{paymentWay.description}</p> {/* Description */}
+                        {/* Render inputs only if this card is selected */}
+                        {selectedPaymentWayId === String(paymentWay.id) && (
+                          <div className="mt-3 space-y-3">
+                            {paymentWay.paymentway_input.map((inputItem) => (
+                              <div key={inputItem.id}>
+                                {/* Text Input */}
+                                {(inputItem.type === "0" ||
+                                  inputItem.type === "1") && (
+                                  <div>
+                                    <label
+                                      htmlFor={`payment_input_${inputItem.id}`}
+                                      className="block text-sm font-medium text-gray-700 mb-1"
+                                    >
+                                      <span className="text-red-500 mr-1">
+                                        *
+                                      </span>
+                                      {inputItem.name}
+                                    </label>
+                                    <input
+                                      // Use "tel" for phone numbers (type 1), "text" for type 0
+                                      type={
+                                        inputItem.type === "1" ? "tel" : "text"
+                                      }
+                                      id={`payment_input_${inputItem.id}`}
+                                      placeholder={`${inputItem.name}`} // e.g., رقم الحساب
+                                      pattern={
+                                        inputItem.type === "1"
+                                          ? "[0-9]{10}"
+                                          : undefined
+                                      } // Example: 10 digits
+                                      className="border border-gray-300 rounded-md p-2 w-full text-sm focus:ring-purple-500 focus:border-purple-500"
+                                      value={
+                                        (paymentInputValues[
+                                          inputItem.id
+                                        ] as string) ?? ""
+                                      }
+                                      onChange={(e) =>
+                                        handleInputChange(
+                                          String(inputItem.id),
+                                          e.target.value
+                                        )
+                                      }
+                                      onClick={(e) => e.stopPropagation()} // Prevent card click when clicking input
+                                    />
+                                  </div>
+                                )}
+                                {/* File Input */}
+                                {inputItem.type === "2" && (
+                                  <div className="text-center">
+                                    <label
+                                      htmlFor={`payment_input_${inputItem.id}`}
+                                      className="block text-sm font-medium text-gray-700 mb-1"
+                                    >
+                                      <span className="text-red-500 mr-1">
+                                        *
+                                      </span>
+                                      {inputItem.name}{" "}
+                                      {/* e.g., صورة الإيصال */}
+                                    </label>
+                                    <label
+                                      htmlFor={`payment_input_${inputItem.id}`}
+                                      className={`inline-block px-4 py-2 text-sm rounded-md border bg-purple-100 border-purple-400 hover:bg-purple-200 cursor-pointer w-full truncate`}
+                                    >
+                                      {paymentInputValues[inputItem.id]
+                                        ? (
+                                            paymentInputValues[
+                                              inputItem.id
+                                            ] as File
+                                          ).name
+                                        : `اختر ملف ${inputItem.name}`}
+                                    </label>
+                                    <input
+                                      type="file"
+                                      id={`payment_input_${inputItem.id}`}
+                                      accept="image/*" // Only accept images
+                                      className="hidden" // Hide the default file input
+                                      onChange={(e) =>
+                                        handleFileChange(
+                                          String(inputItem.id),
+                                          e
+                                        )
+                                      }
+                                      onClick={(e) => e.stopPropagation()} // Prevent card click
+                                    />
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                      {/* Render inputs only if this card is selected */}
-                      {selectedPaymentWayId === String(paymentWay.id) && (
-                        <div className="mt-3 space-y-3">
-                          {paymentWay.paymentway_input.map((inputItem) => (
-                            <div key={inputItem.id}>
-                              {/* Text Input */}
-                              {(inputItem.type === "0" ||
-                                inputItem.type === "1") && (
-                                <div>
-                                  <label
-                                    htmlFor={`payment_input_${inputItem.id}`}
-                                    className="block text-sm font-medium text-gray-700 mb-1"
-                                  >
-                                    <span className="text-red-500 mr-1">*</span>
-                                    {inputItem.name}
-                                  </label>
-                                  <input
-                                    // Use "tel" for phone numbers (type 1), "text" for type 0
-                                    type={inputItem.type === "1" ? "tel" : "text"}
-                                    id={`payment_input_${inputItem.id}`}
-                                    placeholder={`${inputItem.name}`} // e.g., رقم الحساب
-                                    pattern={
-                                      inputItem.type === "1"
-                                        ? "[0-9]{10}"
-                                        : undefined
-                                    } // Example: 10 digits
-                                    className="border border-gray-300 rounded-md p-2 w-full text-sm focus:ring-purple-500 focus:border-purple-500"
-                                    value={
-                                      (paymentInputValues[
-                                        inputItem.id
-                                      ] as string) ?? ""
-                                    }
-                                    onChange={(e) =>
-                                      handleInputChange(
-                                        String(inputItem.id),
-                                        e.target.value
-                                      )
-                                    }
-                                    onClick={(e) => e.stopPropagation()} // Prevent card click when clicking input
-                                  />
-                                </div>
-                              )}
-                              {/* File Input */}
-                              {inputItem.type === "2" && (
-                                <div className="text-center">
-                                  <label
-                                    htmlFor={`payment_input_${inputItem.id}`}
-                                    className="block text-sm font-medium text-gray-700 mb-1"
-                                  >
-                                    <span className="text-red-500 mr-1">*</span>
-                                    {inputItem.name} {/* e.g., صورة الإيصال */}
-                                  </label>
-                                  <label
-                                    htmlFor={`payment_input_${inputItem.id}`}
-                                    className={`inline-block px-4 py-2 text-sm rounded-md border bg-purple-100 border-purple-400 hover:bg-purple-200 cursor-pointer w-full truncate`}
-                                  >
-                                    {paymentInputValues[inputItem.id]
-                                      ? (paymentInputValues[inputItem.id] as File)
-                                          .name
-                                      : `اختر ملف ${inputItem.name}`}
-                                  </label>
-                                  <input
-                                    type="file"
-                                    id={`payment_input_${inputItem.id}`}
-                                    accept="image/*" // Only accept images
-                                    className="hidden" // Hide the default file input
-                                    onChange={(e) =>
-                                      handleFileChange(String(inputItem.id), e)
-                                    }
-                                    onClick={(e) => e.stopPropagation()} // Prevent card click
-                                  />
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 mt-6">

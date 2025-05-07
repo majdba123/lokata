@@ -81,7 +81,7 @@ function FilterSidebar({ onFetchProducts }: Props) {
 
   useEffect(() => {
     fetchProducts();
-  }, [curBrandIdx, debouncedSearch, priceRange, subCategoryName]);
+  }, [curBrandIdx, debouncedSearch, priceRange, curSubCategoryId, categoryName]);
 
   useEffect(() => {
     if (subCategoryName) {
@@ -91,7 +91,7 @@ function FilterSidebar({ onFetchProducts }: Props) {
       );
       setSubcategories(curCategory?.sub_category ?? []);
     }
-  }, [subCategoryName]);
+  }, [subCategoryName, curCategory]);
 
   return (
     <aside className="lg:w-1/4 p-4 bg-white border-l border-gray-200">
@@ -123,7 +123,7 @@ function FilterSidebar({ onFetchProducts }: Props) {
                 className="mr-2"
                 name="subcategory"
                 value={-1}
-                onClick={() => setCurSubCategoryId(-1)}
+                onChange={() => setCurSubCategoryId(-1)}
                 checked={curSubCategoryId === -1}
               />
 
@@ -141,7 +141,7 @@ function FilterSidebar({ onFetchProducts }: Props) {
                   className="mr-2"
                   name="subcategory"
                   value={sc.id}
-                  onClick={() => setCurSubCategoryId(sc.id)}
+                  onChange={() => setCurSubCategoryId(sc.id)}
                   checked={sc.id === curSubCategoryId}
                 />
 
@@ -164,7 +164,7 @@ function FilterSidebar({ onFetchProducts }: Props) {
               className="mr-2"
               name="brand"
               value={-1}
-              onClick={() => setCurBrandIdx(-1)}
+              onChange={() => setCurBrandIdx(-1)}
               checked={curBrandIdx === -1}
             />
             <span className="mr-2">الكل</span>
@@ -176,7 +176,7 @@ function FilterSidebar({ onFetchProducts }: Props) {
                 className="mr-2"
                 name="brand"
                 value={item.id}
-                onClick={() => setCurBrandIdx(idx)}
+                onChange={() => setCurBrandIdx(idx)}
                 checked={idx === curBrandIdx}
               />
               <span className="mr-2">{item.name}</span>
