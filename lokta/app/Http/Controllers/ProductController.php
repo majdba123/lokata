@@ -429,63 +429,64 @@ class ProductController extends Controller
         return response()->json(ProductResource::collection($products));
     }
 
+
     public function filterProducts(Request $request): JsonResponse
-{
-    // ... (other setup) ...
-    $query = Product::query()->where('status', 'completed'); // إضافة شرط الحالة هنا
+    {
+        $query = Product::query()->where('status', 'completed');
 
-    // ... (sub_category_id, brand_id, search filters remain the same) ...
-    // Ensure sub_category_id uses the correct column name (single underscore assumed fixed)
-    if ($request->has('sub_category_id')) {
-        $query->where('sub__category_id', $request->input('sub_category_id'));
-    }
-
-    if($request->has('subcategory_title')) {
-        $query->whereHas('sub_category', function($q) use ($request) {
-        $q->where('title', 'LIKE', '%' . $request->input('subcategory_title') . '%');
-        });
-    }
-
-    if ($request->has('brand_id')) {
-        $query->where('brand_id', $request->input('brand_id'));
-    }
-
-
-    if ($request->has('currency')) {
-        $query->where('currency', $request->input('currency'));
-    }
-
-    if ($request->has('search') && $request->filled('search')) {
-        $searchTerms = explode(' ', $request->input('search'));
-        $query->where(function($q) use ($searchTerms) {
-        foreach ($searchTerms as $term) {
-            $q->orWhere('title', 'like', "%$term%")
-              ->orWhere('description', 'like', "%$term%");
+        // فلترة حسب category_id (جلب جميع منتجات sub_categories التابعة له)
+        if ($request->has('category_id')) {
+            $query->whereHas('sub_category', function($q) use ($request) {
+                $q->where('category_id', $request->input('category_id'));
+            });
         }
-        });
+
+        // ... (بقية الفلاتر الحالية تبقى كما هي) ...
+        if ($request->has('sub_category_id')) {
+            $query->where('sub__category_id', $request->input('sub_category_id'));
+        }
+
+        if($request->has('subcategory_title')) {
+            $query->whereHas('sub_category', function($q) use ($request) {
+                $q->where('title', 'LIKE', '%' . $request->input('subcategory_title') . '%');
+            });
+        }
+
+        if ($request->has('brand_id')) {
+            $query->where('brand_id', $request->input('brand_id'));
+        }
+
+        if ($request->has('currency')) {
+            $query->where('currency', $request->input('currency'));
+        }
+
+        if ($request->has('search') && $request->filled('search')) {
+            $searchTerms = explode(' ', $request->input('search'));
+            $query->where(function($q) use ($searchTerms) {
+                foreach ($searchTerms as $term) {
+                    $q->orWhere('title', 'like', "%$term%")
+                      ->orWhere('description', 'like', "%$term%");
+                }
+            });
+        }
+
+        // --- PRICE FILTERS ---
+        if ($request->has('min_price') && $request->filled('min_price')) {
+            $minPrice = (int) $request->input('min_price');
+            $query->where('price', '>=', $minPrice);
+        }
+        if ($request->has('max_price') && $request->filled('max_price')) {
+            $maxPrice = (int) $request->input('max_price');
+            $query->where('price', '<=', $maxPrice);
+        }
+        // --- END PRICE FILTERS ---
+
+        $products = $query->get();
+
+        return response()->json(ProductResource::collection($products));
     }
 
-    // --- PRICE FILTERS ---
-    if ($request->has('min_price') && $request->filled('min_price')) {
-        // Explicitly cast to integer (or float if your price has decimals)
-        $minPrice = (int) $request->input('min_price');
-        $query->where('price', '>=', $minPrice); // Compare number >= number
-    }
-    if ($request->has('max_price') && $request->filled('max_price')) {
-        // Explicitly cast to integer (or float if your price has decimals)
-        $maxPrice = (int) $request->input('max_price');
-        $query->where('price', '<=', $maxPrice); // Compare number <= number
-    }
-    // --- END PRICE FILTERS ---
 
-
-    $products = $query->get();
-
-    // Optional: Log the final query for debugging if it still fails
-    // \Log::info('Final Filter Query:', [\DB::getQueryLog()]); // Requires \DB::enableQueryLog(); earlier
-
-    return response()->json(ProductResource::collection($products));
-}
 
     public function myProducts(): JsonResponse
     {

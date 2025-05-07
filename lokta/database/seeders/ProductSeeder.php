@@ -21,7 +21,7 @@ class ProductSeeder extends Seeder
         $offers = Offer::all();
         $paymentways = Paymentway::with('Paymentway_input')->get();
 
-        foreach (range(1, 20) as $index) {
+        foreach (range(1, 5) as $index) {
             $offer = $offers->random();
             $paymentway = $paymentways->random();
 

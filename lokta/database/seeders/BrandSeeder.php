@@ -25,7 +25,7 @@ class BrandSeeder extends Seeder
             throw new \Exception('لا توجد تصنيفات فرعية متاحة. يرجى تشغيل SubCategorySeeder أولاً.');
         }
 
-        foreach (range(1, 10) as $index) {
+        foreach (range(1, 30) as $index) {
             Brand::create([
                 'name' => $faker->unique()->word,
                 'sub__category_id' => $faker->randomElement($subCategories),
