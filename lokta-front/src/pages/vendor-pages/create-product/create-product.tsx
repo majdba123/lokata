@@ -2,7 +2,6 @@ import { getBrandsBySubcategoryApi } from "@/api/services/brand/brand-service";
 import { Brand } from "@/api/services/brand/types";
 import { allSubCategoriesApi } from "@/api/services/category/category-service";
 import { Subcategory } from "@/api/services/category/types";
-import { uploadFileApi } from "@/api/services/file-upload/file-upload-service";
 import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -42,8 +41,7 @@ function CreateProduct() {
   const [previewImages, setPreviewImages] = React.useState<string[] | null>(
     null
   );
-  const [loadingUpload, setLoadingUpload] = useState(false);
-  const [newImages, setNewImages] = useState<string[] | null>(null);
+  const [newImages, setNewImages] = useState<File[] | null>(null); // Changed from string[] to File[]
   const [brands, setBrands] = useState<Brand[]>([]);
   const [subCategories, setSubCategories] = useState<Subcategory[]>([]);
   const [currentStep, setCurrentStep] = useState<Step>("form");
@@ -69,32 +67,10 @@ function CreateProduct() {
       }
       const images = files.map((file) => URL.createObjectURL(file));
       setPreviewImages(images);
-      await handleUploadWithFiles(files);
+      setNewImages(files); // Store File objects directly
     } else {
       setPreviewImages(null);
       setNewImages(null);
-    }
-  };
-  const handleUploadWithFiles = async (files: File[]) => {
-    if (files.length === 0) return;
-
-    const formData = new FormData();
-    files.forEach((file, index) => {
-      formData.append(`files[${index}]`, file);
-    });
-
-    try {
-      setLoadingUpload(true);
-      setNewImages(null);
-      const res = await uploadFileApi(formData);
-      setNewImages(res.urls);
-      setLoadingUpload(false);
-      toast.success("تم رفع الملف بنجاح"); // File uploaded successfully
-    } catch (error: any) {
-      setPreviewImages(null); // Clear preview if upload fails
-      setNewImages(null);
-      toast.error("برجاء تغيير نوع الصورة" + error.message);
-      setLoadingUpload(false);
     }
   };
 
@@ -128,7 +104,7 @@ function CreateProduct() {
     data: ProductData
   ) => {
     if (!newImages || newImages.length === 0) {
-      toast.error("الرجاء الانتظار حتى يتم رفع الصور بنجاح أو قم باختيار صور.");
+      toast.error("الرجاء اختيار صور المنتج.");
       return;
     }
     setSubmittedProductData(data);
@@ -306,8 +282,7 @@ function CreateProduct() {
             <div>
               <label htmlFor="productImageInput">
                 {" "}
-                {/* Changed id to avoid conflict with register name */}
-                صور المنتج {loadingUpload && "(جاري رفع الصور...)"}
+                صور المنتج
                 {!newImages && (
                   <span className="text-red-500 text-xs ml-2">(مطلوب)</span>
                 )}{" "}
@@ -320,15 +295,12 @@ function CreateProduct() {
                 onChange={handleChooseFile}
                 accept="image/*"
                 multiple={true}
-                disabled={loadingUpload}
               />
-              {!newImages &&
-                errors.productImage &&
-                errors.productImage && ( // Show error only on submit attempt if no images are uploaded
-                  <span className="text-red-500 text-sm">
-                    الرجاء اختيار ورفع صورة واحدة على الأقل.
-                  </span>
-                )}
+              {errors.productImage && !newImages && (
+                <span className="text-red-500 text-sm">
+                  الرجاء اختيار صورة واحدة على الأقل.
+                </span>
+              )}
               {previewImages && (
                 <div className="flex gap-4 mt-2 flex-wrap">
                   {previewImages.map((previewImage, index) => (
@@ -346,9 +318,8 @@ function CreateProduct() {
             <button
               type="submit"
               className="bg-blue-500 text-white rounded-md p-2 hover:bg-blue-600 disabled:opacity-50"
-              disabled={loadingUpload}
             >
-              {loadingUpload ? "جاري رفع الصور..." : "التالي (اختيار الخطة)"}
+              التالي (اختيار الخطة)
             </button>
           </form>
         </>
@@ -357,7 +328,7 @@ function CreateProduct() {
       {currentStep === "plan" && submittedProductData && (
         <ChoosePlan
           productData={submittedProductData}
-          imageUrls={newImages}
+          imageFiles={newImages}
           onBack={handleGoBackToForm}
         />
       )}

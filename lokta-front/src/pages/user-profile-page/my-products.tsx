@@ -20,7 +20,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import UpdateProduct from "./update-product";
-import { IMAGES_API_URL } from "@/api/constants";
 
 function MyProducts() {
   const [isLoading, setIsLoading] = useState(false);
@@ -95,7 +94,7 @@ function MyProducts() {
               owner_id={product.owner_id}
               title={product.title}
               originalPrice={product.price}
-              imageUrl={`${IMAGES_API_URL}/${product.images[0]}`}
+              imageUrl={`${product.images[0]}`}
               key={product.id}
               currency={product.currency}
               description={product.description ?? ""}

@@ -9,12 +9,12 @@ import useCreateProductMutation from "./hooks/useCreateProductMutation";
 
 interface ChoosePlanProps {
   productData: ProductData;
-  imageUrls: string[] | null;
+  imageFiles: File[] | null;
   onBack: () => void; // Function to go back to the form
 }
 const ChoosePlan: React.FC<ChoosePlanProps> = ({
   onBack,
-  imageUrls,
+  imageFiles,
   productData,
 }) => {
   const paymentsWayQuery = usePaymentsWayQuery();
@@ -120,11 +120,9 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
     formData.append("currency", productData.currency);
     formData.append("city", productData.city);
 
-    // 2. Append Image URLs (assuming these are strings to be sent)
-    // Adjust if you need to handle File objects for images instead
-    if (imageUrls) {
-      imageUrls.forEach((url, index) => {
-        formData.append(`images[${index}]`, url); // Sending as an array
+    if (imageFiles) {
+      imageFiles.forEach((file, index) => {
+        formData.append(`images[${index}]`, file); // Append File object directly
       });
     }
 

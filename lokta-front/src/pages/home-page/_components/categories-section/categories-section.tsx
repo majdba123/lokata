@@ -7,7 +7,6 @@ import {
 } from "@/components/ui/carousel";
 import { SubcategoryWithProducts } from "@/api/services/category/types";
 import ProductCard from "@/components/my-ui/product-card";
-import { IMAGES_API_URL } from "@/api/constants";
 import { Product } from "@/api/services/products/types";
 import { Link } from "react-router-dom";
 import { useCategoryStore } from "@/zustand-stores/category-store";
@@ -45,7 +44,7 @@ function CategoriesSection({ id, title, products }: Props) {
                 className="pl-2 sm:pl-4 xs:basis-1/2 sm:basis-1/4 md:basis-1/3 lg:basis-1/4"
               >
                 <ProductCard
-                  imageUrl={`${IMAGES_API_URL}/${product.images[0]}`}
+                  imageUrl={`${product.images[0]}`}
                   originalPrice={product.price}
                   title={product.title}
                   owner_id={product.owner_id}

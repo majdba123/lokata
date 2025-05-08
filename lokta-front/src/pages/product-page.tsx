@@ -1,4 +1,3 @@
-import { IMAGES_API_URL } from "@/api/constants";
 import { getProductByIdApi } from "@/api/services/products/product-service";
 import { Product } from "@/api/services/products/types";
 import Loading from "@/components/my-ui/loading";
@@ -50,7 +49,7 @@ function ProductPage() {
             {product?.images.map((image) => (
               <img
                 key={image}
-                src={`${IMAGES_API_URL}/${image}`}
+                src={`${image}`}
                 alt={product.title}
                 className="w-64 h-64 object-cover"
               />
