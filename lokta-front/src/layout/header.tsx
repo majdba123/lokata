@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowLeftFromLineIcon } from "lucide-react";
+import { ArrowLeftFromLineIcon, BadgePlus } from "lucide-react";
 import logo from "@/assets/lokta-logo.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/zustand-stores/auth.store";
@@ -45,12 +45,22 @@ const Header: React.FC = () => {
       <div className="container mx-auto px-4 flex items-center justify-between flex-col">
         <div className="flex items-center justify-between w-full">
           <Link to="/" className="flex items-center">
-            <img src={logo} alt="Lokta Logo" className="h-8" />
+            <img src={logo} alt="Lokta Logo" className="h-10" />
           </Link>
 
-          <div className="flex items-center space-x-2 md:space-x-4">
-            <div className="flex items-center space-x-4">
-              <span>تسجيل {isAuthenticated ? "خروج" : "الدخول"}</span>
+          <div className="flex items-center gap-2">
+            {isAuthenticated && (
+              <Button asChild variant={"ghost"} className="">
+                <Link to={"/profile/create-product"}>
+                  {" "}
+                  انشاء منتج جديد <BadgePlus />{" "}
+                </Link>
+              </Button>
+            )}
+            <div className="flex items-center md:space-x-2 ">
+              <span className="hidden md:inline">
+                تسجيل {isAuthenticated ? "خروج" : "الدخول"}
+              </span>
 
               <Button
                 onClick={handleLogout}

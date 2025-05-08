@@ -67,6 +67,7 @@ function Navbar() {
               <Link
                 className="text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium"
                 to="/"
+                key={"home"}
               >
                 الرئيسية
               </Link>
@@ -84,6 +85,7 @@ function Navbar() {
               <Link
                 className="text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium"
                 to={`/${isLogged ? "profile/dashboard" : "login"}`}
+                key={"profile"}
               >
                 الملف الشخصي
               </Link>
@@ -119,6 +121,8 @@ function Navbar() {
             <Link
               className="text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium"
               to="/"
+              onClick={toggleMenu}
+              key={"home"}
             >
               الرئيسية
             </Link>
@@ -128,6 +132,7 @@ function Navbar() {
                   className="text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium"
                   to={`/${item.name}`}
                   key={item.id}
+                  onClick={toggleMenu}
                 >
                   {item.name}
                 </Link>
@@ -136,6 +141,8 @@ function Navbar() {
             <Link
               className="text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium"
               to={`/${isLogged ? "profile/dashboard" : "login"}`}
+              onClick={toggleMenu}
+              key={"profile"}
             >
               الملف الشخصي
             </Link>
