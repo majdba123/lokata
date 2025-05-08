@@ -93,7 +93,7 @@ function MyProducts() {
             <ProductCard
               owner_id={product.owner_id}
               title={product.title}
-              originalPrice={product.price}
+              originalPrice={+product.price}
               imageUrl={`${product.images[0]}`}
               key={product.id}
               currency={product.currency}

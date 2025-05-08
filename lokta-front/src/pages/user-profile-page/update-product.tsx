@@ -1,8 +1,7 @@
 import { allSubCategoriesApi } from "@/api/services/category/category-service";
 import { Subcategory } from "@/api/services/category/types";
-import { uploadFileApi } from "@/api/services/file-upload/file-upload-service";
 import { updateProductApi } from "@/api/services/products/product-service";
-import { Product, UpdateProductRequest } from "@/api/services/products/types";
+import { Product } from "@/api/services/products/types";
 import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -28,8 +27,7 @@ function UpdateProduct(props: Props) {
   const [previewImages, setPreviewImages] = React.useState<string[] | null>(
     null
   );
-  const [loadingUpload, setLoadingUpload] = useState(false);
-  const [newImages, setNewImages] = useState<string[] | null>(null);
+  const [newImages, setNewImages] = useState<File[] | null>(null); // Changed to File[]
   const [loadingCreateProduct, setLoadingCreateProduct] = useState(false);
   const [subCategories, setSubCategories] = useState<Subcategory[]>([]);
   const {
@@ -52,7 +50,7 @@ function UpdateProduct(props: Props) {
 
   const watchedSubCategoryId = watch("sub__category_id");
   const brandsQuery = useBrandsQuery({
-    curSubCategoryId: watchedSubCategoryId,
+    id: watchedSubCategoryId,
   });
 
   const handleChooseFile = async (
@@ -61,30 +59,13 @@ function UpdateProduct(props: Props) {
     if (e.target.files) {
       const files = Array.from(e.target.files);
       const images = files.map((file) => URL.createObjectURL(file));
+      setNewImages(files); // Store File objects
       setPreviewImages(images);
-      await handleUploadWithFiles(files);
+    } else {
+      setNewImages(null);
+      setPreviewImages(null);
     }
   };
-  const handleUploadWithFiles = async (files: File[]) => {
-    if (files.length === 0) return;
-
-    const formData = new FormData();
-    files.forEach((file, index) => {
-      formData.append(`files[${index}]`, file);
-    });
-
-    try {
-      setLoadingUpload(true);
-      const res = await uploadFileApi(formData);
-      setNewImages(res.urls);
-      setLoadingUpload(false);
-      toast.success("تم رفع الملف بنجاح"); // File uploaded successfully
-    } catch (error: any) {
-      toast.error("برجاء تغيير نوع الصورة" + error.message);
-      setLoadingUpload(false);
-    }
-  };
-
   useEffect(() => {
     fetchSubCategories();
   }, []);
@@ -101,23 +82,27 @@ function UpdateProduct(props: Props) {
   const onSubmit: SubmitHandler<ProductData> = async (data: ProductData) => {
     try {
       setLoadingCreateProduct(true);
-      const req: UpdateProductRequest = {
-        title: data.productTitle,
-        price: +data.productPrice,
-        description: data.productDescription,
-        images: newImages ?? props.images,
-        brand_id: +data.brand_id,
-        sub__category_id: +data.sub__category_id,
-        currency: data.currency,
-        city: data.city,
-      };
 
-      const res = await updateProductApi(props.id, req);
+      const formData = new FormData();
+      formData.append("title", data.productTitle);
+      formData.append("price", String(data.productPrice));
+      formData.append("description", data.productDescription);
+      formData.append("brand_id", String(data.brand_id));
+      formData.append("sub__category_id", String(data.sub__category_id));
+      formData.append("currency", data.currency);
+      formData.append("city", data.city);
+    
+      if (newImages && newImages.length > 0) {
+        newImages.forEach((file, idx) => {
+          formData.append(`images[${idx}]`, file);
+        });
+      }
+  
+      const res = await updateProductApi(props.id, formData);
       setLoadingCreateProduct(false);
       reset();
       props.onUpdate(res);
       toast.success("تم تحديث المنتج بنجاح"); // Product Updated successfully
-
       setPreviewImages(null);
       setNewImages(null);
     } catch (error: any) {
@@ -261,7 +246,7 @@ function UpdateProduct(props: Props) {
 
         <div>
           <label htmlFor="productImage">
-            صورة المنتج {loadingUpload && "جاري التحميل..."}
+            صورة المنتج (ستحل الصور الجديدة محل القديمة)
           </label>
           <input
             {...register("productImage")}
@@ -270,7 +255,6 @@ function UpdateProduct(props: Props) {
             onChange={handleChooseFile}
             accept="image/*"
             multiple={true}
-            disabled={loadingUpload}
           />
           {errors.productImage && (
             <span className="text-red-500 text-sm">

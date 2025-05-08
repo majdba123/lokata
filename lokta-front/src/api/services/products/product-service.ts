@@ -1,11 +1,6 @@
 import axios from "axios";
 import { resolveError } from "../helpers/error-resolver";
-import {
-  CreateProductRequest,
-  Product,
-  ProductsFilter,
-  UpdateProductRequest,
-} from "./types";
+import { CreateProductRequest, Product, ProductsFilter } from "./types";
 import { API_URL } from "@/api/constants";
 import { useAuthStore } from "@/zustand-stores/auth.store";
 import { headerGenerator } from "../helpers/header-generator";
@@ -59,16 +54,17 @@ class ProductService {
     }
   };
 
-  updateProductApi = async (id: number, req: UpdateProductRequest) => {
+  updateProductApi = async (id: number, req: FormData) => {
     try {
       const accessToken = useAuthStore.getState().accessToken;
-      const { data } = await axios.put<Product>(
+      const { data } = await axios.post<Product>(
         `${API_URL}/api/products/${id}`,
         req,
         {
           headers: headerGenerator([
             {
               Authorization: `Bearer ${accessToken}`,
+              "Content-Type": "multipart/form-data",
             },
           ]),
         }

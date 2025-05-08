@@ -29,7 +29,7 @@ function ProfileDashboard() {
             <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
               {user?.image ? (
                 <img
-                  src={`${user?.image}`}
+                  src={`http://lokta.sy/api/${user?.image}`}
                   alt="Profile"
                   className="h-16 w-16 sm:h-20 sm:w-20 rounded-full object-contain"
                 />
