@@ -10,6 +10,7 @@ use App\Http\Controllers\ForgetPasswordController;
 use App\Http\Controllers\PaymentwayController;
 use App\Http\Controllers\PaymentwayInputController;
 use App\Http\Controllers\OfferController;
+use App\Http\Controllers\CategoryNavbarController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -47,9 +48,11 @@ Route::get('/products/subcategories/{subCategoryId}', [ProductController::class,
 Route::get('/brands', [BrandController::class, 'index']);
 Route::get('/brands/{brand}', [BrandController::class, 'show']);
 Route::get('/brands/by_sub_category/{sub_category_id}', [BrandController::class, 'by_sub_category']);
+Route::get('/brands/by_category/{category_id}', [BrandController::class, 'by_category']);
 
 
 
+Route::get('/navbar_categories', [CategoryNavbarController::class, 'index']);
 
 
 
@@ -79,7 +82,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified.email']], function () {
     // Product routes for verified users
     Route::get('/my-products', [ProductController::class, 'myProducts']);
     Route::post('/products', [ProductController::class, 'store']);
-    Route::put('/products/{product}', [ProductController::class, 'update']);
+    Route::post('/products/{product}', [ProductController::class, 'update']);
     Route::delete('/products/{product}', [ProductController::class, 'destroy']);
 
     // Brand routes for verified users
@@ -106,6 +109,10 @@ Route::group(['middleware' => ['auth:sanctum', 'verified.email']], function () {
         Route::get('show/{id}', [OfferController::class, 'show']);
 
     });
+
+
+
+
 });
 
 // Admin routes (don't require email verification)
@@ -154,6 +161,8 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
         Route::prefix('product')->group(function () {
             Route::put('/update_status/{product_id}', [ProductController::class, 'updateStatus']);
             Route::get('/get_all', [ProductController::class, 'adminProducts']);
+            Route::put('update/{product}', [ProductController::class, 'update']);
+
 
         });
 
@@ -162,6 +171,14 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
         Route::delete('/brands/delete/{brand}', [BrandController::class, 'destroy']);
 
 
+        Route::prefix('navbar-categories')->group(function () {
+            // عرض جميع تصنيفات النافبار
+
+            // إضافة/تحديث تصنيفات النافبار
+            Route::post('/store', [CategoryNavbarController::class, 'store']);
+            // حذف تصنيف من النافبار
+            Route::delete('/delete/{id}', [CategoryNavbarController::class, 'destroy']);
+        });
 
 
 

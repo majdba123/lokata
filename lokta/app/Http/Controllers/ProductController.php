@@ -144,9 +144,6 @@ class ProductController extends Controller
 
 
 
-
-
-
     public function store(Request $request): JsonResponse
     {
         DB::beginTransaction();
@@ -161,14 +158,13 @@ class ProductController extends Controller
                 'description' => 'required|string',
                 'city' => 'required|string',
                 'images' => 'required|array',
-                'images.*' => 'string',
+                'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // تعديل هنا للتحقق من أن كل صورة صالحة
                 'brand_id' => 'required|numeric|exists:brands,id',
                 'currency' => 'required|string|in:sy,us',
                 'offer_id' => 'required|numeric|exists:offers,id',
                 'paymentway_id' => 'required|numeric|exists:paymentways,id',
             ];
 
-            // فقط إذا لم يكن paymentway_id = 1 نطلب payment_inputs
             if ($request->paymentway_id != 1) {
                 $validationRules['payment_inputs'] = 'required|array';
             }
@@ -181,10 +177,20 @@ class ProductController extends Controller
                     'brand_id' => ['البراند المحدد لا ينتمي إلى التصنيف الفرعي المحدد.']
                 ]);
             }
+
             $paymentway = Paymentway::with('Paymentway_input')->findOrFail($validatedData['paymentway_id']);
             $offer = Offer::findOrFail($validatedData['offer_id']);
 
-            // معالجة حقول الدفع فقط إذا لم يكن paymentway_id = 1
+            // معالجة الصور
+            $uploadedImages = [];
+            foreach ($request->file('images') as $imageFile) {
+                $imageName = Str::random(32) . '.' . $imageFile->getClientOriginalExtension();
+                $imagePath = 'products/' . $imageName;
+                Storage::disk('public')->put($imagePath, file_get_contents($imageFile));
+                $uploadedImages[] = asset('api/storage/' . $imagePath);
+            }
+
+            // معالجة حقول الدفع
             $processedPaymentInputs = [];
             if ($validatedData['paymentway_id'] != 1) {
                 $processedPaymentInputs = $this->processPaymentInputs($paymentway, $validatedData['payment_inputs'], $request);
@@ -196,13 +202,13 @@ class ProductController extends Controller
                 'sub__category_id' => $validatedData['sub__category_id'],
                 'description' => $validatedData['description'],
                 'city' => $validatedData['city'],
-                'images' => json_encode($validatedData['images']),
+                'images' => json_encode($uploadedImages), // تخزين مصفوفة مسارات الصور
                 'brand_id' => $validatedData['brand_id'],
                 'currency' => $validatedData['currency'],
                 'owner_id' => $ownerId,
                 'offer_id' => $validatedData['offer_id'],
                 'paymentway_id' => $validatedData['paymentway_id'],
-                'payment_inputs' => json_encode($processedPaymentInputs), // سيكون فارغًا إذا كان paymentway_id = 1
+                'payment_inputs' => json_encode($processedPaymentInputs),
                 'status' => 'pending',
                 'start_date' => null,
                 'end_date' => null,
@@ -233,6 +239,15 @@ class ProductController extends Controller
             ], 500);
         }
     }
+
+
+
+
+
+
+
+
+
     protected function validatePaymentInputs(Paymentway $paymentway, array $paymentInputs, Request $request): void
     {
         $requiredInputs = $paymentway->Paymentway_input;
@@ -359,45 +374,60 @@ class ProductController extends Controller
 
 
 
-
-    public function update(Request $request, Product $product): JsonResponse
+    public function update(Request $request, $id): JsonResponse
     {
         try {
+            $product = Product::findOrFail($id);
+
+            if (!(Auth::id() == $product->owner_id || Auth::user()->role == 'admin')) {
+                return response()->json(['message' => 'غير مصرح لك بتعديل هذا المنتج'], 403);
+            }
+
             $validatedData = $request->validate([
                 'title' => 'nullable|string|max:255',
                 'price' => 'nullable|numeric|min:0',
                 'sub__category_id' => 'nullable|numeric|exists:sub__categories,id',
                 'description' => 'nullable|string',
                 'city' => 'nullable|string',
-
                 'images' => 'nullable|array',
-                'images.*' => 'string',
+                'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
                 'brand_id' => 'nullable|numeric|exists:brands,id',
                 'currency' => 'nullable|string|in:sy,us',
             ]);
 
             // التحقق من أن البراند ينتمي إلى التصنيف الفرعي إذا تم توفيرهما
-            if (isset($validatedData['brand_id']) && isset($validatedData['sub__category_id'])) {
+            if (isset($validatedData['brand_id'])) {
                 $brand = Brand::find($validatedData['brand_id']);
-                if ($brand->sub__category_id != $validatedData['sub__category_id']) {
+                $subCategoryId = $validatedData['sub__category_id'] ?? $product->sub__category_id;
+
+                if ($brand->sub__category_id != $subCategoryId) {
                     throw ValidationException::withMessages([
                         'brand_id' => ['البراند المحدد لا ينتمي إلى التصنيف الفرعي المحدد.']
                     ]);
                 }
-            } elseif (isset($validatedData['brand_id'])) {
-                // إذا تم تحديث البراند فقط، تحقق من أنه ينتمي إلى تصنيف المنتج الحالي
-                $brand = Brand::find($validatedData['brand_id']);
-                if ($brand->sub__category_id != $product->sub__category_id) {
-                    throw ValidationException::withMessages([
-                        'brand_id' => ['البراند المحدد لا ينتمي إلى تصنيف المنتج الحالي.']
-                    ]);
-                }
             }
 
-            if ($request->has('images')) {
-                $imagesJson = json_encode($validatedData['images']);
-                unset($validatedData['images']);
-                $validatedData['images'] = $imagesJson;
+            // معالجة الصور الجديدة إذا تم رفعها
+            if ($request->hasFile('images')) {
+                $uploadedImages = [];
+
+                // حذف الصور القديمة إذا كانت موجودة
+                if ($product->images) {
+                    foreach (json_decode($product->images) as $oldImage) {
+                        $oldImagePath = str_replace(asset('api/storage/'), '', $oldImage);
+                        Storage::disk('public')->delete($oldImagePath);
+                    }
+                }
+
+                // رفع الصور الجديدة
+                foreach ($request->file('images') as $imageFile) {
+                    $imageName = Str::random(32) . '.' . $imageFile->getClientOriginalExtension();
+                    $imagePath = 'products/' . $imageName;
+                    Storage::disk('public')->put($imagePath, file_get_contents($imageFile));
+                    $uploadedImages[] = asset('api/storage/' . $imagePath);
+                }
+
+                $validatedData['images'] = json_encode($uploadedImages);
             }
 
             $product->update($validatedData);
@@ -410,8 +440,15 @@ class ProductController extends Controller
             return response()->json(new ProductResource($product));
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'حدث خطأ أثناء تحديث المنتج: ' . $e->getMessage()
+            ], 500);
         }
     }
+
+
+
 
     public function destroy(Product $product): JsonResponse
     {

@@ -23,4 +23,17 @@ class Brand extends Model
     {
         return $this->belongsTo(Sub_Category::class ,'sub__category_id');
     }
+
+
+    public function category()
+    {
+        return $this->hasOneThrough(
+            Category::class,
+            Sub_Category::class,
+            'id', // Foreign key on Sub_Category table
+            'id', // Foreign key on Category table
+            'sub__category_id', // Local key on Brand table
+            'category_id' // Local key on Sub_Category table
+        );
+    }
 }

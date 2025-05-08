@@ -36,6 +36,18 @@ class BrandController extends Controller
     }
 
 
+    public function by_category($category_id)
+    {
+        $brands = Brand::whereHas('category', function($query) use ($category_id) {
+                $query->where('categories.id', $category_id); // Specify table name here
+            })
+            ->with(['subcategory', 'category'])
+            ->paginate(10);
+
+        return response()->json([
+            'brands' => $brands
+        ], 200);
+    }
 
     public function store(Request $request)
     {
