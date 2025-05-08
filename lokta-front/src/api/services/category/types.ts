@@ -17,3 +17,8 @@ export type Category = {
   updated_at: string;
   sub_category: Subcategory[];
 };
+
+export type NavbarCategory = {
+  id: number;
+  name: string;
+};

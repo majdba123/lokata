@@ -5,6 +5,7 @@ export type ProductsFilter = {
   sub_category_id?: number;
   brand_id?: number;
   subcategory_title?: string;
+  category_id?: number;
 };
 
 export type Product = {
@@ -21,6 +22,7 @@ export type Product = {
   currency: "sy" | "us";
   status: "rejected" | "completed" | "pending";
   dates: ProductDates;
+  city: string | null;
 };
 
 export type ProductDates = {
@@ -47,4 +49,5 @@ export type UpdateProductRequest = {
   images?: string[];
   brand_id?: number;
   currency: "sy" | "us";
+  city?: string;
 };

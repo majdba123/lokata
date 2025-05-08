@@ -22,12 +22,12 @@ export function CategoryCarousel({
       opts={{
         align: "start",
         loop: true,
-        direction : "rtl"
+        direction: "rtl",
       }}
       className="w-full"
       dir="rtl"
     >
-      <CarouselContent  className="-ml-2">
+      <CarouselContent className="-ml-2">
         {subcategories.map((subcategory) => (
           <CarouselItem
             key={subcategory.id}
@@ -41,8 +41,8 @@ export function CategoryCarousel({
         ))}
       </CarouselContent>
       <div className="hidden md:flex items-center justify-center gap-5 mt-4">
-        <CarouselPrevious className="static transform-none mr-2" />
         <CarouselNext className="static transform-none" />
+        <CarouselPrevious className="static transform-none mr-2" />
       </div>
     </Carousel>
   );

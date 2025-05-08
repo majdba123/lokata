@@ -81,7 +81,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </div>
         <p className="text-xs text-gray-500">
           {screenSize >= 900 ? (
-            <span>{truncateString(description, 30)}</span>
+            <span>{truncateString(description, 25)}</span>
           ) : (
             <span>{truncateString(description, 60)}</span>
           )}

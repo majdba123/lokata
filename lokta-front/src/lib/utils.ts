@@ -12,3 +12,6 @@ export function generatePriceRange(min: number, max: number, step: number) {
   }
   return range;
 }
+
+export const FULL_HOUR_TIME_MS = 3600000;
+export const FULL_DAY_TIME_MS = 86400000;

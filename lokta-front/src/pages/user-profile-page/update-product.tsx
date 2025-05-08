@@ -1,5 +1,3 @@
-import { getBrandsApi } from "@/api/services/brand/brand-service";
-import { Brand } from "@/api/services/brand/types";
 import { allSubCategoriesApi } from "@/api/services/category/category-service";
 import { Subcategory } from "@/api/services/category/types";
 import { uploadFileApi } from "@/api/services/file-upload/file-upload-service";
@@ -8,6 +6,8 @@ import { Product, UpdateProductRequest } from "@/api/services/products/types";
 import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { SY_CITIES } from "../vendor-pages/create-product/create-product";
+import useBrandsQuery from "../category-page/useBrandsQuery";
 
 type Props = Product & {
   onCancel: () => void;
@@ -21,6 +21,7 @@ type ProductData = {
   brand_id: number;
   sub__category_id: number;
   currency: "sy" | "us";
+  city: string;
 };
 
 function UpdateProduct(props: Props) {
@@ -30,13 +31,13 @@ function UpdateProduct(props: Props) {
   const [loadingUpload, setLoadingUpload] = useState(false);
   const [newImages, setNewImages] = useState<string[] | null>(null);
   const [loadingCreateProduct, setLoadingCreateProduct] = useState(false);
-  const [brands, setBrands] = useState<Brand[]>([]);
   const [subCategories, setSubCategories] = useState<Subcategory[]>([]);
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
+    watch,
   } = useForm<ProductData>({
     defaultValues: {
       brand_id: props.brand_id,
@@ -45,7 +46,13 @@ function UpdateProduct(props: Props) {
       productTitle: props.title,
       sub__category_id: props.sub__category_id,
       currency: props.currency,
+      city: props.city ?? "",
     },
+  });
+
+  const watchedSubCategoryId = watch("sub__category_id");
+  const brandsQuery = useBrandsQuery({
+    curSubCategoryId: watchedSubCategoryId,
   });
 
   const handleChooseFile = async (
@@ -80,17 +87,8 @@ function UpdateProduct(props: Props) {
 
   useEffect(() => {
     fetchSubCategories();
-    fetchBrands();
   }, []);
 
-  const fetchBrands = async () => {
-    try {
-      const data = await getBrandsApi();
-      setBrands(data.brands);
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  };
   const fetchSubCategories = async () => {
     try {
       const data = await allSubCategoriesApi();
@@ -111,6 +109,7 @@ function UpdateProduct(props: Props) {
         brand_id: +data.brand_id,
         sub__category_id: +data.sub__category_id,
         currency: data.currency,
+        city: data.city,
       };
 
       const res = await updateProductApi(props.id, req);
@@ -128,8 +127,74 @@ function UpdateProduct(props: Props) {
   };
 
   return (
-    <div dir="rtl" className="max-h-[90vh] overflow-y-auto">
+    <div dir="rtl" className="max-h-[90vh] overflow-y-auto px-5">
       <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+        <div>
+          <label htmlFor="city"> المدينة</label>
+          <select
+            {...register("city", {
+              required: " المدينة مطلوبة",
+            })}
+            className="border border-gray-300 rounded-md p-2 w-full"
+            defaultValue=""
+          >
+            <option value="" disabled>
+              اختر المدينة
+            </option>{" "}
+            {SY_CITIES.map((city) => (
+              <option key={city} value={city}>
+                {city}
+              </option>
+            ))}
+          </select>
+          {errors.city && (
+            <span className="text-red-500 text-sm">{errors.city.message}</span>
+          )}
+        </div>
+        <div>
+          <label htmlFor="sub__category_id">الفئة الفرعية</label>
+          <select
+            {...register("sub__category_id", {})}
+            className="border border-gray-300 rounded-md p-2 w-full"
+          >
+            <option value="">اختر الفئة الفرعية</option>
+            {subCategories.map((subcategory) => (
+              <option key={subcategory.id} value={subcategory.id}>
+                {subcategory.title}
+              </option>
+            ))}
+          </select>
+          {errors.sub__category_id && (
+            <span className="text-red-500 text-sm">
+              {errors.sub__category_id.message}
+            </span>
+          )}
+        </div>
+        <div className={`${!watch("sub__category_id") && "opacity-[0.4]"}`}>
+          <label htmlFor="brand_id">
+            العلامة التجارية{" "}
+            {brandsQuery.isLoading && "(جاري تحميل الماركات...)"}
+          </label>{" "}
+          <select
+            {...register("brand_id")}
+            className="border border-gray-300 rounded-md p-2 w-full"
+            disabled={!watchedSubCategoryId || brandsQuery.isLoading}
+          >
+            <option value="">اختر العلامة التجارية</option>
+            {brandsQuery.status == "success" &&
+              brandsQuery.data.map((brand) => (
+                <option key={brand.id} value={brand.id}>
+                  {brand.name}
+                </option>
+              ))}
+          </select>
+          {errors.brand_id && (
+            <span className="text-red-500 text-sm">
+              {errors.brand_id.message}
+            </span>
+          )}
+        </div>
+
         <div className="flex gap-4 flex-col md:flex-row">
           <div className="w-full">
             <label htmlFor="productTitle">عنوان المنتج</label>
@@ -226,45 +291,6 @@ function UpdateProduct(props: Props) {
           )}
         </div>
 
-        <div>
-          <label htmlFor="brand_id">العلامة التجارية</label>
-          <select
-            {...register("brand_id")}
-            className="border border-gray-300 rounded-md p-2 w-full"
-          >
-            <option value="">اختر العلامة التجارية</option>
-            {brands.map((brand) => (
-              <option key={brand.id} value={brand.id}>
-                {brand.name}
-              </option>
-            ))}
-          </select>
-          {errors.brand_id && (
-            <span className="text-red-500 text-sm">
-              {errors.brand_id.message}
-            </span>
-          )}
-        </div>
-
-        <div>
-          <label htmlFor="sub__category_id">الفئة الفرعية</label>
-          <select
-            {...register("sub__category_id", {})}
-            className="border border-gray-300 rounded-md p-2 w-full"
-          >
-            <option value="">اختر الفئة الفرعية</option>
-            {subCategories.map((subcategory) => (
-              <option key={subcategory.id} value={subcategory.id}>
-                {subcategory.title}
-              </option>
-            ))}
-          </select>
-          {errors.sub__category_id && (
-            <span className="text-red-500 text-sm">
-              {errors.sub__category_id.message}
-            </span>
-          )}
-        </div>
         <div className="flex justify-end gap-7">
           <button
             type="button"

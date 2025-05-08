@@ -13,7 +13,6 @@ import VerifyOtp from "./pages/auth-page/verify-otp";
 import ChatPage from "./pages/chat-page/chat-page";
 import ChatArea from "./pages/chat-page/chat-area";
 import PageLayout from "./layout/page-layout";
-import TyrePage from "./pages/tyre-page/tyre-page";
 import { Toaster } from "sonner";
 import MyProducts from "./pages/user-profile-page/my-products";
 import ProductPage from "./pages/product-page";
@@ -27,7 +26,10 @@ function App() {
         <Route element={<PageLayout />}>
           {/* <Route path="/" element={<HomePage />} /> */}
           <Route path="/" element={<AllCategoryPage />} />
-          <Route path="/:categoryName/:subCategoryName" element={<CategoryPage />} />
+          <Route
+            path="/:categoryName/:subCategoryName"
+            element={<CategoryPage />}
+          />
           <Route path="/:categoryName/*" element={<CategoryPage />} />
         </Route>
         <Route element={<PageLayout />}>
@@ -66,9 +68,6 @@ function App() {
               </h1>
             }
           />
-        </Route>
-        <Route element={<PageLayout />}>
-          <Route path="/tyre" element={<TyrePage />} />
         </Route>
         <Route element={<PageLayout />}>
           <Route path="/product/:id" element={<ProductPage />} />

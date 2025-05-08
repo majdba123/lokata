@@ -19,7 +19,7 @@ export type ProductData = {
   city: string;
 };
 
-const SY_CITIES = [
+export const SY_CITIES = [
   "دمشق",
   "حلب",
   "حمص",

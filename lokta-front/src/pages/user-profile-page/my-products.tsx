@@ -142,7 +142,7 @@ function MyProducts() {
                     <Pencil color="blue" />
                   </Button>
                 </AlertDialogTrigger>
-                <AlertDialogContent>
+                <AlertDialogContent className=" py-4 px-1">
                   <UpdateProduct
                     {...product}
                     onCancel={onCancelUpdate}

@@ -1,16 +1,16 @@
-import { getBrandsBySubcategoryApi } from "@/api/services/brand/brand-service";
-import { Brand } from "@/api/services/brand/types";
-import { getAllCategoriesApi } from "@/api/services/category/category-service";
-import { Category } from "@/api/services/category/types";
-import { filterProductsApi } from "@/api/services/products/product-service";
-import { Product, ProductsFilter } from "@/api/services/products/types";
+import { Product } from "@/api/services/products/types";
 import PriceRangeSlider from "@/components/my-ui/double-price-range";
 import useDebounce from "@/hooks/useDebounce";
 import { useCategoryStore } from "@/zustand-stores/category-store";
-import { useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import useBrandsQuery from "./useBrandsQuery";
+import Loading from "@/components/my-ui/loading";
+import useFIlterProductsQuery from "./useFIlterProductsQuery";
+import useCategoriesQuery from "../all-category-page/useCategoriesQuery";
+import useAllBrandsInCategory from "./useAllBrandsInCategory";
+import { Brand } from "@/api/services/brand/types";
 
 type Props = {
   onFetchProducts: (products: Product[]) => void;
@@ -20,21 +20,12 @@ function FilterSidebar({ onFetchProducts }: Props) {
   const location = useLocation();
   const { search } = location.state ? location.state : { search: "" };
   const { categoryName, subCategoryName } = useParams();
-  const queryClient = useQueryClient();
-  let categories = queryClient.getQueryData(["categories"]) as
-    | Category[]
-    | undefined;
-  if (!categories) {
-    queryClient.fetchQuery({
-      queryKey: ["categories"],
-      queryFn: async () => {
-        return getAllCategoriesApi();
-      },
-    });
-    categories = queryClient.getQueryData(["categories"]) as Category[];
-  }
-  const curCategory = categories?.find((item) => item.name == categoryName);
   const [searchText, setSearchText] = useState<string>(search ?? "");
+  const [curBrandIdx, setCurBrandIdx] = useState(-1);
+
+  const [priceRange, setPriceRange] = useState<[number, undefined | number]>([
+    0, 10000,
+  ]);
   const debouncedSearch = useDebounce(searchText, 500);
 
   const curSubCategoryId = useCategoryStore((state) => state.curSubCategoryId);
@@ -43,56 +34,93 @@ function FilterSidebar({ onFetchProducts }: Props) {
   );
   const setSubcategories = useCategoryStore((state) => state.setSubcategories);
 
-  const [brands, setBrands] = useState<Brand[]>([]);
-  const [curBrandIdx, setCurBrandIdx] = useState(-1);
-  const [priceRange, setPriceRange] = useState([0, 1000]);
-
-  const handlePriceChange = (newRange: number[]) => {
+  const handlePriceChange = (newRange: [number, undefined | number]) => {
     setPriceRange(newRange);
   };
 
-  const fetchProducts = async () => {
-    try {
-      const filters: ProductsFilter = {};
-      if (curSubCategoryId !== -1) filters.sub_category_id = curSubCategoryId;
-      if (curBrandIdx !== -1) filters.brand_id = brands[curBrandIdx]?.id;
-      if (debouncedSearch.trim() !== "") filters.search = debouncedSearch;
-      const data = await filterProductsApi({
-        min_price: priceRange[0],
-        max_price: priceRange[1],
-        ...filters,
-      });
-      onFetchProducts(data);
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  };
+  const categoriesQuery = useCategoriesQuery();
+  const categories = categoriesQuery.data ?? [];
+  const curCategory = categories?.find((item) => item.name == categoryName);
+
   useEffect(() => {
-    const fetchBrands = async () => {
-      try {
-        const data = await getBrandsBySubcategoryApi(curSubCategoryId);
-        setBrands(data);
-      } catch (error: any) {
-        toast.error(error.message);
+    if (categoriesQuery.status === "success" && curCategory) {
+      if (subCategoryName) {
+        const foundSubCategory = curCategory.sub_category.find(
+          (sc) => sc.title === subCategoryName
+        );
+        setCurSubCategoryId(foundSubCategory?.id ?? -1);
+      } else if (categoryName) {
+        setCurSubCategoryId(-1);
       }
-    };
-    fetchBrands();
+      setSubcategories(curCategory.sub_category ?? []);
+    } else if (
+      categoriesQuery.status === "success" &&
+      !curCategory &&
+      categoryName
+    ) {
+      setCurSubCategoryId(-1);
+      setSubcategories([]);
+    }
+  }, [
+    subCategoryName,
+    categoryName,
+    curCategory,
+    categoriesQuery.status,
+    setCurSubCategoryId,
+    setSubcategories,
+  ]);
+
+  useEffect(() => {
+    setCurBrandIdx(-1);
   }, [curSubCategoryId]);
 
-  useEffect(() => {
-    fetchProducts();
-  }, [curBrandIdx, debouncedSearch, priceRange, curSubCategoryId, categoryName]);
+  const brandsBySubCategoryQuery = useBrandsQuery({
+    id: curSubCategoryId,
+  });
 
-  useEffect(() => {
-    if (subCategoryName) {
-      setCurSubCategoryId(
-        curCategory?.sub_category.find((sc) => sc.title === subCategoryName)
-          ?.id ?? -1
-      );
-      setSubcategories(curCategory?.sub_category ?? []);
-    }
-  }, [subCategoryName, curCategory]);
+  const allBrandsInCategoryQuery = useAllBrandsInCategory({
+    id: curCategory?.id,
+    enable: curSubCategoryId === -1 && !!curCategory?.id,
+  });
 
+  const isLoadingBrands = useMemo(() => {
+    return curSubCategoryId === -1
+      ? allBrandsInCategoryQuery.isPending
+      : brandsBySubCategoryQuery.isPending;
+  }, [
+    curSubCategoryId,
+    allBrandsInCategoryQuery.isPending,
+    brandsBySubCategoryQuery.isPending,
+  ]);
+
+  const brandsToDisplay = useMemo<Brand[]>(() => {
+    return curSubCategoryId === -1
+      ? allBrandsInCategoryQuery.data ?? []
+      : brandsBySubCategoryQuery.data ?? [];
+  }, [
+    curSubCategoryId,
+    allBrandsInCategoryQuery.data,
+    brandsBySubCategoryQuery.data,
+  ]);
+
+  const { isError: productsError } = useFIlterProductsQuery({
+    filters: {
+      sub_category_id: curSubCategoryId,
+      brand_id:
+        curBrandIdx !== -1 && brandsToDisplay[curBrandIdx]
+          ? brandsToDisplay[curBrandIdx].id
+          : undefined,
+      search: debouncedSearch.trim() !== "" ? debouncedSearch : undefined,
+      min_price: priceRange[0],
+      max_price: priceRange[1],
+      category_id: curCategory?.id,
+    },
+    onFetchProducts,
+  });
+
+  if (productsError) {
+    toast.error("حدث خطأ أثناء تحميل المنتجات");
+  }
   return (
     <aside className="lg:w-1/4 p-4 bg-white border-l border-gray-200">
       <div className="relative mb-4">
@@ -117,13 +145,15 @@ function FilterSidebar({ onFetchProducts }: Props) {
         </div>
         <div className="space-y-1 overflow-y-scroll max-h-60">
           <Link to={`/${categoryName}`} onClick={() => setCurSubCategoryId(-1)}>
-            <label key={0} className="flex items-center">
+            <label className="flex items-center cursor-pointer">
               <input
                 type="radio"
                 className="mr-2"
                 name="subcategory"
                 value={-1}
-                onChange={() => setCurSubCategoryId(-1)}
+                onChange={() => {
+                  setCurSubCategoryId(-1);
+                }}
                 checked={curSubCategoryId === -1}
               />
 
@@ -133,15 +163,18 @@ function FilterSidebar({ onFetchProducts }: Props) {
           {curCategory?.sub_category.map((sc) => (
             <Link
               to={`/${categoryName}/${sc.title}`}
-              onClick={() => setCurSubCategoryId(-1)}
+              key={sc.id}
+              onClick={() => setCurSubCategoryId(sc.id)}
             >
-              <label key={sc.id} className="flex items-center">
+              <label className="flex items-center cursor-pointer">
                 <input
                   type="radio"
                   className="mr-2"
                   name="subcategory"
                   value={sc.id}
-                  onChange={() => setCurSubCategoryId(sc.id)}
+                  onChange={() => {
+                    setCurSubCategoryId(sc.id);
+                  }}
                   checked={sc.id === curSubCategoryId}
                 />
 
@@ -158,7 +191,10 @@ function FilterSidebar({ onFetchProducts }: Props) {
           <h3 className="text-lg font-semibold">العلامة التجارية</h3>
         </div>
         <div className="space-y-1 overflow-y-scroll max-h-60">
-          <label key={Math.random()} className="flex items-center">
+          <label
+            key="all-brands-radio"
+            className="flex items-center cursor-pointer"
+          >
             <input
               type="radio"
               className="mr-2"
@@ -169,19 +205,21 @@ function FilterSidebar({ onFetchProducts }: Props) {
             />
             <span className="mr-2">الكل</span>
           </label>
-          {brands.map((item, idx) => (
-            <label key={item.id} className="flex items-center">
-              <input
-                type="radio"
-                className="mr-2"
-                name="brand"
-                value={item.id}
-                onChange={() => setCurBrandIdx(idx)}
-                checked={idx === curBrandIdx}
-              />
-              <span className="mr-2">{item.name}</span>
-            </label>
-          ))}
+          {isLoadingBrands && <Loading />}
+          {!isLoadingBrands &&
+            brandsToDisplay.map((item, idx) => (
+              <label key={item.id} className="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  className="mr-2"
+                  name="brand"
+                  value={item.id}
+                  onChange={() => setCurBrandIdx(idx)}
+                  checked={idx === curBrandIdx}
+                />
+                <span className="mr-2">{item.name}</span>
+              </label>
+            ))}
         </div>
       </div>
       <PriceRangeSlider

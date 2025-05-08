@@ -35,6 +35,26 @@ class BrandService {
       throw new Error(resolveError(error));
     }
   };
+
+  getBrandsByCategoryApi = async (categoryId: number) => {
+    try {
+      const { data } = await axios.get<{ brands: Brand[] }>(
+        `${API_URL}/api/brands/by_category/${categoryId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return data.brands;
+    } catch (error) {
+      throw new Error(resolveError(error));
+    }
+  };
 }
 
-export const { getBrandsApi, getBrandsBySubcategoryApi } = new BrandService();
+export const {
+  getBrandsApi,
+  getBrandsBySubcategoryApi,
+  getBrandsByCategoryApi,
+} = new BrandService();

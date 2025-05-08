@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import * as Slider from "@radix-ui/react-slider";
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { generatePriceRange } from "@/lib/utils";
+import { InfinityIcon } from "lucide-react";
 
 interface PriceRange {
   id: string;
@@ -14,7 +15,7 @@ interface PriceRangeSliderProps {
   max?: number;
   step?: number;
   currency?: string;
-  onChange?: (range: [number, number]) => void;
+  onChange?: (range: [number, number | undefined]) => void;
   className?: string;
 }
 
@@ -35,7 +36,10 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
   onChange,
   className,
 }) => {
-  const [priceRange, setPriceRange] = useState<[number, number]>([min, max]);
+  const [priceRange, setPriceRange] = useState<[number, number | undefined]>([
+    min,
+    max,
+  ]);
   const [selectedRangeId, setSelectedRangeId] = useState<string>("all");
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [isCustomRange, setIsCustomRange] = useState<boolean>(false);
@@ -49,13 +53,25 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
   }, [priceRange, onChange]);
 
   const formatPrice = (value: number): string => {
+    if (value === undefined) return "";
     return `${value.toLocaleString()}${currency}`;
   };
 
   const handleRangeChange = (rangeId: string) => {
     setSelectedRangeId(rangeId);
+    if (rangeId == "all") {
+      setPriceRange([min, undefined]);
+      setIsCustomRange(false);
+      return;
+    }
     if (rangeId === "custom") {
       setIsCustomRange(true);
+      setPriceRange([priceRange[0], priceRange[1]]);
+      return;
+    }
+    if (rangeId === "+" + max) {
+      setPriceRange([max, undefined as any]);
+      setIsCustomRange(false);
       return;
     }
     setIsCustomRange(false);
@@ -72,7 +88,10 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
   };
 
   return (
-    <div dir="rtl" className={`w-full max-w-md px-1.5 mb-6 space-y-6 ${className}`}>
+    <div
+      dir="rtl"
+      className={`w-full max-w-md px-1.5 mb-6 space-y-6 ${className}`}
+    >
       {/* Preset Ranges Radio Group */}
       <div className="space-y-4">
         <div className="flex justify-between items-center mb-2">
@@ -87,15 +106,15 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
         >
           {DEFAULT_PRICE_RANGES.map((range) => (
             <div key={range.id} className="flex items-center">
-                <RadioGroup.Item
+              <RadioGroup.Item
                 id={range.id}
                 value={range.id}
                 className="w-3 h-3 rounded-full border border-gray-300 
                   data-[state=checked]:border-blue-500 data-[state=checked]:bg-blue-500
                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                >
+              >
                 <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-1 after:h-1 after:rounded-full after:bg-white" />
-                </RadioGroup.Item>
+              </RadioGroup.Item>
               <label
                 htmlFor={range.id}
                 className="mr-3 text-sm font-medium text-gray-700 dark:text-gray-300"
@@ -104,6 +123,24 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
               </label>
             </div>
           ))}
+
+          <div key={"+" + max} className="flex items-center">
+            <RadioGroup.Item
+              id={"+" + max}
+              value={"+" + max}
+              className="w-3 h-3 rounded-full border border-gray-300 
+                  data-[state=checked]:border-blue-500 data-[state=checked]:bg-blue-500
+                  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-1 after:h-1 after:rounded-full after:bg-white" />
+            </RadioGroup.Item>
+            <label
+              htmlFor={"+" + max}
+              className="mr-3 text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              {"+ " + max}
+            </label>
+          </div>
 
           {/* Custom Range Option */}
           <div className="flex items-center ">
@@ -124,6 +161,7 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
               نطاق مخصص
             </label>
           </div>
+          <div></div>
         </RadioGroup.Root>
       </div>
 
@@ -140,9 +178,15 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
             </p>
           </div>
           <div className="flex-1 px-4 py-3 border rounded-lg shadow-sm bg-white">
-            <p className="text-xs text-gray-500">الحد الأقصى للسعر</p>
+            <p className="text-xs text-gray-500 text-nowrap">
+              الحد الأقصى للسعر
+            </p>
             <p className="text-lg font-semibold">
-              {formatPrice(priceRange[1])}
+              {priceRange[1] == undefined ? (
+                <InfinityIcon />
+              ) : (
+                formatPrice(priceRange[1])
+              )}
             </p>
           </div>
         </div>
@@ -151,7 +195,7 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
         <div className="pt-2">
           <Slider.Root
             className="relative flex items-center w-full h-5 select-none touch-none"
-            value={priceRange}
+            value={priceRange as number[]}
             max={max}
             min={min}
             step={step}
@@ -205,15 +249,15 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
               onChange={(e) => {
                 const value = Number(e.target.value);
                 handleSliderChange([
-                  Math.max(min, Math.min(value, priceRange[1] - step)),
-                  priceRange[1],
+                  Math.max(min, Math.min(value, priceRange[1] ?? max - step)),
+                  priceRange[1] ?? max,
                 ]);
               }}
               className="w-full px-3 py-2 border rounded-md text-sm 
                 focus:outline-none focus:ring-2 focus:ring-blue-500
                 disabled:opacity-50 disabled:cursor-not-allowed"
               min={min}
-              max={priceRange[1] - step}
+              max={priceRange[1] ?? max - step}
               step={step}
               dir="ltr"
               disabled={!isCustomRange}
@@ -237,7 +281,6 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
                 focus:outline-none focus:ring-2 focus:ring-blue-500
                 disabled:opacity-50 disabled:cursor-not-allowed"
               min={priceRange[0] + step}
-              max={max}
               step={step}
               dir="ltr"
               disabled={!isCustomRange}
