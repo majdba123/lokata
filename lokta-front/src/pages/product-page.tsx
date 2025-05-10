@@ -51,7 +51,7 @@ function ProductPage() {
                 key={image}
                 src={`${image}`}
                 alt={product.title}
-                className="w-64 h-64 object-cover"
+                className="w-64 h-64 object-contain"
               />
             ))}
           </div>

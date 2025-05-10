@@ -38,7 +38,7 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
 }) => {
   const [priceRange, setPriceRange] = useState<[number, number | undefined]>([
     min,
-    max,
+    undefined,
   ]);
   const [selectedRangeId, setSelectedRangeId] = useState<string>("all");
   const [isDragging, setIsDragging] = useState<boolean>(false);

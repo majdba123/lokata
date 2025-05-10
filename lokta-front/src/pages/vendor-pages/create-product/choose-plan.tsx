@@ -10,11 +10,12 @@ import { Offer } from "@/api/services/offers/offers.types";
 import OfferItem from "./offer-item";
 import PaymentWayItem from "./payment-way-item";
 import ActionButtons from "./action-buttons";
+import { useNavigate } from "react-router-dom";
 
 interface ChoosePlanProps {
   productData: ProductData;
   imageFiles: File[] | null;
-  onBack: () => void; 
+  onBack: () => void;
 }
 const ChoosePlan: React.FC<ChoosePlanProps> = ({
   onBack,
@@ -33,6 +34,8 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
   const [paymentInputValues, setPaymentInputValues] = useState<
     Record<string, string | File | null>
   >({});
+
+  const navigate = useNavigate();
 
   const selectedOffer = useMemo(() => {
     return offersQuery.data?.find(
@@ -134,7 +137,10 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
     }
     createProductMutation.mutate(formData, {
       onError: (error) => toast.error(error.message),
-      onSuccess: () => toast.success("تم إنشاء المنتج بنجاح"),
+      onSuccess: () => {
+        toast.success("تم إنشاء المنتج بنجاح");
+        navigate("/profile/my-products");
+      },
     });
   };
 

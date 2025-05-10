@@ -24,7 +24,8 @@ function FilterSidebar({ onFetchProducts }: Props) {
   const [curBrandIdx, setCurBrandIdx] = useState(-1);
 
   const [priceRange, setPriceRange] = useState<[number, undefined | number]>([
-    0, 10000,
+    0,
+    undefined,
   ]);
   const debouncedSearch = useDebounce(searchText, 500);
 

@@ -50,7 +50,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       dir="rtl"
       className="bg-white border border-gray-200 rounded-lg 
       overflow-hidden shadow-md
-      w-full max-w-[320px] h-[350px] sm:h-[300px] md:w-[200px] flex flex-col"
+      w-full max-w-[320px] h-[356px] sm:h-[356px] md:w-[200px] flex flex-col"
     >
       {/* Image - Maintain consistent size */}
       <div className="relative w-full flex-shrink-0 h-[60%] sm:h-[55%] bg-gray-100 flex items-center justify-center">
@@ -58,7 +58,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <img
             src={imageUrl}
             alt={title}
-            className="w-full h-full object-cover rounded-t-lg transition-transform duration-300 hover:scale-105"
+            className="w-full h-full object-contain rounded-t-lg transition-transform duration-300 hover:scale-105"
             loading="lazy"
           />
         </div>
