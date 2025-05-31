@@ -144,9 +144,6 @@ class ProductController extends Controller
 
 
 
-
-
-
     public function store(Request $request): JsonResponse
     {
         DB::beginTransaction();
@@ -159,15 +156,15 @@ class ProductController extends Controller
                 'price' => 'required|numeric|min:0',
                 'sub__category_id' => 'required|numeric|exists:sub__categories,id',
                 'description' => 'required|string',
+                'city' => 'required|string',
                 'images' => 'required|array',
-                'images.*' => 'string',
+                'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // تعديل هنا للتحقق من أن كل صورة صالحة
                 'brand_id' => 'required|numeric|exists:brands,id',
                 'currency' => 'required|string|in:sy,us',
                 'offer_id' => 'required|numeric|exists:offers,id',
                 'paymentway_id' => 'required|numeric|exists:paymentways,id',
             ];
 
-            // فقط إذا لم يكن paymentway_id = 1 نطلب payment_inputs
             if ($request->paymentway_id != 1) {
                 $validationRules['payment_inputs'] = 'required|array';
             }
@@ -180,10 +177,20 @@ class ProductController extends Controller
                     'brand_id' => ['البراند المحدد لا ينتمي إلى التصنيف الفرعي المحدد.']
                 ]);
             }
+
             $paymentway = Paymentway::with('Paymentway_input')->findOrFail($validatedData['paymentway_id']);
             $offer = Offer::findOrFail($validatedData['offer_id']);
 
-            // معالجة حقول الدفع فقط إذا لم يكن paymentway_id = 1
+            // معالجة الصور
+            $uploadedImages = [];
+            foreach ($request->file('images') as $imageFile) {
+                $imageName = Str::random(32) . '.' . $imageFile->getClientOriginalExtension();
+                $imagePath = 'products/' . $imageName;
+                Storage::disk('public')->put($imagePath, file_get_contents($imageFile));
+                $uploadedImages[] = asset('api/storage/' . $imagePath);
+            }
+
+            // معالجة حقول الدفع
             $processedPaymentInputs = [];
             if ($validatedData['paymentway_id'] != 1) {
                 $processedPaymentInputs = $this->processPaymentInputs($paymentway, $validatedData['payment_inputs'], $request);
@@ -194,13 +201,14 @@ class ProductController extends Controller
                 'price' => $validatedData['price'],
                 'sub__category_id' => $validatedData['sub__category_id'],
                 'description' => $validatedData['description'],
-                'images' => json_encode($validatedData['images']),
+                'city' => $validatedData['city'],
+                'images' => json_encode($uploadedImages), // تخزين مصفوفة مسارات الصور
                 'brand_id' => $validatedData['brand_id'],
                 'currency' => $validatedData['currency'],
                 'owner_id' => $ownerId,
                 'offer_id' => $validatedData['offer_id'],
                 'paymentway_id' => $validatedData['paymentway_id'],
-                'payment_inputs' => json_encode($processedPaymentInputs), // سيكون فارغًا إذا كان paymentway_id = 1
+                'payment_inputs' => json_encode($processedPaymentInputs),
                 'status' => 'pending',
                 'start_date' => null,
                 'end_date' => null,
@@ -231,6 +239,15 @@ class ProductController extends Controller
             ], 500);
         }
     }
+
+
+
+
+
+
+
+
+
     protected function validatePaymentInputs(Paymentway $paymentway, array $paymentInputs, Request $request): void
     {
         $requiredInputs = $paymentway->Paymentway_input;
@@ -357,43 +374,60 @@ class ProductController extends Controller
 
 
 
-
-    public function update(Request $request, Product $product): JsonResponse
+    public function update(Request $request, $id): JsonResponse
     {
         try {
+            $product = Product::findOrFail($id);
+
+            if (!(Auth::id() == $product->owner_id || Auth::user()->role == 'admin')) {
+                return response()->json(['message' => 'غير مصرح لك بتعديل هذا المنتج'], 403);
+            }
+
             $validatedData = $request->validate([
                 'title' => 'nullable|string|max:255',
                 'price' => 'nullable|numeric|min:0',
                 'sub__category_id' => 'nullable|numeric|exists:sub__categories,id',
                 'description' => 'nullable|string',
+                'city' => 'nullable|string',
                 'images' => 'nullable|array',
-                'images.*' => 'string',
+                'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
                 'brand_id' => 'nullable|numeric|exists:brands,id',
                 'currency' => 'nullable|string|in:sy,us',
             ]);
 
             // التحقق من أن البراند ينتمي إلى التصنيف الفرعي إذا تم توفيرهما
-            if (isset($validatedData['brand_id']) && isset($validatedData['sub__category_id'])) {
+            if (isset($validatedData['brand_id'])) {
                 $brand = Brand::find($validatedData['brand_id']);
-                if ($brand->sub__category_id != $validatedData['sub__category_id']) {
+                $subCategoryId = $validatedData['sub__category_id'] ?? $product->sub__category_id;
+
+                if ($brand->sub__category_id != $subCategoryId) {
                     throw ValidationException::withMessages([
                         'brand_id' => ['البراند المحدد لا ينتمي إلى التصنيف الفرعي المحدد.']
                     ]);
                 }
-            } elseif (isset($validatedData['brand_id'])) {
-                // إذا تم تحديث البراند فقط، تحقق من أنه ينتمي إلى تصنيف المنتج الحالي
-                $brand = Brand::find($validatedData['brand_id']);
-                if ($brand->sub__category_id != $product->sub__category_id) {
-                    throw ValidationException::withMessages([
-                        'brand_id' => ['البراند المحدد لا ينتمي إلى تصنيف المنتج الحالي.']
-                    ]);
-                }
             }
 
-            if ($request->has('images')) {
-                $imagesJson = json_encode($validatedData['images']);
-                unset($validatedData['images']);
-                $validatedData['images'] = $imagesJson;
+            // معالجة الصور الجديدة إذا تم رفعها
+            if ($request->hasFile('images')) {
+                $uploadedImages = [];
+
+                // حذف الصور القديمة إذا كانت موجودة
+                if ($product->images) {
+                    foreach (json_decode($product->images) as $oldImage) {
+                        $oldImagePath = str_replace(asset('api/storage/'), '', $oldImage);
+                        Storage::disk('public')->delete($oldImagePath);
+                    }
+                }
+
+                // رفع الصور الجديدة
+                foreach ($request->file('images') as $imageFile) {
+                    $imageName = Str::random(32) . '.' . $imageFile->getClientOriginalExtension();
+                    $imagePath = 'products/' . $imageName;
+                    Storage::disk('public')->put($imagePath, file_get_contents($imageFile));
+                    $uploadedImages[] = asset('api/storage/' . $imagePath);
+                }
+
+                $validatedData['images'] = json_encode($uploadedImages);
             }
 
             $product->update($validatedData);
@@ -406,8 +440,15 @@ class ProductController extends Controller
             return response()->json(new ProductResource($product));
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'حدث خطأ أثناء تحديث المنتج: ' . $e->getMessage()
+            ], 500);
         }
     }
+
+
+
 
     public function destroy(Product $product): JsonResponse
     {
@@ -425,63 +466,64 @@ class ProductController extends Controller
         return response()->json(ProductResource::collection($products));
     }
 
+
     public function filterProducts(Request $request): JsonResponse
-{
-    // ... (other setup) ...
-    $query = Product::query()->where('status', 'completed'); // إضافة شرط الحالة هنا
+    {
+        $query = Product::query()->where('status', 'completed');
 
-    // ... (sub_category_id, brand_id, search filters remain the same) ...
-    // Ensure sub_category_id uses the correct column name (single underscore assumed fixed)
-    if ($request->has('sub_category_id')) {
-        $query->where('sub__category_id', $request->input('sub_category_id'));
-    }
-
-    if($request->has('subcategory_title')) {
-        $query->whereHas('sub_category', function($q) use ($request) {
-        $q->where('title', 'LIKE', '%' . $request->input('subcategory_title') . '%');
-        });
-    }
-
-    if ($request->has('brand_id')) {
-        $query->where('brand_id', $request->input('brand_id'));
-    }
-
-
-    if ($request->has('currency')) {
-        $query->where('currency', $request->input('currency'));
-    }
-
-    if ($request->has('search') && $request->filled('search')) {
-        $searchTerms = explode(' ', $request->input('search'));
-        $query->where(function($q) use ($searchTerms) {
-        foreach ($searchTerms as $term) {
-            $q->orWhere('title', 'like', "%$term%")
-              ->orWhere('description', 'like', "%$term%");
+        // فلترة حسب category_id (جلب جميع منتجات sub_categories التابعة له)
+        if ($request->has('category_id')) {
+            $query->whereHas('sub_category', function($q) use ($request) {
+                $q->where('category_id', $request->input('category_id'));
+            });
         }
-        });
+
+        // ... (بقية الفلاتر الحالية تبقى كما هي) ...
+        if ($request->has('sub_category_id')) {
+            $query->where('sub__category_id', $request->input('sub_category_id'));
+        }
+
+        if($request->has('subcategory_title')) {
+            $query->whereHas('sub_category', function($q) use ($request) {
+                $q->where('title', 'LIKE', '%' . $request->input('subcategory_title') . '%');
+            });
+        }
+
+        if ($request->has('brand_id')) {
+            $query->where('brand_id', $request->input('brand_id'));
+        }
+
+        if ($request->has('currency')) {
+            $query->where('currency', $request->input('currency'));
+        }
+
+        if ($request->has('search') && $request->filled('search')) {
+            $searchTerms = explode(' ', $request->input('search'));
+            $query->where(function($q) use ($searchTerms) {
+                foreach ($searchTerms as $term) {
+                    $q->orWhere('title', 'like', "%$term%")
+                      ->orWhere('description', 'like', "%$term%");
+                }
+            });
+        }
+
+        // --- PRICE FILTERS ---
+        if ($request->has('min_price') && $request->filled('min_price')) {
+            $minPrice = (int) $request->input('min_price');
+            $query->where('price', '>=', $minPrice);
+        }
+        if ($request->has('max_price') && $request->filled('max_price')) {
+            $maxPrice = (int) $request->input('max_price');
+            $query->where('price', '<=', $maxPrice);
+        }
+        // --- END PRICE FILTERS ---
+
+        $products = $query->get();
+
+        return response()->json(ProductResource::collection($products));
     }
 
-    // --- PRICE FILTERS ---
-    if ($request->has('min_price') && $request->filled('min_price')) {
-        // Explicitly cast to integer (or float if your price has decimals)
-        $minPrice = (int) $request->input('min_price');
-        $query->where('price', '>=', $minPrice); // Compare number >= number
-    }
-    if ($request->has('max_price') && $request->filled('max_price')) {
-        // Explicitly cast to integer (or float if your price has decimals)
-        $maxPrice = (int) $request->input('max_price');
-        $query->where('price', '<=', $maxPrice); // Compare number <= number
-    }
-    // --- END PRICE FILTERS ---
 
-
-    $products = $query->get();
-
-    // Optional: Log the final query for debugging if it still fails
-    // \Log::info('Final Filter Query:', [\DB::getQueryLog()]); // Requires \DB::enableQueryLog(); earlier
-
-    return response()->json(ProductResource::collection($products));
-}
 
     public function myProducts(): JsonResponse
     {

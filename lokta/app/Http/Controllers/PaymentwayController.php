@@ -16,14 +16,15 @@ class PaymentwayController extends Controller
      */
     public function index()
     {
-        $paymentways = Paymentway::with('Paymentway_input')->get();
+        $paymentways = Paymentway::with('Paymentway_input')
+                        ->where('id', '!=', 1) // استبعاد طريقة الدفع ذات id = 1
+                        ->get();
 
         return response()->json([
             'success' => true,
             'data' => $paymentways
         ], 200);
     }
-
     /**
      * عرض طريقة دفع معينة مع حقولها
      */
@@ -133,7 +134,7 @@ class PaymentwayController extends Controller
             $imageName = Str::random(32) . '.' . $imageFile->getClientOriginalExtension();
             $imagePath = 'paymentways/' . $imageName;
             Storage::disk('public')->put($imagePath, file_get_contents($imageFile));
-            $data['image'] = asset('storage/' . $imagePath);
+            $data['image'] = asset('api/storage/' . $imagePath);
         }
 
         $paymentway->update($data);
@@ -170,23 +171,34 @@ class PaymentwayController extends Controller
     }
 
 
-    public function destroy($id)
-    {
-        $paymentway = Paymentway::find($id);
-
-        if (!$paymentway) {
-            return response()->json([
-                'success' => false,
-                'message' => 'طريقة الدفع غير موجودة'
-            ], 404);
-        }
-
-        $paymentway->Paymentway_input()->delete();
-        $paymentway->delete();
-
+/**
+ * حذف طريقة الدفع
+ */
+public function destroy($id)
+{
+    // منع حذف بوابة الدفع ذات id = 1
+    if ($id == 1) {
         return response()->json([
-            'success' => true,
-            'message' => 'تم حذف طريقة الدفع بنجاح'
-        ], 200);
+            'success' => false,
+            'message' => 'لا يمكن حذف بوابة الدفع الافتراضية'
+        ], 403); // كود 403 Forbidden
     }
+
+    $paymentway = Paymentway::find($id);
+
+    if (!$paymentway) {
+        return response()->json([
+            'success' => false,
+            'message' => 'طريقة الدفع غير موجودة'
+        ], 404);
+    }
+
+    $paymentway->Paymentway_input()->delete();
+    $paymentway->delete();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'تم حذف طريقة الدفع بنجاح'
+    ], 200);
+}
 }

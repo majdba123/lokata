@@ -20,6 +20,8 @@ class ProductResource extends JsonResource
             'images' => $this->formatImages(),
             'subscription_price' => $this->subscription_price,
             'description' => $this->description,
+            'city' => $this->city,
+
             'sub_category_id' => $this->sub_category->id,
             'sub_category' => $this->sub_category->title,
             'brand' => $this->brand?->name,
@@ -40,17 +42,18 @@ class ProductResource extends JsonResource
 
     protected function formatImages()
     {
-        // Decode the JSON string to an array
-        $imagesArray = json_decode($this->images, true);
-
-        // If decoding fails or result is not an array, return an empty array
-        if (!is_array($imagesArray)) {
-            return [];
+        // إذا كان images بالفعل مصفوفة، نعيدها مباشرة
+        if (is_array($this->images)) {
+            return $this->images;
         }
 
-        // Map each image URL to include additional properties if needed
-        return array_map(function ($imageUrl) {
-            return $imageUrl;
-        }, $imagesArray);
+        // إذا كان سلسلة نصية، نحاول فك تشفيرها
+        if (is_string($this->images)) {
+            $imagesArray = json_decode($this->images, true);
+            return is_array($imagesArray) ? $imagesArray : [];
+        }
+
+        // في أي حالة أخرى نعيد مصفوفة فارغة
+        return [];
     }
 }

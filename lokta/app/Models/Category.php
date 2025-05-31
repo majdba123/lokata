@@ -22,6 +22,12 @@ class Category extends Model
     }
 
 
+    public function navbar()
+    {
+        return $this->hasOne(CategoryNavbar::class);
+    }
+
+
 
 
 }

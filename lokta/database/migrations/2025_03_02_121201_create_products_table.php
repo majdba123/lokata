@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('image');
             $table->integer('price');
             $table->string('currency');
+            $table->string('city')->default('damascuse');
+
             $table->string('discreption');
             $table->foreignIdFor(Sub_Category::class)->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignIdFor(Brand::class)->nullable();

@@ -20,6 +20,33 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'category2',
         ]);
+        Category::create([
+            'name' => 'category3',
+        ]);
+
+        Category::create([
+            'name' => 'category4',
+        ]);
+        Category::create([
+            'name' => 'category5',
+        ]);
+
+        Category::create([
+            'name' => 'category6',
+        ]);
+
+        Category::create([
+            'name' => 'category7',
+        ]);
+
+        Category::create([
+            'name' => 'category8',
+        ]);
+
+        Category::create([
+            'name' => 'category9',
+        ]);
+
 
 
 
