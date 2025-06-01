@@ -29,7 +29,7 @@ class ProductController extends Controller
         return response()->json(ProductResource::collection($products));
     }
 
-  /*  public function store(Request $request): JsonResponse
+    /*  public function store(Request $request): JsonResponse
     {
         try {
             $ownerId = Auth::id();
@@ -223,7 +223,6 @@ class ProductController extends Controller
                 'success' => true,
                 'data' => new ProductResource($product)
             ]);
-
         } catch (ValidationException $e) {
             DB::rollBack();
             return response()->json([
@@ -304,7 +303,7 @@ class ProductController extends Controller
                     $imageName = Str::random(32) . '.' . $imageFile->getClientOriginalExtension();
                     $imagePath = 'payment_inputs/' . $imageName;
                     Storage::disk('public')->put($imagePath, file_get_contents($imageFile));
-                    $value = asset('storage/payment_inputs/' . $imageName);
+                    $value = asset('api/storage/payment_inputs/' . $imageName);
                 }
             }
 
@@ -460,8 +459,8 @@ class ProductController extends Controller
     public function getProductsBySubCategory($subCategoryId): JsonResponse
     {
         $products = Product::where('sub__category_id', $subCategoryId)
-        ->where('status', 'completed')
-        ->get();
+            ->where('status', 'completed')
+            ->get();
 
         return response()->json(ProductResource::collection($products));
     }
@@ -473,7 +472,7 @@ class ProductController extends Controller
 
         // فلترة حسب category_id (جلب جميع منتجات sub_categories التابعة له)
         if ($request->has('category_id')) {
-            $query->whereHas('sub_category', function($q) use ($request) {
+            $query->whereHas('sub_category', function ($q) use ($request) {
                 $q->where('category_id', $request->input('category_id'));
             });
         }
@@ -483,8 +482,8 @@ class ProductController extends Controller
             $query->where('sub__category_id', $request->input('sub_category_id'));
         }
 
-        if($request->has('subcategory_title')) {
-            $query->whereHas('sub_category', function($q) use ($request) {
+        if ($request->has('subcategory_title')) {
+            $query->whereHas('sub_category', function ($q) use ($request) {
                 $q->where('title', 'LIKE', '%' . $request->input('subcategory_title') . '%');
             });
         }
@@ -499,10 +498,10 @@ class ProductController extends Controller
 
         if ($request->has('search') && $request->filled('search')) {
             $searchTerms = explode(' ', $request->input('search'));
-            $query->where(function($q) use ($searchTerms) {
+            $query->where(function ($q) use ($searchTerms) {
                 foreach ($searchTerms as $term) {
                     $q->orWhere('title', 'like', "%$term%")
-                      ->orWhere('description', 'like', "%$term%");
+                        ->orWhere('description', 'like', "%$term%");
                 }
             });
         }
@@ -539,15 +538,15 @@ class ProductController extends Controller
 
 
     /**
- * تحديث حالة المنتج (للاستخدام من قبل الأدمن فقط)
- *
- * @param Request $request
- * @param Product $product
- * @return JsonResponse
- */
+     * تحديث حالة المنتج (للاستخدام من قبل الأدمن فقط)
+     *
+     * @param Request $request
+     * @param Product $product
+     * @return JsonResponse
+     */
     public function updateStatus(Request $request, $id): JsonResponse
     {
-        $product=Product::find($id);
+        $product = Product::find($id);
         try {
             $request->validate([
                 'status' => 'required|string|in:completed,rejected',
@@ -581,7 +580,6 @@ class ProductController extends Controller
                 'success' => true,
                 'data' => new ProductResource($product)
             ]);
-
         } catch (ValidationException $e) {
             DB::rollBack();
             return response()->json([
@@ -624,13 +622,12 @@ class ProductController extends Controller
 
             // جلب النتائج مع العلاقات المطلوبة
             $products = $query->with(['sub_category', 'brand', 'offer', 'paymentway'])
-                            ->get();
+                ->get();
 
             return response()->json([
                 'success' => true,
                 'data' => ProductResource::collection($products)
             ]);
-
         } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
@@ -683,13 +680,13 @@ class ProductController extends Controller
 
         // إحصائيات العروض
         $offerStats = [
-            'level_1' => Product::whereHas('offer', function($q) {
+            'level_1' => Product::whereHas('offer', function ($q) {
                 $q->where('level', 1);
             })->count(),
-            'level_2' => Product::whereHas('offer', function($q) {
+            'level_2' => Product::whereHas('offer', function ($q) {
                 $q->where('level', 2);
             })->count(),
-            'level_3' => Product::whereHas('offer', function($q) {
+            'level_3' => Product::whereHas('offer', function ($q) {
                 $q->where('level', 3);
             })->count(),
         ];
@@ -720,7 +717,4 @@ class ProductController extends Controller
             ]
         ]);
     }
-
 }
-
-
