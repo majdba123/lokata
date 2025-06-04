@@ -27,7 +27,6 @@ function UpdateProduct(props: Props) {
   const [previewImages, setPreviewImages] = React.useState<string[] | null>(
     null
   );
-  console.log(props);
   const subcategoriesQuery = useAllSubcategoriesQuery();
   const [newImages, setNewImages] = useState<File[] | null>(null); // Changed to File[]
   const [loadingUpdateProduct, setLoadingUpdateProduct] = useState(false); // Renamed loading state
@@ -37,7 +36,6 @@ function UpdateProduct(props: Props) {
     reset,
     formState: { errors },
     watch,
-    setValue,
   } = useForm<ProductData>({
     defaultValues: {
       productDescription: props.description ?? "",
@@ -53,14 +51,14 @@ function UpdateProduct(props: Props) {
   const brandsQuery = useBrandsQuery({
     id: watchedSubCategoryId ?? props.sub_category_id,
   });
-  React.useEffect(() => {
-    if (watchedSubCategoryId) {
-      setValue(
-        "brand_id",
-        brandsQuery.data?.filter((item) => item.name == props.brand)[0].id ?? -1
-      );
-    }
-  }, [watchedSubCategoryId, setValue, brandsQuery.data]);
+
+  const defaultBrand = brandsQuery.data?.find(
+    (brand) => brand.name === props.brand
+  );
+
+ 
+
+  
 
   const handleChooseFile = async (
     e: React.ChangeEvent<HTMLInputElement>
@@ -183,6 +181,7 @@ function UpdateProduct(props: Props) {
             {...register("brand_id")}
             className="border border-gray-300 rounded-md p-2 w-full"
             disabled={!watchedSubCategoryId || brandsQuery.isLoading}
+            defaultValue={defaultBrand?.id}
           >
             <option value="">اختر العلامة التجارية</option>
             {brandsQuery.status == "success" &&
