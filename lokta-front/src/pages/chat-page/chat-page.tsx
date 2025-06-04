@@ -5,7 +5,7 @@ import { useAuthStore } from "@/zustand-stores/auth.store";
 import useListenToChannel from "@/hooks/useListenToChannel";
 import { InteractedUser, Message } from "@/api/services/chat/types";
 import { useConversationStore } from "@/zustand-stores/conversation-store";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { fixInvalidUserId } from "@/lib/helpers";
 import { getPossibleChatUserApi } from "@/api/services/user/user-service";
 import { toast } from "sonner";
@@ -89,6 +89,7 @@ function ChatPage() {
   const handleSidebarToggle = () => {
     setIsSidebarOpen((prev) => !prev);
   };
+  const navigate = useNavigate(); // Get navigate function
 
   return (
     <div dir="rtl" className="flex h-screen bg-gray-100 relative">
@@ -138,8 +139,18 @@ function ChatPage() {
       <div className="flex-1">
         {id && <ChatArea />}
         {!id && (
-          <div className="flex-1 flex items-center justify-center">
-            <p className="text-gray-500">حدد محادثة لبدء المراسلة</p>
+          <div className="flex-1 flex flex-col items-center justify-center p-4">
+            {/* Added flex-col and p-4 for spacing */}
+            <p className="text-gray-500 mb-4">
+              {/* Added mb-4 for spacing */}
+              حدد محادثة لبدء المراسلة
+            </p>
+            <button
+              onClick={() => navigate("/")} // Add back button
+              className="bg-blue-500 text-white rounded-md p-2 hover:bg-blue-600"
+            >
+              العودة للصفحة الرئيسية
+            </button>
           </div>
         )}
       </div>

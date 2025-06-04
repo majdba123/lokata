@@ -23,6 +23,8 @@ export type Product = {
   status: "rejected" | "completed" | "pending";
   dates: ProductDates;
   city: string | null;
+  sub_category : string
+  brand : string
 };
 
 export type ProductDates = {

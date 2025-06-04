@@ -31,12 +31,24 @@ function ProductPage() {
         <Loading />
       ) : (
         <div className=" flex flex-col gap-3" dir="rtl">
-          <div className="text-lg text-right">
-            <span className="font-bold mx-2 text-gray-600">العنوان:</span>
-
-            {product?.title}
+          <div className="flex gap-6">
+            <div className="text-lg text-right">
+              <span className="font-bold mx-2 text-gray-600">اسم المنتج:</span>
+              {product?.title}
+            </div>
+            <div className="text-lg text-right">
+              <span className="font-bold mx-2 text-gray-600">التصنيف:</span>
+              {product?.sub_category}
+            </div>
           </div>
-
+          <div className="text-lg text-right">
+            <span className="font-bold mx-2 text-gray-600">الماركة:</span>
+            {product?.brand}
+          </div>
+          <div className="text-lg text-right">
+            <span className="font-bold mx-2 text-gray-600">المدينة:</span>
+            {product?.city}
+          </div>
           <div className="text-lg text-right">
             <span className="font-bold mx-2 text-gray-600">الوصف:</span>
             {product?.description}

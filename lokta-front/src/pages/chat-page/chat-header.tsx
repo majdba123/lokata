@@ -8,7 +8,7 @@ type Props = {
 function ChatHeader({ username }: Props) {
   const navigate = useNavigate();
   const backHome = () => {
-    navigate("/");
+    navigate(-1);
   };
   return (
     <div
