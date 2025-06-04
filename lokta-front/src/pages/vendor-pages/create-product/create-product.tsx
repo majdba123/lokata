@@ -1,11 +1,11 @@
 import { getBrandsBySubcategoryApi } from "@/api/services/brand/brand-service";
 import { Brand } from "@/api/services/brand/types";
-import { allSubCategoriesApi } from "@/api/services/category/category-service";
-import { Subcategory } from "@/api/services/category/types";
-import React, { useEffect, useState } from "react";
+import { Category } from "@/api/services/category/types"; // Added Category
+import React, { useEffect, useState, useMemo } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import ChoosePlan from "./choose-plan";
+import useCategoriesQuery from "@/pages/all-category-page/useCategoriesQuery";
 
 export type ProductData = {
   productTitle: string;
@@ -13,6 +13,7 @@ export type ProductData = {
   productDescription: string;
   productImage: string;
   brand_id: number;
+  category_id: number; // Added category_id
   sub__category_id: number;
   currency: "sy" | "us";
   city: string;
@@ -38,12 +39,12 @@ export const SY_CITIES = [
 type Step = "form" | "plan";
 
 function CreateProduct() {
+  const allCategoriesQuery = useCategoriesQuery();
   const [previewImages, setPreviewImages] = React.useState<string[] | null>(
     null
   );
   const [newImages, setNewImages] = useState<File[] | null>(null); // Changed from string[] to File[]
   const [brands, setBrands] = useState<Brand[]>([]);
-  const [subCategories, setSubCategories] = useState<Subcategory[]>([]);
   const [currentStep, setCurrentStep] = useState<Step>("form");
   const [submittedProductData, setSubmittedProductData] =
     useState<ProductData | null>(null);
@@ -53,7 +54,22 @@ function CreateProduct() {
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm<ProductData>();
+    setValue, // Added setValue
+  } = useForm<ProductData>({
+    defaultValues: {
+      city: "",
+      category_id: "" as any, // Initialized for RHF
+      sub__category_id: "" as any,
+      brand_id: "" as any,
+      currency: "sy",
+      productTitle: "",
+      productPrice: "",
+      productDescription: "",
+    },
+  });
+
+  const watchedCategoryId = watch("category_id");
+  const watchedSubcategoryId = watch("sub__category_id");
 
   const handleChooseFile = async (
     e: React.ChangeEvent<HTMLInputElement>
@@ -75,30 +91,33 @@ function CreateProduct() {
   };
 
   useEffect(() => {
-    fetchSubCategories();
-  }, []);
+    // Effect to reset subcategory and brand when category changes
+    if (watchedCategoryId !== undefined) {
+      // Check to ensure it's not the initial undefined state before RHF sets default
+      setValue("sub__category_id", "" as any);
+      setValue("brand_id", "" as any);
+      setBrands([]);
+    }
+  }, [watchedCategoryId, setValue]);
 
   useEffect(() => {
-    fetchBrands(watch("sub__category_id"));
-  }, [watch("sub__category_id")]);
-
-  const fetchBrands = async (sub__category_id: number) => {
-    try {
-      if (!sub__category_id) return;
-      const data = await getBrandsBySubcategoryApi(sub__category_id);
-      setBrands(data);
-    } catch (error: any) {
-      toast.error(error.message);
+    const fetchBrandsForSubcategory = async (subId: any) => {
+      if (!subId || subId === "") {
+        setBrands([]);
+        return;
+      }
+      try {
+        const data = await getBrandsBySubcategoryApi(Number(subId));
+        setBrands(data);
+      } catch (error: any) {
+        toast.error(error.message);
+        setBrands([]);
+      }
+    };
+    if (watchedSubcategoryId) {
+      fetchBrandsForSubcategory(watchedSubcategoryId);
     }
-  };
-  const fetchSubCategories = async () => {
-    try {
-      const data = await allSubCategoriesApi();
-      setSubCategories(data);
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  };
+  }, [watchedSubcategoryId]);
 
   const onFormSubmit: SubmitHandler<ProductData> = async (
     data: ProductData
@@ -107,7 +126,13 @@ function CreateProduct() {
       toast.error("الرجاء اختيار صور المنتج.");
       return;
     }
-    setSubmittedProductData(data);
+    const processedData = {
+      ...data,
+      category_id: Number(data.category_id),
+      sub__category_id: Number(data.sub__category_id),
+      brand_id: Number(data.brand_id),
+    };
+    setSubmittedProductData(processedData);
     setCurrentStep("plan");
     toast.info("بيانات المنتج جاهزة, اختر الخطة الآن.");
   };
@@ -115,6 +140,22 @@ function CreateProduct() {
   const handleGoBackToForm = () => {
     setCurrentStep("form");
   };
+
+  const filteredSubcategories = useMemo(() => {
+    if (!watchedCategoryId) {
+      return [];
+    }
+
+    const curCategory = allCategoriesQuery.data?.filter(
+      (category: Category) => category.id === Number(watchedCategoryId)
+    );
+
+    if (!curCategory || curCategory.length === 0) {
+      return [];
+    }
+
+    return curCategory[0].sub_category;
+  }, [watchedCategoryId, allCategoriesQuery.data]);
 
   return (
     <div dir="rtl" className="mx-auto p-8 w-[100%]">
@@ -153,23 +194,62 @@ function CreateProduct() {
             </div>
 
             <div>
+              <label htmlFor="category_id">الفئة الرئيسية</label>
+              <select
+                {...register("category_id", {
+                  required: "الفئة الرئيسية مطلوبة",
+                })}
+                className="border border-gray-300 rounded-md p-2 w-full"
+                defaultValue=""
+                disabled={allCategoriesQuery.isLoading}
+              >
+                <option value="" disabled>
+                  {allCategoriesQuery.isLoading
+                    ? "جاري التحميل..."
+                    : "اختر الفئة الرئيسية"}
+                </option>
+                {allCategoriesQuery.data?.map((category: Category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}{" "}
+                    {/* Assuming category has a 'title' field */}
+                  </option>
+                ))}
+              </select>
+              {errors.category_id && (
+                <span className="text-red-500 text-sm">
+                  {errors.category_id.message}
+                </span>
+              )}
+            </div>
+
+            <div>
               <label htmlFor="sub__category_id">الفئة الفرعية</label>
               <select
                 {...register("sub__category_id", {
                   required: "الفئة الفرعية مطلوبة", // Subcategory is required
                 })}
                 className="border border-gray-300 rounded-md p-2 w-full"
+                defaultValue=""
+                disabled={
+                  !watchedCategoryId || filteredSubcategories.length === 0
+                }
               >
                 <option value="" disabled>
-                  اختر الفئة الفرعية
+                  {watchedCategoryId
+                    ? "اختر الفئة الفرعية"
+                    : "اختر فئة رئيسية أولاً"}
                 </option>{" "}
-                {/* Select Subcategory */}
-                {subCategories.map((subcategory) => (
+                {filteredSubcategories.map((subcategory) => (
                   <option key={subcategory.id} value={subcategory.id}>
                     {subcategory.title}
                   </option>
                 ))}
               </select>
+              {watchedCategoryId && filteredSubcategories.length === 0 && !allCategoriesQuery.isLoading && (
+                <p className="text-sm text-orange-500 mt-1">
+                  لا توجد فئات فرعية لهذه الفئة الرئيسية.
+                </p>
+              )}
               {errors.sub__category_id && (
                 <span className="text-red-500 text-sm">
                   {errors.sub__category_id.message}
@@ -177,7 +257,7 @@ function CreateProduct() {
               )}
             </div>
 
-            <div className={`${!watch("sub__category_id") && "opacity-[0.4]"}`}>
+            <div className={`${!watchedSubcategoryId && "opacity-[0.4]"}`}>
               <label htmlFor="brand_id">العلامة التجارية</label>
               <select
                 {...register("brand_id", {
@@ -185,7 +265,7 @@ function CreateProduct() {
                 })} // Brand is required
                 className="border border-gray-300 rounded-md p-2 w-full"
                 defaultValue=""
-                disabled={!watch("sub__category_id")}
+                disabled={!watchedSubcategoryId || brands.length === 0}
               >
                 <option value="" disabled>
                   اختر العلامة التجارية
@@ -196,6 +276,11 @@ function CreateProduct() {
                   </option>
                 ))}
               </select>
+              {watchedSubcategoryId && brands.length === 0 && (
+                <p className="text-sm text-orange-500 mt-1">
+                  لا توجد علامات تجارية لهذه الفئة الفرعية.
+                </p>
+              )}
               {errors.brand_id && (
                 <span className="text-red-500 text-sm">
                   {errors.brand_id.message}

@@ -11,6 +11,7 @@ interface PaymentWayItemProps {
   onSelect: (paymentWay: PaymentWay) => void;
   paymentInputValues: Record<string, string | File | null>;
   onInputChange: (inputId: string, value: string) => void;
+  paymentInputErrors: Record<string, string | null>; // Added paymentInputErrors prop
   onFileChange: (inputId: string, event: ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -20,6 +21,7 @@ const PaymentWayItem: React.FC<PaymentWayItemProps> = ({
   onSelect,
   paymentInputValues,
   onInputChange,
+  paymentInputErrors, // Destructure paymentInputErrors prop
   onFileChange,
 }) => {
   return (
@@ -59,6 +61,7 @@ const PaymentWayItem: React.FC<PaymentWayItemProps> = ({
               value={paymentInputValues[inputItem.id]}
               onInputChange={onInputChange}
               onFileChange={onFileChange}
+              error={paymentInputErrors[inputItem.id]} // Pass the specific error for this input
             />
           ))}
         </div>

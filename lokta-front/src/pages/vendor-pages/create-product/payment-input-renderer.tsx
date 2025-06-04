@@ -6,6 +6,7 @@ interface PaymentInputRendererProps {
   value: string | File | null | undefined;
   onInputChange: (inputId: string, value: string) => void;
   onFileChange: (inputId: string, event: ChangeEvent<HTMLInputElement>) => void;
+  error?: string | null; // Added error prop
 }
 
 const PaymentInputRenderer: React.FC<PaymentInputRendererProps> = ({
@@ -13,6 +14,7 @@ const PaymentInputRenderer: React.FC<PaymentInputRendererProps> = ({
   value,
   onInputChange,
   onFileChange,
+  error, // Destructure error prop
 }) => {
   return (
     <div key={inputItem.id}>
@@ -37,6 +39,10 @@ const PaymentInputRenderer: React.FC<PaymentInputRendererProps> = ({
             onClick={(e) => e.stopPropagation()} // Prevent card click
           />
         </div>
+      )}
+      {/* Display error message */}
+      {error && (
+        <p className="text-red-500 text-sm mt-1">{error}</p>
       )}
       {/* File Input */}
       {inputItem.type === "2" && (

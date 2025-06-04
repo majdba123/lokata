@@ -34,6 +34,9 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
   const [paymentInputValues, setPaymentInputValues] = useState<
     Record<string, string | File | null>
   >({});
+  const [paymentInputErrors, setPaymentInputErrors] = useState<
+    Record<string, string | null>
+  >({}); // New state for input errors
 
   const navigate = useNavigate();
 
@@ -52,6 +55,7 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
       setSelectedPaymentWayId(null);
       setSelectedPaymentWayDetails(null);
       setPaymentInputValues({});
+      setPaymentInputErrors({}); // Clear errors when switching to free offer
     }
   }, [isFreeOfferSelected]);
 
@@ -60,6 +64,7 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
       ...prev,
       [inputId]: value,
     }));
+    setPaymentInputErrors((prev) => ({ ...prev, [inputId]: null })); // Clear error on change
   };
 
   const handleFileChange = (
@@ -77,15 +82,36 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
         [inputId]: null,
       }));
     }
+    setPaymentInputErrors((prev) => ({ ...prev, [inputId]: null })); // Clear error on file change
   };
 
-  const arePaymentInputsValid = (): boolean => {
-    if (isFreeOfferSelected || !selectedPaymentWayDetails) return true;
+  // Function to validate payment inputs and return errors
+  const validatePaymentInputs = (): Record<string, string | null> => {
+    const errors: Record<string, string | null> = {};
 
-    return selectedPaymentWayDetails.paymentway_input.every((inputItem) => {
-      const value = paymentInputValues[inputItem.id];
-      return value !== null && value !== undefined && value !== "";
-    });
+    if (!isFreeOfferSelected && selectedPaymentWayDetails) {
+      selectedPaymentWayDetails.paymentway_input.forEach((inputItem) => {
+        const value = paymentInputValues[inputItem.id];
+
+        // Check for emptiness
+        if (value === null || value === undefined || value === "") {
+          errors[inputItem.id] = `${inputItem.name} مطلوب.`;
+          return; // Move to the next input
+        }
+
+        // Validate phone number input (assuming type "1" is phone)
+        if (inputItem.type === "1") {
+          // "1" for tel type as in PaymentInputRenderer
+          const phoneRegex = /^\d{10}$/;
+          if (typeof value === "string" && !phoneRegex.test(value)) {
+            errors[inputItem.id] = "رقم الهاتف يجب أن يتكون من 10 أرقام.";
+          } else {
+            errors[inputItem.id] = null; // Clear error if valid
+          }
+        }
+      });
+    }
+    return errors;
   };
 
   const handleFinalSubmit = async () => {
@@ -99,8 +125,10 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
         toast.error("يرجى اختيار طريقة دفع أولاً.");
         return;
       }
-      if (!arePaymentInputsValid()) {
-        toast.error("يرجى ملء جميع حقول الدفع المطلوبة لطريقة الدفع المختارة.");
+      const errors = validatePaymentInputs();
+      setPaymentInputErrors(errors); // Set errors state
+      if (Object.values(errors).some((error) => error !== null)) {
+        toast.error("يرجى تصحيح الأخطاء في حقول الدفع."); // Generic error toast
         return;
       }
     }
@@ -138,11 +166,22 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
     createProductMutation.mutate(formData, {
       onError: (error) => toast.error(error.message),
       onSuccess: () => {
-        toast.success("تم إنشاء المنتج بنجاح");
+        toast.success("تم إنشاء المنتج بنجاح", {
+          description:
+            "لقد اكتمل الطلب وسوف يتم قريبا نشر الاعلان بعد التاكد من صحة البيانت",
+          duration: 6000,
+          position: "top-center",
+          
+        });
         navigate("/profile/my-products");
       },
     });
   };
+
+  // Determine if there are any active payment input errors
+  const hasPaymentInputErrors = useMemo(() => {
+    return Object.values(paymentInputErrors).some((error) => error !== null);
+  }, [paymentInputErrors]);
 
   return (
     <div dir="rtl" className="mx-auto p-8 w-[100%]">
@@ -190,6 +229,7 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
                       }}
                       paymentInputValues={paymentInputValues}
                       onInputChange={handleInputChange}
+                      paymentInputErrors={paymentInputErrors} // Pass errors down
                       onFileChange={handleFileChange}
                     />
                   ))}
@@ -204,7 +244,7 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
               isSubmitDisabled={
                 !selectedOfferId ||
                 (!isFreeOfferSelected &&
-                  (!selectedPaymentWayId || !arePaymentInputsValid()))
+                  (!selectedPaymentWayId || hasPaymentInputErrors)) // Check hasPaymentInputErrors
               }
             />
           </div>

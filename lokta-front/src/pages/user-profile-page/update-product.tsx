@@ -1,12 +1,12 @@
-import { allSubCategoriesApi } from "@/api/services/category/category-service";
-import { Subcategory } from "@/api/services/category/types";
+import { Category } from "@/api/services/category/types"; // Added Category
 import { updateProductApi } from "@/api/services/products/product-service";
 import { Product } from "@/api/services/products/types";
-import React, { useEffect, useState } from "react";
+import React, { useState, useMemo } from "react"; // Added useMemo
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { SY_CITIES } from "../vendor-pages/create-product/create-product";
 import useBrandsQuery from "../category-page/useBrandsQuery";
+import useCategoriesQuery from "../all-category-page/useCategoriesQuery";
 
 type Props = Product & {
   onCancel: () => void;
@@ -17,6 +17,7 @@ type ProductData = {
   productPrice: string;
   productDescription: string;
   productImage: string;
+  category_id: number; // Added category_id
   brand_id: number;
   sub__category_id: number;
   currency: "sy" | "us";
@@ -27,9 +28,9 @@ function UpdateProduct(props: Props) {
   const [previewImages, setPreviewImages] = React.useState<string[] | null>(
     null
   );
+  const categoriesQuery = useCategoriesQuery();
   const [newImages, setNewImages] = useState<File[] | null>(null); // Changed to File[]
-  const [loadingCreateProduct, setLoadingCreateProduct] = useState(false);
-  const [subCategories, setSubCategories] = useState<Subcategory[]>([]);
+  const [loadingUpdateProduct, setLoadingUpdateProduct] = useState(false); // Renamed loading state
   const {
     register,
     handleSubmit,
@@ -39,6 +40,7 @@ function UpdateProduct(props: Props) {
   } = useForm<ProductData>({
     defaultValues: {
       brand_id: props.brand_id,
+      category_id: "" as any,
       productDescription: props.description ?? "",
       productPrice: props.price.toString(),
       productTitle: props.title,
@@ -48,6 +50,7 @@ function UpdateProduct(props: Props) {
     },
   });
 
+  const watchedCategoryId = watch("category_id");
   const watchedSubCategoryId = watch("sub__category_id");
   const brandsQuery = useBrandsQuery({
     id: watchedSubCategoryId,
@@ -66,48 +69,54 @@ function UpdateProduct(props: Props) {
       setPreviewImages(null);
     }
   };
-  useEffect(() => {
-    fetchSubCategories();
-  }, []);
 
-  const fetchSubCategories = async () => {
-    try {
-      const data = await allSubCategoriesApi();
-      setSubCategories(data);
-    } catch (error: any) {
-      toast.error(error.message);
+  // Filter subcategories based on the selected category
+  const filteredSubcategories = useMemo(() => {
+    if (!watchedCategoryId) {
+      return [];
     }
-  };
+
+    const surCategory = categoriesQuery.data?.filter(
+      (category: Category) => category.id === Number(watchedCategoryId)
+    );
+
+    if (!surCategory || surCategory.length === 0) {
+      return [];
+    }
+
+    return surCategory[0].sub_category;
+  }, [watchedCategoryId]);
 
   const onSubmit: SubmitHandler<ProductData> = async (data: ProductData) => {
     try {
-      setLoadingCreateProduct(true);
+      setLoadingUpdateProduct(true);
 
       const formData = new FormData();
       formData.append("title", data.productTitle);
       formData.append("price", String(data.productPrice));
       formData.append("description", data.productDescription);
       formData.append("brand_id", String(data.brand_id));
+      formData.append("category_id", String(data.category_id)); // Added category_id
       formData.append("sub__category_id", String(data.sub__category_id));
       formData.append("currency", data.currency);
       formData.append("city", data.city);
-    
+
       if (newImages && newImages.length > 0) {
         newImages.forEach((file, idx) => {
           formData.append(`images[${idx}]`, file);
         });
       }
-  
+
       const res = await updateProductApi(props.id, formData);
-      setLoadingCreateProduct(false);
+      setLoadingUpdateProduct(false); // Use renamed state
       reset();
-      props.onUpdate(res);
+      props.onUpdate(res); // Assuming res is the updated product object
       toast.success("تم تحديث المنتج بنجاح"); // Product Updated successfully
       setPreviewImages(null);
       setNewImages(null);
     } catch (error: any) {
       toast.error(error.message);
-      setLoadingCreateProduct(false);
+      setLoadingUpdateProduct(false);
     }
   };
 
@@ -136,14 +145,52 @@ function UpdateProduct(props: Props) {
             <span className="text-red-500 text-sm">{errors.city.message}</span>
           )}
         </div>
+
+        {/* Category Select */}
+        <div>
+          <label htmlFor="category_id">الفئة الرئيسية</label>
+          <select
+            {...register("category_id", {
+              required: "الفئة الرئيسية مطلوبة",
+            })}
+            className="border border-gray-300 rounded-md p-2 w-full"
+            defaultValue=""
+            disabled={categoriesQuery.isLoading}
+          >
+            <option value="" disabled>
+              {categoriesQuery.isLoading
+                ? "جاري التحميل..."
+                : "اختر الفئة الرئيسية"}
+            </option>
+            {categoriesQuery.data?.map((category: Category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}{" "}
+              </option>
+            ))}
+          </select>
+          {errors.category_id && (
+            <span className="text-red-500 text-sm">
+              {errors.category_id.message}
+            </span>
+          )}
+        </div>
+
+        {/* Subcategory Select */}
         <div>
           <label htmlFor="sub__category_id">الفئة الفرعية</label>
           <select
-            {...register("sub__category_id", {})}
+            {...register("sub__category_id", {
+              required: "الفئة الفرعية مطلوبة",
+            })} // Added required validation
             className="border border-gray-300 rounded-md p-2 w-full"
+            disabled={!watchedCategoryId || filteredSubcategories.length === 0}
           >
-            <option value="">اختر الفئة الفرعية</option>
-            {subCategories.map((subcategory) => (
+            <option value="" disabled>
+              {watchedCategoryId
+                ? "اختر الفئة الفرعية"
+                : "اختر فئة رئيسية أولاً"}
+            </option>
+            {filteredSubcategories.map((subcategory) => (
               <option key={subcategory.id} value={subcategory.id}>
                 {subcategory.title}
               </option>
@@ -155,11 +202,20 @@ function UpdateProduct(props: Props) {
             </span>
           )}
         </div>
+
+        {/* Brand Select */}
         <div className={`${!watch("sub__category_id") && "opacity-[0.4]"}`}>
           <label htmlFor="brand_id">
             العلامة التجارية{" "}
             {brandsQuery.isLoading && "(جاري تحميل الماركات...)"}
           </label>{" "}
+          {watchedSubCategoryId &&
+            brandsQuery.status === "success" &&
+            brandsQuery.data.length === 0 && (
+              <p className="text-sm text-orange-500 mt-1">
+                لا توجد علامات تجارية لهذه الفئة الفرعية.
+              </p>
+            )}
           <select
             {...register("brand_id")}
             className="border border-gray-300 rounded-md p-2 w-full"
@@ -286,9 +342,10 @@ function UpdateProduct(props: Props) {
           <button
             type="submit"
             className="bg-blue-500 text-white rounded-md p-2 hover:bg-blue-600"
-            disabled={loadingCreateProduct}
+            disabled={loadingUpdateProduct} // Use renamed state
           >
-            {loadingCreateProduct ? "جاري التحميل..." : "تحديث المنتج"}
+            {loadingUpdateProduct ? "جاري التحميل..." : "تحديث المنتج"}{" "}
+            {/* Use renamed state */}
           </button>
         </div>
       </form>
