@@ -1,12 +1,12 @@
-import { Category } from "@/api/services/category/types"; // Added Category
+import { Subcategory } from "@/api/services/category/types";
 import { updateProductApi } from "@/api/services/products/product-service";
 import { Product } from "@/api/services/products/types";
-import React, { useState, useMemo } from "react"; // Added useMemo
+import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { SY_CITIES } from "../vendor-pages/create-product/create-product";
 import useBrandsQuery from "../category-page/useBrandsQuery";
-import useCategoriesQuery from "../all-category-page/useCategoriesQuery";
+import useAllSubcategoriesQuery from "../all-category-page/useAllSubcategoriesQuery";
 
 type Props = Product & {
   onCancel: () => void;
@@ -17,7 +17,6 @@ type ProductData = {
   productPrice: string;
   productDescription: string;
   productImage: string;
-  category_id: number; // Added category_id
   brand_id: number;
   sub__category_id: number;
   currency: "sy" | "us";
@@ -28,7 +27,8 @@ function UpdateProduct(props: Props) {
   const [previewImages, setPreviewImages] = React.useState<string[] | null>(
     null
   );
-  const categoriesQuery = useCategoriesQuery();
+  console.log(props);
+  const subcategoriesQuery = useAllSubcategoriesQuery();
   const [newImages, setNewImages] = useState<File[] | null>(null); // Changed to File[]
   const [loadingUpdateProduct, setLoadingUpdateProduct] = useState(false); // Renamed loading state
   const {
@@ -37,24 +37,30 @@ function UpdateProduct(props: Props) {
     reset,
     formState: { errors },
     watch,
+    setValue,
   } = useForm<ProductData>({
     defaultValues: {
-      brand_id: props.brand_id,
-      category_id: "" as any,
       productDescription: props.description ?? "",
       productPrice: props.price.toString(),
       productTitle: props.title,
-      sub__category_id: props.sub__category_id,
+      sub__category_id: props.sub_category_id,
       currency: props.currency,
       city: props.city ?? "",
     },
   });
 
-  const watchedCategoryId = watch("category_id");
   const watchedSubCategoryId = watch("sub__category_id");
   const brandsQuery = useBrandsQuery({
-    id: watchedSubCategoryId,
+    id: watchedSubCategoryId ?? props.sub_category_id,
   });
+  React.useEffect(() => {
+    if (watchedSubCategoryId) {
+      setValue(
+        "brand_id",
+        brandsQuery.data?.filter((item) => item.name == props.brand)[0].id ?? -1
+      );
+    }
+  }, [watchedSubCategoryId, setValue, brandsQuery.data]);
 
   const handleChooseFile = async (
     e: React.ChangeEvent<HTMLInputElement>
@@ -70,23 +76,6 @@ function UpdateProduct(props: Props) {
     }
   };
 
-  // Filter subcategories based on the selected category
-  const filteredSubcategories = useMemo(() => {
-    if (!watchedCategoryId) {
-      return [];
-    }
-
-    const surCategory = categoriesQuery.data?.filter(
-      (category: Category) => category.id === Number(watchedCategoryId)
-    );
-
-    if (!surCategory || surCategory.length === 0) {
-      return [];
-    }
-
-    return surCategory[0].sub_category;
-  }, [watchedCategoryId]);
-
   const onSubmit: SubmitHandler<ProductData> = async (data: ProductData) => {
     try {
       setLoadingUpdateProduct(true);
@@ -96,8 +85,10 @@ function UpdateProduct(props: Props) {
       formData.append("price", String(data.productPrice));
       formData.append("description", data.productDescription);
       formData.append("brand_id", String(data.brand_id));
-      formData.append("category_id", String(data.category_id)); // Added category_id
-      formData.append("sub__category_id", String(data.sub__category_id));
+      formData.append(
+        "sub__category_id",
+        String(data.sub__category_id ?? props.sub_category_id)
+      );
       formData.append("currency", data.currency);
       formData.append("city", data.city);
 
@@ -146,35 +137,6 @@ function UpdateProduct(props: Props) {
           )}
         </div>
 
-        {/* Category Select */}
-        <div>
-          <label htmlFor="category_id">الفئة الرئيسية</label>
-          <select
-            {...register("category_id", {
-              required: "الفئة الرئيسية مطلوبة",
-            })}
-            className="border border-gray-300 rounded-md p-2 w-full"
-            defaultValue=""
-            disabled={categoriesQuery.isLoading}
-          >
-            <option value="" disabled>
-              {categoriesQuery.isLoading
-                ? "جاري التحميل..."
-                : "اختر الفئة الرئيسية"}
-            </option>
-            {categoriesQuery.data?.map((category: Category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}{" "}
-              </option>
-            ))}
-          </select>
-          {errors.category_id && (
-            <span className="text-red-500 text-sm">
-              {errors.category_id.message}
-            </span>
-          )}
-        </div>
-
         {/* Subcategory Select */}
         <div>
           <label htmlFor="sub__category_id">الفئة الفرعية</label>
@@ -183,14 +145,15 @@ function UpdateProduct(props: Props) {
               required: "الفئة الفرعية مطلوبة",
             })} // Added required validation
             className="border border-gray-300 rounded-md p-2 w-full"
-            disabled={!watchedCategoryId || filteredSubcategories.length === 0}
+            disabled={subcategoriesQuery.isLoading || !subcategoriesQuery.data}
+            defaultValue={props.sub_category_id}
           >
             <option value="" disabled>
-              {watchedCategoryId
-                ? "اختر الفئة الفرعية"
-                : "اختر فئة رئيسية أولاً"}
+              {subcategoriesQuery.isLoading
+                ? "جاري التحميل..."
+                : "اختر الفئة الفرعية"}
             </option>
-            {filteredSubcategories.map((subcategory) => (
+            {subcategoriesQuery.data?.map((subcategory: Subcategory) => (
               <option key={subcategory.id} value={subcategory.id}>
                 {subcategory.title}
               </option>

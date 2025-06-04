@@ -25,6 +25,8 @@ export type Product = {
   city: string | null;
   sub_category : string
   brand : string
+  sub_category_id : number
+  
 };
 
 export type ProductDates = {
