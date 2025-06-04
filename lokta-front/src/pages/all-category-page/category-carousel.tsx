@@ -41,8 +41,8 @@ export function CategoryCarousel({
         ))}
       </CarouselContent>
       <div className="hidden md:flex items-center justify-center gap-5 mt-4">
-        <CarouselNext className="static transform-none" />
-        <CarouselPrevious className="static transform-none mr-2" />
+        <CarouselPrevious className="static transform-none rotate-180" />
+        <CarouselNext className="static transform-none rotate-180" /> 
       </div>
     </Carousel>
   );
