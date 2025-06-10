@@ -5,36 +5,34 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Request;
 
-
 class ProductResource extends JsonResource
 {
-
-       public function toArray($request)
+    public function toArray($request)
     {
         return [
             'id' => $this->id,
-            'title' => $this->title,
-            'price' => $this->price,
-            'currency' => $this->currency,
-            'status' => $this->status,
+            'title' => $this->title ?? null,
+            'price' => $this->price ?? null,
+            'currency' => $this->currency ?? null,
+            'status' => $this->status ?? null,
             'images' => $this->formatImages(),
-            'subscription_price' => $this->subscription_price,
-            'description' => $this->description,
-            'city' => $this->city,
+            'subscription_price' => $this->subscription_price ?? null,
+            'description' => $this->description ?? null,
+            'city' => $this->city ?? null,
 
-            'sub_category_id' => $this->sub_category->id,
-            'sub_category' => $this->sub_category->title,
-            'brand' => $this->brand?->name,
-            'offer_id' => $this->offer->id,
-            'owner_id' => $this->owner->id,
+            'sub_category_id' => optional($this->sub_category)->id ?? null,
+            'sub_category' => optional($this->sub_category)->title ?? null,
+            'brand' => optional($this->brand)->name ?? null,
+            'offer_id' => optional($this->offer)->id ?? null,
+            'owner_id' => optional($this->owner)->id ?? null,
             'payment_details' => [
-                'method' => $this->paymentway->title,
-                'inputs' => $this->getProcessedPaymentInputs(),
-                'verification_status' => $this->getVerificationStatus()
+                'method' => optional($this->paymentway)->title ?? null,
+                'inputs' => $this->getProcessedPaymentInputs() ?? null,
+                'verification_status' => $this->getVerificationStatus() ?? null
             ],
             'dates' => [
-                'start_date' => $this->start_date,
-                'end_date' => $this->end_date,
+                'start_date' => $this->start_date ?? null,
+                'end_date' => $this->end_date ?? null,
                 'remaining_days' => $this->end_date ? now()->diffInDays($this->end_date) : null
             ]
         ];
@@ -42,6 +40,11 @@ class ProductResource extends JsonResource
 
     protected function formatImages()
     {
+        // إذا كان images فارغًا أو غير موجود، نعيد مصفوفة فارغة
+        if (empty($this->images)) {
+            return [];
+        }
+
         // إذا كان images بالفعل مصفوفة، نعيدها مباشرة
         if (is_array($this->images)) {
             return $this->images;
