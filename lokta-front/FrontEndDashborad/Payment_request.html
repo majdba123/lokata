@@ -1225,6 +1225,11 @@
                                 const managerId = e.target.closest('.update-btn').dataset.id;
                                 this.updateManager(managerId);
                             }
+                            if (e.target.closest('.mark-viewed-btn')) {
+                                const btn = e.target.closest('.mark-viewed-btn');
+                                const productId = btn.dataset.id;
+                                this.markAsViewed(productId, btn);
+                            }
                         });
 
                         // Event Delegation for Status Dropdown
@@ -1258,8 +1263,40 @@
                             }
                         });
                     },
+                    async markAsViewed(productId, buttonElement) {
+                        try {
+                            const token = localStorage.getItem('authToken');
+                            if (!token) {
+                                coloredToast('danger', 'يجب تسجيل الدخول أولاً');
+                                return;
+                            }
 
-                    // جلب بيانات المديرين من API
+                            const response = await fetch(`${this.apiBaseUrl}/api/admin/product/markPaymentAsViewed/${productId}`, {
+                                method: 'PUT',
+                                headers: {
+                                    Accept: 'application/json',
+                                    'Content-Type': 'application/json',
+                                    Authorization: `Bearer ${token}`,
+                                },
+                            });
+
+                            if (!response.ok) {
+                                const errorData = await response.json();
+                                throw new Error(errorData.message || 'فشل في تحديث الحالة');
+                            }
+
+                            // تحديث الواجهة
+                            buttonElement.classList.remove('btn-primary');
+                            buttonElement.classList.add('btn-success');
+                            buttonElement.innerHTML = '<i class="fas fa-check-circle"></i>';
+                            buttonElement.title = 'تمت المشاهدة';
+
+                            coloredToast('success', ' is Payment Viewed ');
+                        } catch (error) {
+                            console.error('Error marking as viewed:', error);
+                            coloredToast('danger', error.message || 'حدث خطأ أثناء تحديث الحالة');
+                        }
+                    }, // جلب بيانات المديرين من API
                     async fetchManagers() {
                         try {
                             const token = localStorage.getItem('authToken');
@@ -1278,6 +1315,7 @@
 
                             const data = await response.json();
                             this.tableData = data.data;
+                            console.log(data);
 
                             this.populateTable();
                         } catch (error) {}
@@ -1302,7 +1340,7 @@
 
                                 inputs.phone?.value || 'N/A', // عنوان المنتج
                                 inputs.text?.value || 'N/A', // عنوان المنتج
-                                this.getActionButtons(inputs.photo?.value), // أزرار الإجراءات
+                                this.getActionButtons(inputs.photo?.value, item.id, item.is_show_payment),
                             ];
                         });
 
@@ -1393,12 +1431,12 @@
                     },
 
                     // أزرار الإجراءات
-                    getActionButtons(imageUrl) {
-                        // استخراج الرابط بشكل موثوق سواء كان كائنًا أو نصًا
+                    getActionButtons(imageUrl, productId, isPaymentViewed) {
                         const imgUrl = (typeof imageUrl === 'object' ? imageUrl.url : imageUrl) || '';
 
                         return `
-        <div class="flex items-center justify-center">
+        <div class="flex items-center justify-center space-x-2">
+            <!-- زر عرض الصورة -->
             <button class="btn btn-warning update-btn"
                     data-id="${encodeURIComponent(imgUrl)}"
                     @click.prevent="if ('${imgUrl}') {
@@ -1407,6 +1445,15 @@
                     }"
                     ${!imgUrl ? 'disabled' : ''}>
                 Show Photo
+            </button>
+            
+            <button class="btn btn-sm mark-viewed-btn p-2 
+                      ${isPaymentViewed == 1 ? 'btn-success cursor-not-allowed' : 'btn-primary'}"
+                    data-id="${productId}"
+                    ${isPaymentViewed == 1 ? 'disabled' : ''}
+                    title="${isPaymentViewed == 1 ? 'is Payment Viewed ' : 'تمييز كمشاهد'}">
+                <i class="fas ${isPaymentViewed ? 'fa-check-circle' : 'fa-eye'}"></i>
+                ${isPaymentViewed == 1 ? ' is Payment Viewed' : 'تمييز كمشاهد'}
             </button>
         </div>`;
                     }, // Helper function for status button classes
