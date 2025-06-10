@@ -371,82 +371,84 @@ class ProductController extends Controller
 
 
 
+public function update(Request $request, $id): JsonResponse
+{
+    try {
+        $product = Product::findOrFail($id);
 
-
-    public function update(Request $request, $id): JsonResponse
-    {
-        try {
-            $product = Product::findOrFail($id);
-
-            if (!(Auth::id() == $product->owner_id || Auth::user()->role == 'admin')) {
-                return response()->json(['message' => 'غير مصرح لك بتعديل هذا المنتج'], 403);
-            }
-
-            $validatedData = $request->validate([
-                'title' => 'nullable|string|max:255',
-                'price' => 'nullable|numeric|min:0',
-                'sub__category_id' => 'nullable|numeric|exists:sub__categories,id',
-                'description' => 'nullable|string',
-                'city' => 'nullable|string',
-                'images' => 'nullable|array',
-                'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-                'brand_id' => 'nullable|numeric|exists:brands,id',
-                'currency' => 'nullable|string|in:sy,us',
-            ]);
-
-            // التحقق من أن البراند ينتمي إلى التصنيف الفرعي إذا تم توفيرهما
-            if (isset($validatedData['brand_id'])) {
-                $brand = Brand::find($validatedData['brand_id']);
-                $subCategoryId = $validatedData['sub__category_id'] ?? $product->sub__category_id;
-
-                if ($brand->sub__category_id != $subCategoryId) {
-                    throw ValidationException::withMessages([
-                        'brand_id' => ['البراند المحدد لا ينتمي إلى التصنيف الفرعي المحدد.']
-                    ]);
-                }
-            }
-
-            // معالجة الصور الجديدة إذا تم رفعها
-            if ($request->hasFile('images')) {
-                $uploadedImages = [];
-
-                // حذف الصور القديمة إذا كانت موجودة
-                if ($product->images) {
-                    foreach (json_decode($product->images) as $oldImage) {
-                        $oldImagePath = str_replace(asset('api/storage/'), '', $oldImage);
-                        Storage::disk('public')->delete($oldImagePath);
-                    }
-                }
-
-                // رفع الصور الجديدة
-                foreach ($request->file('images') as $imageFile) {
-                    $imageName = Str::random(32) . '.' . $imageFile->getClientOriginalExtension();
-                    $imagePath = 'products/' . $imageName;
-                    Storage::disk('public')->put($imagePath, file_get_contents($imageFile));
-                    $uploadedImages[] = asset('api/storage/' . $imagePath);
-                }
-
-                $validatedData['images'] = json_encode($uploadedImages);
-            }
-
-            $product->update($validatedData);
-
-            if (isset($validatedData['sub__category_id'])) {
-                $product->sub_category()->associate($validatedData['sub__category_id']);
-                $product->save();
-            }
-
-            return response()->json(new ProductResource($product));
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'حدث خطأ أثناء تحديث المنتج: ' . $e->getMessage()
-            ], 500);
+        if (!(Auth::id() == $product->owner_id || Auth::user()->role == 'admin')) {
+            return response()->json(['message' => 'غير مصرح لك بتعديل هذا المنتج'], 403);
         }
+
+        $validatedData = $request->validate([
+            'title' => 'nullable|string|max:255',
+            'price' => 'nullable|numeric|min:0',
+            'sub__category_id' => 'nullable|numeric|exists:sub__categories,id',
+            'description' => 'nullable|string',
+            'city' => 'nullable|string',
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'brand_id' => 'nullable|numeric|exists:brands,id',
+            'currency' => 'nullable|string|in:sy,us',
+        ]);
+
+        // التحقق من أن البراند ينتمي إلى التصنيف الفرعي إذا تم توفيرهما
+        if (isset($validatedData['brand_id'])) {
+            $brand = Brand::find($validatedData['brand_id']);
+            $subCategoryId = $validatedData['sub__category_id'] ?? $product->sub__category_id;
+
+            if ($brand->sub__category_id != $subCategoryId) {
+                throw ValidationException::withMessages([
+                    'brand_id' => ['البراند المحدد لا ينتمي إلى التصنيف الفرعي المحدد.']
+                ]);
+            }
+        }
+
+        // معالجة الصور الجديدة إذا تم رفعها
+        if ($request->hasFile('images')) {
+            $uploadedImages = [];
+
+            // حذف الصور القديمة إذا كانت موجودة
+            if ($product->images) {
+                foreach (json_decode($product->images) as $oldImage) {
+                    $oldImagePath = str_replace(asset('api/storage/'), '', $oldImage);
+                    Storage::disk('public')->delete($oldImagePath);
+                }
+            }
+
+            // رفع الصور الجديدة
+            foreach ($request->file('images') as $imageFile) {
+                $imageName = Str::random(32) . '.' . $imageFile->getClientOriginalExtension();
+                $imagePath = 'products/' . $imageName;
+                Storage::disk('public')->put($imagePath, file_get_contents($imageFile));
+                $uploadedImages[] = asset('api/storage/' . $imagePath);
+            }
+
+            $validatedData['images'] = json_encode($uploadedImages);
+        }
+
+        // تحديث الحالة فقط إذا كانت الحالة الأصلية completed
+        if ($product->status === 'completed') {
+            $validatedData['status'] = 'reupdate';
+        }
+        // إذا كانت pending تبقى كما هي (لا نضيفها لـ validatedData)
+
+        $product->update($validatedData);
+
+        if (isset($validatedData['sub__category_id'])) {
+            $product->sub_category()->associate($validatedData['sub__category_id']);
+            $product->save();
+        }
+
+        return response()->json(new ProductResource($product));
+    } catch (ValidationException $e) {
+        return response()->json(['errors' => $e->errors()], 422);
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'حدث خطأ أثناء تحديث المنتج: ' . $e->getMessage()
+        ], 500);
     }
-
-
+}
 
 
     public function destroy(Product $product): JsonResponse
@@ -544,13 +546,21 @@ class ProductController extends Controller
      * @param Product $product
      * @return JsonResponse
      */
-    public function updateStatus(Request $request, $id): JsonResponse
+   public function updateStatus(Request $request, $id): JsonResponse
     {
         $product = Product::find($id);
         try {
             $request->validate([
                 'status' => 'required|string|in:completed,rejected',
             ]);
+
+            // التحقق من شرط is_show_payment إذا كانت الحالة المطلوبة هي completed
+            if ($request->status === 'completed' && $product->is_show_payment != 1) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'يجب عليك مشاهدة تفاصيل الدفع أولاً قبل الموافقة على المنتج'
+                ], 422);
+            }
 
             DB::beginTransaction();
 
@@ -592,6 +602,43 @@ class ProductController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'فشل في تحديث حالة المنتج: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+
+
+    /**
+ * تحديث حالة مشاهدة تفاصيل الدفع للمنتج
+ *
+ * @param int $id معرف المنتج
+ * @return JsonResponse
+ */
+    public function markPaymentAsViewed($id): JsonResponse
+    {
+        try {
+            $product = Product::findOrFail($id);
+
+            DB::beginTransaction();
+
+            $product->is_show_payment = 1;
+            $product->save();
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'تم تحديث حالة مشاهدة تفاصيل الدفع بنجاح',
+                'data' => new ProductResource($product)
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Failed to update payment view status: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'فشل في تحديث حالة مشاهدة تفاصيل الدفع: ' . $e->getMessage()
             ], 500);
         }
     }

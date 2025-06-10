@@ -160,6 +160,8 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
 
         Route::prefix('product')->group(function () {
             Route::put('/update_status/{product_id}', [ProductController::class, 'updateStatus']);
+            Route::put('/markPaymentAsViewed/{product_id}', [ProductController::class, 'markPaymentAsViewed']);
+
             Route::get('/get_all', [ProductController::class, 'adminProducts']);
             Route::put('update/{product}', [ProductController::class, 'update']);
 

@@ -19,6 +19,7 @@ class ProductResource extends JsonResource
             'subscription_price' => $this->subscription_price ?? null,
             'description' => $this->description ?? null,
             'city' => $this->city ?? null,
+            'is_show_payment' => $this->is_show_payment ?? null,
 
             'sub_category_id' => optional($this->sub_category)->id ?? null,
             'sub_category' => optional($this->sub_category)->title ?? null,
