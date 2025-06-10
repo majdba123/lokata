@@ -9,11 +9,13 @@
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-        <link rel="stylesheet" type="text/css" media="screen" href=" /assets/css/perfect-scrollbar.min.css" />
-        <link rel="stylesheet" type="text/css" media="screen" href=" /assets/css/style.css" />
-        <link defer rel="stylesheet" type="text/css" media="screen" href=" /assets/css/animate.css" />
-        <script src=" /assets/js/perfect-scrollbar.min.js"></script>
-        <script defer src=" /assets/js/popper.min.js"></script>
+        <link rel="stylesheet" type="text/css" media="screen" href="assets/css/perfect-scrollbar.min.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="assets/css/style.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="assets/css/file-upload-with-preview.min.css" />
+
+        <link defer rel="stylesheet" type="text/css" media="screen" href="assets/css/animate.css" />
+        <script src="assets/js/perfect-scrollbar.min.js"></script>
+        <script defer src="assets/js/popper.min.js"></script>
     </head>
 
     <body
@@ -372,7 +374,7 @@
                     <div class="h-full bg-white dark:bg-[#0e1726]">
                         <div class="flex items-center justify-between px-4 py-3">
                             <a href="index.html" class="main-logo flex shrink-0 items-center">
-                                <span class="align-middle text-2xl font-semibold dark:text-white-light lg:inline ltr:ml-1.5 rtl:mr-1.5">ADAM STORE</span>
+                                <span class="align-middle text-2xl font-semibold dark:text-white-light lg:inline ltr:ml-1.5 rtl:mr-1.5">LOKTA</span>
                             </a>
                             <a
                                 href="javascript:;"
@@ -435,6 +437,9 @@
                                     <li>
                                         <a href="index.html">Home</a>
                                     </li>
+                                    <li>
+                                        <a href="Navbar.html">Navbar</a>
+                                    </li>
                                 </ul>
                             </li>
 
@@ -453,43 +458,7 @@
                                 Category & Product
                             </h2>
                             <li class="menu nav-item">
-                                <button
-                                    type="button"
-                                    class="nav-link group"
-                                    :class="{'active' : activeDropdown === 'SellMail'}"
-                                    @click="activeDropdown === 'SellMail' ? activeDropdown = null : activeDropdown = 'SellMail'"
-                                >
-                                    <div class="flex items-center">
-                                        <svg
-                                            class="shrink-0 group-hover:!text-primary"
-                                            width="20"
-                                            height="20"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                            <path
-                                                fill-rule="evenodd"
-                                                clip-rule="evenodd"
-                                                d="M10.4036 22.4797L10.6787 22.015C11.1195 21.2703 11.3399 20.8979 11.691 20.6902C12.0422 20.4825 12.5001 20.4678 13.4161 20.4385C14.275 20.4111 14.8523 20.3361 15.3458 20.1317C16.385 19.7012 17.2106 18.8756 17.641 17.8365C17.9639 17.0571 17.9639 16.0691 17.9639 14.093V13.2448C17.9639 10.4683 17.9639 9.08006 17.3389 8.06023C16.9892 7.48958 16.5094 7.0098 15.9388 6.66011C14.919 6.03516 13.5307 6.03516 10.7542 6.03516H8.20964C5.43314 6.03516 4.04489 6.03516 3.02507 6.66011C2.45442 7.0098 1.97464 7.48958 1.62495 8.06023C1 9.08006 1 10.4683 1 13.2448V14.093C1 16.0691 1 17.0571 1.32282 17.8365C1.75326 18.8756 2.57886 19.7012 3.61802 20.1317C4.11158 20.3361 4.68882 20.4111 5.5477 20.4385C6.46368 20.4678 6.92167 20.4825 7.27278 20.6902C7.6239 20.8979 7.84431 21.2703 8.28514 22.015L8.5602 22.4797C8.97002 23.1721 9.9938 23.1721 10.4036 22.4797ZM13.1928 14.5171C13.7783 14.5171 14.253 14.0424 14.253 13.4568C14.253 12.8713 13.7783 12.3966 13.1928 12.3966C12.6072 12.3966 12.1325 12.8713 12.1325 13.4568C12.1325 14.0424 12.6072 14.5171 13.1928 14.5171ZM10.5422 13.4568C10.5422 14.0424 10.0675 14.5171 9.48193 14.5171C8.89637 14.5171 8.42169 14.0424 8.42169 13.4568C8.42169 12.8713 8.89637 12.3966 9.48193 12.3966C10.0675 12.3966 10.5422 12.8713 10.5422 13.4568ZM5.77108 14.5171C6.35664 14.5171 6.83133 14.0424 6.83133 13.4568C6.83133 12.8713 6.35664 12.3966 5.77108 12.3966C5.18553 12.3966 4.71084 12.8713 4.71084 13.4568C4.71084 14.0424 5.18553 14.5171 5.77108 14.5171Z"
-                                                fill="currentColor"
-                                            />
-                                            <path
-                                                opacity="0.5"
-                                                d="M15.486 1C16.7529 0.999992 17.7603 0.999986 18.5683 1.07681C19.3967 1.15558 20.0972 1.32069 20.7212 1.70307C21.3632 2.09648 21.9029 2.63623 22.2963 3.27821C22.6787 3.90219 22.8438 4.60265 22.9226 5.43112C22.9994 6.23907 22.9994 7.24658 22.9994 8.51343V9.37869C22.9994 10.2803 22.9994 10.9975 22.9597 11.579C22.9191 12.174 22.8344 12.6848 22.6362 13.1632C22.152 14.3323 21.2232 15.2611 20.0541 15.7453C20.0249 15.7574 19.9955 15.7691 19.966 15.7804C19.8249 15.8343 19.7039 15.8806 19.5978 15.915H17.9477C17.9639 15.416 17.9639 14.8217 17.9639 14.093V13.2448C17.9639 10.4683 17.9639 9.08006 17.3389 8.06023C16.9892 7.48958 16.5094 7.0098 15.9388 6.66011C14.919 6.03516 13.5307 6.03516 10.7542 6.03516H8.20964C7.22423 6.03516 6.41369 6.03516 5.73242 6.06309V4.4127C5.76513 4.29934 5.80995 4.16941 5.86255 4.0169C5.95202 3.75751 6.06509 3.51219 6.20848 3.27821C6.60188 2.63623 7.14163 2.09648 7.78361 1.70307C8.40759 1.32069 9.10805 1.15558 9.93651 1.07681C10.7445 0.999986 11.7519 0.999992 13.0188 1H15.486Z"
-                                                fill="currentColor"
-                                            />
-                                        </svg>
-
-                                        <span class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">Categories</span>
-                                    </div>
-                                    <div class="rtl:rotate-180" :class="{'!rotate-90' : activeDropdown === 'SellMail'}">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                        </svg>
-                                    </div>
-                                </button>
-                                <ul x-cloak x-show="activeDropdown === 'SellMail'" x-collapse class="sub-menu text-gray-500">
+                                <ul class="sub-menu">
                                     <li>
                                         <a href="Category.html">Category</a>
                                     </li>
@@ -499,48 +468,15 @@
                                 </ul>
                             </li>
                             <li class="menu nav-item">
-                                <button
-                                    type="button"
-                                    class="nav-link group"
-                                    :class="{'active' : activeDropdown === 'SellPick'}"
-                                    @click="activeDropdown === 'SellPick' ? activeDropdown = null : activeDropdown = 'SellPick'"
-                                >
-                                    <div class="flex items-center">
-                                        <svg
-                                            class="shrink-0 group-hover:!text-primary"
-                                            width="20"
-                                            height="20"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                            <path
-                                                fill-rule="evenodd"
-                                                clip-rule="evenodd"
-                                                d="M10.4036 22.4797L10.6787 22.015C11.1195 21.2703 11.3399 20.8979 11.691 20.6902C12.0422 20.4825 12.5001 20.4678 13.4161 20.4385C14.275 20.4111 14.8523 20.3361 15.3458 20.1317C16.385 19.7012 17.2106 18.8756 17.641 17.8365C17.9639 17.0571 17.9639 16.0691 17.9639 14.093V13.2448C17.9639 10.4683 17.9639 9.08006 17.3389 8.06023C16.9892 7.48958 16.5094 7.0098 15.9388 6.66011C14.919 6.03516 13.5307 6.03516 10.7542 6.03516H8.20964C5.43314 6.03516 4.04489 6.03516 3.02507 6.66011C2.45442 7.0098 1.97464 7.48958 1.62495 8.06023C1 9.08006 1 10.4683 1 13.2448V14.093C1 16.0691 1 17.0571 1.32282 17.8365C1.75326 18.8756 2.57886 19.7012 3.61802 20.1317C4.11158 20.3361 4.68882 20.4111 5.5477 20.4385C6.46368 20.4678 6.92167 20.4825 7.27278 20.6902C7.6239 20.8979 7.84431 21.2703 8.28514 22.015L8.5602 22.4797C8.97002 23.1721 9.9938 23.1721 10.4036 22.4797ZM13.1928 14.5171C13.7783 14.5171 14.253 14.0424 14.253 13.4568C14.253 12.8713 13.7783 12.3966 13.1928 12.3966C12.6072 12.3966 12.1325 12.8713 12.1325 13.4568C12.1325 14.0424 12.6072 14.5171 13.1928 14.5171ZM10.5422 13.4568C10.5422 14.0424 10.0675 14.5171 9.48193 14.5171C8.89637 14.5171 8.42169 14.0424 8.42169 13.4568C8.42169 12.8713 8.89637 12.3966 9.48193 12.3966C10.0675 12.3966 10.5422 12.8713 10.5422 13.4568ZM5.77108 14.5171C6.35664 14.5171 6.83133 14.0424 6.83133 13.4568C6.83133 12.8713 6.35664 12.3966 5.77108 12.3966C5.18553 12.3966 4.71084 12.8713 4.71084 13.4568C4.71084 14.0424 5.18553 14.5171 5.77108 14.5171Z"
-                                                fill="currentColor"
-                                            />
-                                            <path
-                                                opacity="0.5"
-                                                d="M15.486 1C16.7529 0.999992 17.7603 0.999986 18.5683 1.07681C19.3967 1.15558 20.0972 1.32069 20.7212 1.70307C21.3632 2.09648 21.9029 2.63623 22.2963 3.27821C22.6787 3.90219 22.8438 4.60265 22.9226 5.43112C22.9994 6.23907 22.9994 7.24658 22.9994 8.51343V9.37869C22.9994 10.2803 22.9994 10.9975 22.9597 11.579C22.9191 12.174 22.8344 12.6848 22.6362 13.1632C22.152 14.3323 21.2232 15.2611 20.0541 15.7453C20.0249 15.7574 19.9955 15.7691 19.966 15.7804C19.8249 15.8343 19.7039 15.8806 19.5978 15.915H17.9477C17.9639 15.416 17.9639 14.8217 17.9639 14.093V13.2448C17.9639 10.4683 17.9639 9.08006 17.3389 8.06023C16.9892 7.48958 16.5094 7.0098 15.9388 6.66011C14.919 6.03516 13.5307 6.03516 10.7542 6.03516H8.20964C7.22423 6.03516 6.41369 6.03516 5.73242 6.06309V4.4127C5.76513 4.29934 5.80995 4.16941 5.86255 4.0169C5.95202 3.75751 6.06509 3.51219 6.20848 3.27821C6.60188 2.63623 7.14163 2.09648 7.78361 1.70307C8.40759 1.32069 9.10805 1.15558 9.93651 1.07681C10.7445 0.999986 11.7519 0.999992 13.0188 1H15.486Z"
-                                                fill="currentColor"
-                                            />
-                                        </svg>
-
-                                        <span class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">Products</span>
-                                    </div>
-                                    <div class="rtl:rotate-180" :class="{'!rotate-90' : activeDropdown === 'SellPick'}">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                        </svg>
-                                    </div>
-                                </button>
-                                <ul x-cloak x-show="activeDropdown === 'SellPick'" x-collapse class="sub-menu text-gray-500">
+                                <ul class="sub-menu">
                                     <li>
                                         <a href="Product.html">Products</a>
                                     </li>
                                     <li>
-                                        <a href="Offer.html">Offer</a>
+                                        <a href="Offer.html">Plan</a>
+                                    </li>
+                                    <li>
+                                        <a href="Brand.html">Brand</a>
                                     </li>
                                 </ul>
                             </li>
@@ -566,6 +502,9 @@
                                 <li>
                                     <a href="Payment-input.html">Payment Input</a>
                                 </li>
+                                <li>
+                                    <a href="Payment_request.html">Payment Request</a>
+                                </li>
                             </ul>
                         </ul>
                     </div>
@@ -580,10 +519,10 @@
                         <div class="relative flex w-full items-center bg-white px-5 py-2.5 dark:bg-[#0e1726]">
                             <div class="horizontal-logo flex items-center justify-between lg:hidden ltr:mr-2 rtl:ml-2">
                                 <a href="index.html" class="main-logo flex shrink-0 items-center">
-                                    <img class="inline w-8 ltr:-ml-1 rtl:-mr-1" src=" /assets/images/logo.svg" alt="image" />
+                                    <img class="inline w-8 ltr:-ml-1 rtl:-mr-1" src="assets/images/logo.svg" alt="image" />
                                     <span
                                         class="hidden align-middle text-2xl font-semibold transition-all duration-300 dark:text-white-light md:inline ltr:ml-1.5 rtl:mr-1.5"
-                                        >VRISTO</span
+                                        >LOKTA</span
                                     >
                                 </a>
 
@@ -690,7 +629,7 @@
                                         <span
                                             ><img
                                                 class="h-9 w-9 rounded-full object-cover saturate-50 group-hover:saturate-100"
-                                                src=" /assets/images/user-profile.jpeg"
+                                                src="assets/images/user-profile.jpeg"
                                                 alt="image"
                                         /></span>
                                     </a>
@@ -704,7 +643,7 @@
                                         <li>
                                             <div class="flex items-center px-4 py-4">
                                                 <div class="flex-none">
-                                                    <img class="h-10 w-10 rounded-md object-cover" src=" /assets/images/user-profile.jpeg" alt="image" />
+                                                    <img class="h-10 w-10 rounded-md object-cover" src="assets/images/user-profile.jpeg" alt="image" />
                                                 </div>
                                                 <div class="truncate ltr:pl-4 rtl:pr-4">
                                                     <h4 class="text-base">
@@ -789,6 +728,9 @@
                                     <li>
                                         <a href="index.html">Home</a>
                                     </li>
+                                    <li>
+                                        <a href="Navbar.html">Navbar</a>
+                                    </li>
                                 </ul>
                             </li>
 
@@ -832,58 +774,22 @@
                                         </svg>
                                     </div>
                                 </a>
+
                                 <ul class="sub-menu">
-                                    <li class="relative">
-                                        <a href="javascript:;"
-                                            >Categories
-                                            <div class="ltr:ml-auto rtl:mr-auto rtl:rotate-180">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path
-                                                        d="M9 5L15 12L9 19"
-                                                        stroke="currentColor"
-                                                        stroke-width="1.5"
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                    />
-                                                </svg>
-                                            </div>
-                                        </a>
-                                        <ul
-                                            class="absolute top-0 z-[10] hidden min-w-[180px] rounded bg-white p-0 py-2 text-dark shadow dark:bg-[#1b2e4b] dark:text-white-dark ltr:left-[95%] rtl:right-[95%]"
-                                        >
-                                            <li>
-                                                <a href="Category.html">Category</a>
-                                            </li>
-                                            <li>
-                                                <a href="Sub_Category.html">Sub Category</a>
-                                            </li>
-                                        </ul>
+                                    <li>
+                                        <a href="Category.html">Category</a>
                                     </li>
-                                    <li class="relative">
-                                        <a href="javascript:;"
-                                            >Products
-                                            <div class="ltr:ml-auto rtl:mr-auto rtl:rotate-180">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path
-                                                        d="M9 5L15 12L9 19"
-                                                        stroke="currentColor"
-                                                        stroke-width="1.5"
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                    />
-                                                </svg>
-                                            </div>
-                                        </a>
-                                        <ul
-                                            class="absolute top-0 z-[10] hidden min-w-[180px] rounded bg-white p-0 py-2 text-dark shadow dark:bg-[#1b2e4b] dark:text-white-dark ltr:left-[95%] rtl:right-[95%]"
-                                        >
-                                            <li>
-                                                <a href="Product.html">Products</a>
-                                            </li>
-                                            <li>
-                                                <a href="Offer.html">Offer</a>
-                                            </li>
-                                        </ul>
+                                    <li>
+                                        <a href="Sub_Category.html">Sub Category</a>
+                                    </li>
+                                    <li>
+                                        <a href="Product.html">Products</a>
+                                    </li>
+                                    <li>
+                                        <a href="Offer.html">Plan</a>
+                                    </li>
+                                    <li>
+                                        <a href="Brand.html">Brand</a>
                                     </li>
                                 </ul>
                             </li>
@@ -956,16 +862,37 @@
                             </li>
                         </ul>
 
-                        <div class="pt-5">
-                            <div class="mb-6 grid gap-6 xl:grid-cols-1">
-                                <div class="panel h-full">
-                                    <div class="mb-5 flex items-center">
-                                        <h5 class="text-lg font-semibold dark:text-white-light">Add Payment</h5>
+                        <div class="pt-5" x-data="Add_Merchans">
+                            <!-- زر الإضافة في الأعلى -->
+                            <div class="mb-6 flex justify-end">
+                                <button @click="isAddModalOpen = true" class="btn btn-primary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ltr:mr-2 rtl:ml-2" viewBox="0 0 20 20" fill="currentColor">
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
+                                            clip-rule="evenodd"
+                                        />
+                                    </svg>
+                                    Add New Payment
+                                </button>
+                            </div>
+
+                            <!-- نافذة الإضافة المنبثقة -->
+                            <div x-show="isAddModalOpen" x-transition class="fixed inset-0 z-[9999] overflow-y-auto px-4 py-8" style="display: none" x-cloak>
+                                <div class="panel mx-auto my-8 w-full max-w-lg overflow-hidden rounded-lg bg-white dark:bg-gray-800">
+                                    <div
+                                        class="sticky top-0 z-10 flex items-center justify-between border-b bg-white p-4 dark:border-gray-700 dark:bg-gray-800"
+                                    >
+                                        <h5 class="text-lg font-bold">Add New Payment</h5>
+                                        <button @click="isAddModalOpen = false" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
                                     </div>
-                                    <div class="overflow-hidden">
-                                        <!-- form grid -->
+                                    <div class="p-4">
                                         <form x-data="Add_Merchans" @submit.prevent="Add_Merchans">
-                                            <div class="grid grid-cols-1 justify-between gap-5 sm:flex">
+                                            <div class="grid grid-cols-1 gap-5 sm:flex">
                                                 <input type="text" placeholder="Enter Title" class="form-input" x-model="title" required />
                                             </div>
                                             <textarea
@@ -976,11 +903,26 @@
                                                 placeholder="Enter Description"
                                                 required
                                             ></textarea>
-                                            <div class="grid grid-cols-1 justify-between gap-5 sm:flex">
-                                                <input type="number" placeholder="Enter Phone (option)" class="form-input" x-model="phone" />
-                                                <input type="text" placeholder="Enter text (Option)" class="form-input" x-model="name" />
+                                            <div class="grid grid-cols-1 gap-5 sm:flex">
+                                                <span> Select PAYMENT INPUT</span>
+                                                <div class="flex flex-wrap gap-2">
+                                                    <label class="inline-flex">
+                                                        <input type="checkbox" x-model="selectedTypes" value="text" class="form-checkbox text-success" />
+                                                        <span>NAME</span>
+                                                    </label>
+                                                    <label class="inline-flex">
+                                                        <input type="checkbox" x-model="selectedTypes" value="phone" class="form-checkbox text-success" />
+                                                        <span>PHONE</span>
+                                                    </label>
+                                                    <label class="inline-flex">
+                                                        <input type="checkbox" x-model="selectedTypes" value="photo" class="form-checkbox text-success" />
+                                                        <span>PHOTO</span>
+                                                    </label>
+                                                </div>
+                                                <!-- <input type="number" placeholder="Enter Phone (option)" class="form-input" x-model="phone" />
+                                                <input type="text" placeholder="Enter text (Option)" class="form-input" x-model="name" /> -->
                                             </div>
-                                            <div class="panel">
+                                            <div class="panel mt-6">
                                                 <div class="mb-5 flex items-center justify-between">
                                                     <h5 class="text-lg font-semibold dark:text-white-light">Image Upload (Option)</h5>
                                                 </div>
@@ -989,14 +931,17 @@
                                                 </div>
                                             </div>
 
-                                            <button type="submit" class="btn btn-primary mt-6">Create</button>
+                                            <div class="mt-6 flex justify-end space-x-4">
+                                                <button type="submit" class="btn btn-primary">Create Payment</button>
+                                            </div>
                                         </form>
                                     </div>
                                 </div>
                             </div>
-                            <div x-data="multipleTable" x-init="fetchManagers()">
+
+                            <!-- جدول البيانات -->
+                            <div x-data="multipleTable" x-init="fetchManagers()" class="relative z-10">
                                 <div class="panel mt-6">
-                                    <h5 class="mb-5 text-lg font-semibold dark:text-white-light md:absolute md:top-[25px] md:mb-0">Payments</h5>
                                     <table id="myTable1" class="whitespace-nowrap"></table>
                                 </div>
                             </div>
@@ -1007,7 +952,7 @@
 
                 <!-- start footer section -->
                 <div class="mt-auto p-6 text-center dark:text-white-dark ltr:sm:text-left rtl:sm:text-right">
-                    © <span id="footer-year">2022</span>. Developed By High Level Technology.
+                    © <span id="footer-year">2022</span>. <a href="http://highleveltechnology.com/"></a>
                 </div>
                 <!-- end footer section -->
             </div>
@@ -1034,8 +979,8 @@
                         <div class="text-base font-medium text-[#1f2937] dark:text-white-dark/70">
                             <div class="overflow-hidden">
                                 <!-- form grid -->
-                                <form @submit.prevent="Update_Category">
-                                    <div class="grid grid-cols-1 justify-between gap-5 sm:flex">
+                                <form @submit.prevent="updateManager">
+                                    <div class="grid grid-cols-1 justify-between gap-5">
                                         <input type="text" placeholder="Enter Title" class="form-input" x-model="$store.global.sharedData.title" required />
 
                                         <textarea
@@ -1083,15 +1028,15 @@
             </div>
         </div>
 
-        <script src=" /assets/js/alpine-collaspe.min.js"></script>
-        <script src=" /assets/js/alpine-persist.min.js"></script>
-        <script defer src=" /assets/js/alpine-ui.min.js"></script>
-        <script defer src=" /assets/js/alpine-focus.min.js"></script>
-        <script defer src=" /assets/js/alpine.min.js"></script>
-        <script src=" /assets/js/custom.js"></script>
-        <script src=" /assets/js/config.js"></script>
-        <script defer src=" /assets/js/sweetalert.min.js"></script>
-        <script src=" /assets/js/simple-datatables.js"></script>
+        <script src="assets/js/alpine-collaspe.min.js"></script>
+        <script src="assets/js/alpine-persist.min.js"></script>
+        <script defer src="assets/js/alpine-ui.min.js"></script>
+        <script defer src="assets/js/alpine-focus.min.js"></script>
+        <script defer src="assets/js/alpine.min.js"></script>
+        <script src="assets/js/custom.js"></script>
+        <script src="assets/js/config.js"></script>
+        <script defer src="assets/js/sweetalert.min.js"></script>
+        <script src="assets/js/simple-datatables.js"></script>
         <script src="assets/js/file-upload-with-preview.iife.js"></script>
 
         <script>
@@ -1377,12 +1322,12 @@
                     // تنسيق الاسم مع الصورة
                     formatName(name, index) {
                         return `
-            <div class="flex items-center w-max">
-                <img class="w-9 h-9 rounded-full ltr:mr-2 rtl:ml-2 object-cover"
-                     src=" /assets/images/profile-${index + 1}.jpeg"
-                     alt="${name || 'User'}"/>
-                ${name || 'Unknown'}
-            </div>`;
+                        <div class="flex items-center w-max">
+                            <img class="w-9 h-9 rounded-full ltr:mr-2 rtl:ml-2 object-cover"
+                                 src="assets/images/profile-${index + 1}.jpeg"
+                                 alt="${name || 'User'}"/>
+                            ${name || 'Unknown'}
+                        </div>`;
                     },
 
                     // تنسيق البريد الإلكتروني
@@ -1409,22 +1354,22 @@
                     // أزرار الإجراءات
                     getActionButtons(managerId) {
                         return `
-            <div class="flex items-center justify-center">
-                <!-- Status Dropdown -->
+                        <div class="flex items-center justify-center">
+                            <!-- Status Dropdown -->
 
-                <button class="btn update-btn btn-warning"data-id="${[managerId, name]}">UPDATE</button>
+                            <button class="btn update-btn btn-warning"data-id="${managerId}">UPDATE</button>
 
-                <!-- Delete Button -->
-                <button class="btn btn-sm btn-danger delete-btn ml-2" data-id="${managerId}">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path opacity="0.5" d="M9.17065 4C9.58249 2.83481 10.6937 2 11.9999 2C13.3062 2 14.4174 2.83481 14.8292 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                        <path d="M20.5001 6H3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                        <path d="M18.8334 8.5L18.3735 15.3991C18.1965 18.054 18.108 19.3815 17.243 20.1907C16.378 21 15.0476 21 12.3868 21H11.6134C8.9526 21 7.6222 21 6.75719 20.1907C5.89218 19.3815 5.80368 18.054 5.62669 15.3991L5.16675 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                        <path opacity="0.5" d="M9.5 11L10 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                        <path opacity="0.5" d="M14.5 11L14 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                    </svg>
-                </button>
-            </div>`;
+                            <!-- Delete Button -->
+                            <button class="btn btn-sm btn-danger delete-btn ml-2" data-id="${managerId}">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path opacity="0.5" d="M9.17065 4C9.58249 2.83481 10.6937 2 11.9999 2C13.3062 2 14.4174 2.83481 14.8292 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                    <path d="M20.5001 6H3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                    <path d="M18.8334 8.5L18.3735 15.3991C18.1965 18.054 18.108 19.3815 17.243 20.1907C16.378 21 15.0476 21 12.3868 21H11.6134C8.9526 21 7.6222 21 6.75719 20.1907C5.89218 19.3815 5.80368 18.054 5.62669 15.3991L5.16675 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                    <path opacity="0.5" d="M9.5 11L10 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                    <path opacity="0.5" d="M14.5 11L14 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                </svg>
+                            </button>
+                        </div>`;
                     },
 
                     // Helper function for status button classes
@@ -1439,6 +1384,10 @@
 
                     // تحديث حالة المدير
                     async updateManager(managerId) {
+                        const categoryData = this.tableData.find((item) => item.id == managerId);
+                        Alpine.store('global').sharedData.title = categoryData.title;
+                        Alpine.store('global').sharedData.discription = categoryData.description;
+
                         try {
                             const updateConfirmed = await new Promise((resolve) => {
                                 Alpine.store('updateModal').openModal(managerId, () => resolve(true));
@@ -1448,22 +1397,16 @@
                             const token = localStorage.getItem('authToken');
                             if (!token) throw new Error('No authentication token found');
 
-                            const sharedData = Alpine.store('global').sharedData;
-                            if (!sharedData.title || !sharedData.discription) {
-                                throw new Error('Title and description are required');
-                            }
-                            const formData = new FormData();
-                            formData.append('title', sharedData.title);
-                            formData.append('description', sharedData.discription);
+                            const sharedData = { title: Alpine.store('global').sharedData.title, description: Alpine.store('global').sharedData.discription };
 
                             const response = await fetch(`${this.apiBaseUrl}/api/admin/paymentways/update_payment/${managerId}`, {
                                 method: 'PUT', // أو 'POST' إذا تطلب الخادم ذلك
                                 headers: {
+                                    'Content-Type': 'application/json',
+                                    Accept: 'application/json',
                                     Authorization: `Bearer ${token}`,
-                                    // لا تضف Content-Type هنا
                                 },
-                                title: sharedData.title,
-                                description: sharedData.discription,
+                                body: JSON.stringify(sharedData),
                             });
 
                             // تحقق من الاستجابة أولاً
@@ -1607,87 +1550,89 @@
                     apiBaseUrl: API_CONFIG.BASE_URL,
                     title: '',
                     description: '',
+                    selectedTypes: [],
                     phone: '',
                     name: '',
+                    isAddModalOpen: false,
+                    openModal() {
+                        document.body.classList.add('overflow-hidden');
+                        this.isAddModalOpen = true;
+                    },
+
+                    closeModal() {
+                        document.body.classList.remove('overflow-hidden');
+                        this.isAddModalOpen = false;
+                    },
+                    toggleModal() {
+                        this.isAddModalOpen = !this.isAddModalOpen;
+                    },
 
                     async Add_Merchans() {
                         try {
                             const token = localStorage.getItem('authToken');
                             if (!token) throw new Error('Authentication token not found');
 
-                            const inputs = [];
+                            const inputData = [];
+                            // إضافة جميع المدخلات الموجودة
+                            this.selectedTypes.forEach((type) => {
+                                if (type === 'text') {
+                                    inputData.push({ type: 0, name: 'text' });
+                                } else if (type === 'phone') {
+                                    inputData.push({ type: 1, name: 'phone' });
+                                } else if (type === 'photo') {
+                                    inputData.push({ type: 2, name: 'photo' });
+                                }
+                            });
 
-                            if (this.name && this.name.trim() !== '') {
-                                inputs.push({
-                                    type: 0,
-                                    name: this.name.trim(),
-                                });
+                            if (inputData.length === 0) {
+                                throw new Error('يجب اختيار نوع إدخال واحد على الأقل');
                             }
 
-                            if (this.phone && this.phone.trim() !== '') {
-                                inputs.push({
-                                    type: 1,
-                                    name: this.phone.trim(),
-                                });
+                            const formData = new FormData();
+                            formData.append('title', this.title);
+                            formData.append('description', this.description);
+                            inputData.forEach((input, index) => {
+                                formData.append(`inputs[${index}][type]`, input.type);
+                                formData.append(`inputs[${index}][name]`, input.name);
+                            });
+                            for (const [key, value] of formData.entries()) {
+                            }
+                            if (upload.cachedFileArray[0] !== undefined) {
+                                formData.append('image', upload.cachedFileArray[0]);
                             }
 
-                            if (upload.cachedFileArray[0]) {
-                                inputs.push({
-                                    type: 2,
-                                    name: upload.cachedFileArray[0],
-                                });
-                            }
+                            // let response;
+                            // const formData = new FormData();
+                            // formData.append('data', JSON.stringify(requestData));
 
-                            // التحقق من وجود مدخل واحد على الأقل
-                            if (inputs.length === 0) {
-                                throw new Error('يجب إدخال بيانات لمدخل واحد على الأقل (اسم، هاتف أو صورة)');
-                            }
-
-                            // إنشاء كائن البيانات المطلوب
-                            const requestData = {
-                                title: this.title.trim(),
-                                description: this.description.trim(),
-                                inputs: inputs,
-                            };
-
-                            // إرسال البيانات
-                            let response;
-                            if (upload.cachedFileArray[0]) {
-                                const formData = new FormData();
-                                formData.append('data', JSON.stringify(requestData));
-
-                                response = await fetch(`${this.apiBaseUrl}/api/admin/paymentways/store`, {
-                                    method: 'POST',
-                                    headers: {
-                                        Authorization: `Bearer ${token}`,
-                                    },
-                                    body: formData,
-                                });
-                            } else {
-                                response = await fetch(`${this.apiBaseUrl}/api/admin/paymentways/store`, {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        Authorization: `Bearer ${token}`,
-                                    },
-                                    body: JSON.stringify(requestData),
-                                });
-                            }
+                            // // إضافة جميع الملفات إلى `FormData`
+                            // this.inputs.forEach((input, index) => {
+                            //     if (input.type === 2 && input.file) {
+                            //         formData.append(`image_${index}`, input.file);
+                            //     }
+                            // });
+                            response = await fetch(`${this.apiBaseUrl}/api/admin/paymentways/store`, {
+                                method: 'POST',
+                                headers: {
+                                    Authorization: `Bearer ${token}`,
+                                },
+                                body: formData,
+                            });
 
                             const result = await response.json();
-                            if (!response.ok) {
-                                throw new Error(result.message || 'فشل في إنشاء طريقة الدفع');
-                            }
                             coloredToast('success', 'تم إنشاء طريقة الدفع بنجاح!');
-
-                            // إعادة تعيين الحقول
-                            this.title = '';
-                            this.description = '';
-                            this.phone = '';
-                            this.name = '';
+                            this.isAddModalOpen = false;
+                            this.resetForm();
                         } catch (error) {
                             coloredToast('danger', error.message || 'فشل إنشاء طريقة الدفع. يرجى المحاولة مرة أخرى.');
                         }
+                    },
+                    resetForm() {
+                        this.title = '';
+                        this.description = '';
+                        this.phone = '';
+                        this.name = '';
+                        // إعادة تعيين حقل الصورة إذا لزم الأمر
                     },
                 }));
             });

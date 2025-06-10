@@ -502,7 +502,7 @@
                                 <li>
                                     <a href="Payment-input.html">Payment Input</a>
                                 </li>
-                                <li>
+<li>
                                     <a href="Payment_request.html">Payment Request</a>
                                 </li>
                             </ul>
@@ -855,13 +855,13 @@
                                 <a href="javascript:;" class="text-primary hover:underline">Dashboard</a>
                             </li>
                             <li class="before:content-['/'] ltr:before:mr-1 rtl:before:ml-1">
-                                <span>Category & Product </span>
+                                <span> Category & Product </span>
                             </li>
                             <li class="before:content-['/'] ltr:before:mr-1 rtl:before:ml-1">
-                                <span>Categories</span>
+                                <span> Categories </span>
                             </li>
                             <li class="before:content-['/'] ltr:before:mr-1 rtl:before:ml-1">
-                                <span>Category</span>
+                                <span>Sub Category </span>
                             </li>
                         </ul>
 
@@ -869,23 +869,28 @@
                             <div class="mb-6 grid gap-6 xl:grid-cols-1">
                                 <div class="panel h-full">
                                     <div class="mb-5 flex items-center">
-                                        <h5 class="text-lg font-semibold dark:text-white-light">Add Category</h5>
+                                        <h5 class="text-lg font-semibold dark:text-white-light">Add Category In Navbar</h5>
                                     </div>
                                     <div class="overflow-hidden">
                                         <!-- form grid -->
                                         <form x-data="Add_Category" @submit.prevent="Add_Category">
                                             <div class="grid grid-cols-1 justify-between gap-5 sm:flex">
-                                                <input type="text" placeholder="Enter Name" class="form-input" x-model="fullname" required />
+                                                <select x-model="selectedCategoryId" required class="selectize" multiple="multiple">
+                                                    <option value="">Select a category</option>
+                                                    <template x-for="category in $store.global.sharedData.categories" :key="category.id">
+                                                        <option :value="category.id" x-text="category.name"></option>
+                                                    </template>
+                                                </select>
                                             </div>
 
-                                            <button type="submit" class="btn btn-primary mt-6">Create</button>
+                                            <button type="submit" class="btn btn-primary mt-6">ADD</button>
                                         </form>
                                     </div>
                                 </div>
                             </div>
                             <div x-data="multipleTable" x-init="fetchManagers()">
                                 <div class="panel mt-6">
-                                    <h5 class="mb-5 text-lg font-semibold dark:text-white-light md:absolute md:top-[25px] md:mb-0">Category</h5>
+                                    <h5 class="mb-5 text-lg font-semibold dark:text-white-light md:absolute md:top-[25px] md:mb-0">NAVBAR</h5>
                                     <table id="myTable1" class="whitespace-nowrap"></table>
                                 </div>
                             </div>
@@ -927,7 +932,14 @@
                                     <div class="grid grid-cols-1 justify-between gap-5 sm:flex">
                                         <input type="text" placeholder="Enter Name" class="form-input" x-model="$store.global.sharedData.fullname2" />
                                     </div>
-
+                                    <div class="panel">
+                                        <div class="mb-5 flex items-center justify-between">
+                                            <h5 class="text-lg font-semibold dark:text-white-light">Image Upload</h5>
+                                        </div>
+                                        <div class="mb-5">
+                                            <div class="custom-file-container" data-upload-id="myFirstImage2"></div>
+                                        </div>
+                                    </div>
                                     <div class="mt-8 flex items-center justify-end">
                                         <button @click="$store.updateModal.closeModal()" class="btn btn-outline-danger">Cancel</button>
                                         <button type="submit" @click="$store.updateModal.confirmUpdate()" class="btn btn-primary">Update</button>
@@ -954,7 +966,7 @@
                     <button @click="$store.deleteModal.closeModal()" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">✕</button>
                 </div>
                 <div class="p-4">
-                    <p class="text-gray-700 dark:text-gray-300">"Are you sure you want to delete this Category?"</p>
+                    <p class="text-gray-700 dark:text-gray-300">"Are you sure you want to delete this Category in Navbar?"</p>
                 </div>
                 <div class="flex justify-end gap-2 border-t p-4 dark:border-gray-700">
                     <button @click="$store.deleteModal.closeModal()" class="btn btn-outline-danger">No</button>
@@ -975,9 +987,57 @@
         <script src="assets/js/file-upload-with-preview.iife.js"></script>
 
         <script>
+            const upload2 = new FileUploadWithPreview.FileUploadWithPreview('myFirstImage2', {
+                images: {
+                    baseImage: 'assets/images/file-preview.svg',
+                    backgroundImage: '',
+                },
+            });
             document.addEventListener('alpine:init', () => {
+                document.addEventListener('DOMContentLoaded', function () {
+                    // تهيئة NiceSelect مع خصائص مخصصة
+                    document.querySelectorAll('.selectize').forEach((select) => {
+                        NiceSelect.bind(select, {
+                            display: 'block',
+                            width: '100%',
+                            searchable: false,
+                            selectedClass: 'selected-bold',
+                            callback: function (select) {
+                                // إضافة تأثير عند التحديد
+                                const selectedOptions = Array.from(select.selectedOptions);
+                                selectedOptions.forEach((option) => {
+                                    option.style.fontWeight = '600';
+                                    option.style.backgroundColor = '#3b82f6';
+                                    option.style.color = 'white';
+                                });
+                            },
+                        });
+                    });
+
+                    // إضافة ستايل مخصص للعناصر المختارة
+                    const style = document.createElement('style');
+                    style.textContent = `
+                .selected-bold {
+                    font-weight: 600 !important;
+                    background-color: #3b82f6 !important;
+                    color: white !important;
+                }
+                .nice-select.open .list {
+                    max-height: 250px;
+                    overflow-y: auto;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                }
+                .nice-select .option:hover {
+                    background-color: #e0e7ff !important;
+                }
+            `;
+                    document.head.appendChild(style);
+                });
                 Alpine.store('global', {
                     sharedData: {
+                        selectedCategoryId: [],
+                        categories: [],
                         fullname2: '',
                         // يمكنك إضافة متغيرات أخرى هنا
                     },
@@ -1094,11 +1154,13 @@
                 }));
                 Alpine.data('multipleTable', () => ({
                     tableData: [],
+                    selectedCategoryId: [],
                     datatable1: null,
                     apiBaseUrl: API_CONFIG.BASE_URL,
 
                     async init() {
                         await this.fetchManagers();
+                        await this.fetchCategory();
 
                         // Event Delegation for Delete Buttons
                         document.addEventListener('click', (e) => {
@@ -1142,9 +1204,7 @@
                             }
                         });
                     },
-
-                    // جلب بيانات المديرين من API
-                    async fetchManagers() {
+                    async fetchCategory() {
                         try {
                             const token = localStorage.getItem('authToken');
                             if (!token) {
@@ -1166,6 +1226,29 @@
                             }
 
                             const data = await response.json();
+                            Alpine.store('global').sharedData.categories = data;
+                        } catch (error) {}
+                    },
+
+                    // جلب بيانات المديرين من API
+                    async fetchManagers() {
+                        try {
+                            const token = localStorage.getItem('authToken');
+                            if (!token) {
+                                this.showError('Authentication token is missing. Please log in.');
+                                window.location.href = '/auth-boxed-signin.html';
+                                return;
+                            }
+
+                            const response = await fetch(`${this.apiBaseUrl}/api/navbar_categories`, {
+                                method: 'GET',
+                                headers: {
+                                    Accept: 'application/json',
+                                    Authorization: `Bearer ${token}`,
+                                },
+                            });
+
+                            const data = await response.json();
                             this.tableData = data;
 
                             this.populateTable();
@@ -1178,15 +1261,11 @@
                             this.datatable1.destroy();
                         }
 
-                        const mappedData = this.tableData.map((manager, index) => [
-                            this.formatName(manager.name, manager.imag, index),
-                            this.formatText(manager.sub_category),
-                            this.getActionButtons(manager.id, manager.name, manager.imag),
-                        ]);
+                        const mappedData = this.tableData.data.map((manager, index) => [index, manager.category.name, this.getActionButtons(manager.id)]);
 
                         this.datatable1 = new simpleDatatables.DataTable('#myTable1', {
                             data: {
-                                headings: ['Name', 'Sub Category', '<div class="text-center">Action</div>'],
+                                headings: ['ID', 'Category', '<div class="text-center">Action</div>'],
                                 data: mappedData,
                             },
                             searchable: true,
@@ -1208,13 +1287,21 @@
 
                     // تنسيق الاسم مع الصورة
                     formatName(name, imageUrl, index) {
-                        const cleanUrl = imageUrl;
+                        const defaultImage = 'assets/images/file-preview.svg';
+                        // معالجة عنوان الصورة لضمان صحته
+                        const cleanUrl = imageUrl && imageUrl.trim() !== '' ? imageUrl : defaultImage;
 
                         return `
-                        <div class="flex items-center w-max" x-data="{ imgError: false }">
-                          
-                            ${name || 'Unknown'}
-                        </div>`;
+            <div class="flex items-center w-max" x-data="{ imgError: false }">
+                <img class="w-9 h-9 rounded-full ltr:mr-2 rtl:ml-2 object-cover"
+                     :src=" '${cleanUrl}' === '' ? '${defaultImage}' : '${cleanUrl}'"
+                     alt="${name || 'User'}"
+                     @error="imgError = true"
+                     loading="lazy"
+                     width="36"
+                     height="36" />
+                <span class="ml-2">${name || 'Unknown'}</span>
+            </div>`;
                     },
 
                     // تنسيق النص العادي
@@ -1224,46 +1311,34 @@
                         const titles = items.filter((item) => item?.title?.trim()).map((item) => item.title.trim());
 
                         if (titles.length === 0) {
-                            return '<span class="badge bg-secondary">N/A</span>';
+                            return 'N/A';
                         }
 
-                        // تحسين التنسيق لجميع الشاشات
-                        return `
-        <div class="flex flex-wrap gap-2">
-            ${titles
-                .map(
-                    (title) => `
-                <span class="badge bg-secondary whitespace-nowrap">${title}</span>
-            `
-                )
-                .join('')}
-        </div>
-    `;
+                        // إضافة مسافة متجاوبة بين البادجات
+                        return titles.map((title) => `<span class="badge bg-secondary me-2 mb-2">${title}</span>`).join(' ');
                     },
 
                     // أزرار الإجراءات
-                    getActionButtons(managerId, name, imag) {
-                        return `                         
-                                                            <!-- button -->     
-                                                                
-                                                           
-                                                        
-                                                        <div class="flex items-center justify-center">
-                                                            <!-- Status Dropdown -->
-                                                            <button class="btn update-btn btn-warning"data-id="${[managerId]}">UPDATE</button>
+                    getActionButtons(managerId) {
+                        return `
+                                                                    <!-- button -->
 
 
-                                                            <!-- Delete Button -->
-                                                            <button class="btn btn-sm btn-danger delete-btn ml-2" data-id="${managerId}">
-                                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                    <path opacity="0.5" d="M9.17065 4C9.58249 2.83481 10.6937 2 11.9999 2C13.3062 2 14.4174 2.83481 14.8292 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                                                                    <path d="M20.5001 6H3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                                                                    <path d="M18.8334 8.5L18.3735 15.3991C18.1965 18.054 18.108 19.3815 17.243 20.1907C16.378 21 15.0476 21 12.3868 21H11.6134C8.9526 21 7.6222 21 6.75719 20.1907C5.89218 19.3815 5.80368 18.054 5.62669 15.3991L5.16675 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                                                                    <path opacity="0.5" d="M9.5 11L10 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                                                                    <path opacity="0.5" d="M14.5 11L14 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                                                                </svg>
-                                                            </button>
-                                                        </div>`;
+
+                                                                <div class="flex items-center justify-center">
+
+
+                                                                    <!-- Delete Button -->
+                                                                    <button class="btn btn-sm btn-danger delete-btn ml-2" data-id="${managerId}">
+                                                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                            <path opacity="0.5" d="M9.17065 4C9.58249 2.83481 10.6937 2 11.9999 2C13.3062 2 14.4174 2.83481 14.8292 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                                                            <path d="M20.5001 6H3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                                                            <path d="M18.8334 8.5L18.3735 15.3991C18.1965 18.054 18.108 19.3815 17.243 20.1907C16.378 21 15.0476 21 12.3868 21H11.6134C8.9526 21 7.6222 21 6.75719 20.1907C5.89218 19.3815 5.80368 18.054 5.62669 15.3991L5.16675 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                                                            <path opacity="0.5" d="M9.5 11L10 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                                                            <path opacity="0.5" d="M14.5 11L14 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                                                        </svg>
+                                                                    </button>
+                                                                </div>`;
                     },
 
                     // Helper function for status button classes
@@ -1279,10 +1354,7 @@
                     // تحديث حالة المدير
 
                     async updateManager(managerId) {
-                        const categoryData = this.tableData.find((item) => item.id == managerId);
-                        Alpine.store('global').sharedData.fullname2 = categoryData.name;
-
-
+                        // استخدام المودال بدلاً من confirm
                         const updateConfirmed = await new Promise((resolve) => {
                             Alpine.store('updateModal').openModal(managerId, () => {
                                 resolve(true);
@@ -1295,8 +1367,10 @@
                             const formData = new FormData();
                             formData.append('name', Alpine.store('global').sharedData.fullname2);
 
+                            formData.append('imag', upload2.cachedFileArray[0]);
+
                             const token = localStorage.getItem('authToken');
-                            const response = await fetch(`${this.apiBaseUrl}/api/admin/categories/update/${managerId}`, {
+                            const response = await fetch(`${this.apiBaseUrl}/api/admin/categories/update/${managerId[0]}`, {
                                 method: 'POST',
                                 headers: {
                                     Accept: 'application/json',
@@ -1327,7 +1401,7 @@
 
                         try {
                             const token = localStorage.getItem('authToken');
-                            const response = await fetch(`${this.apiBaseUrl}/api/admin/categories/delete/${managerId}`, {
+                            const response = await fetch(`${this.apiBaseUrl}/api/admin/navbar-categories/delete/${managerId}`, {
                                 method: 'DELETE',
                                 headers: {
                                     Accept: 'application/json',
@@ -1336,7 +1410,7 @@
                             });
 
                             if (!response.ok) throw new Error('Failed to delete Category');
-                            coloredToast('success', 'Delete Category Successful');
+                            coloredToast('success', 'Delete  Category in Navbar Successful');
 
                             await this.fetchManagers();
                         } catch (error) {
@@ -1418,42 +1492,60 @@
                 };
 
                 Alpine.data('Add_Category', () => ({
-                    apiBaseUrl: API_CONFIG.BASE_URL, // Ensure API_CONFIG is defined
+                    apiBaseUrl: API_CONFIG.BASE_URL,
                     email: '',
                     fullname: '',
+                    selectedCategoryId: [], // سيتم تخزين القيم كمصفوفة نصية
 
                     async Add_Category() {
                         try {
                             const token = localStorage.getItem('authToken');
-                            if (!token) throw new Error('لم يتم العثور على رمز المصادقة');
+                            if (!token) {
+                                throw new Error('Authentication token not found');
+                            }
 
+                            // تحويل المصفوفة إلى النوع المطلوب (إذا كانت تحتوي أرقامًا)
+                            const categoryIds = this.selectedCategoryId.map((id) => String(id)); // تحويل جميع العناصر إلى نصوص
+
+                            // طريقة 1: إرسال كمصفوفة نصية
                             const formData = new FormData();
-                            formData.append('name', this.fullname);
+                            categoryIds.forEach((id) => {
+                                formData.append('category_ids[]', id); // استخدم [] للإشارة إلى مصفوفة
+                            });
 
-                            const response = await fetch(`${this.apiBaseUrl}/api/admin/categories/store`, {
+
+                            const response = await fetch(`${this.apiBaseUrl}/api/admin/navbar-categories/store`, {
                                 method: 'POST',
                                 headers: {
                                     Authorization: `Bearer ${token}`,
+                                    Accept: 'application/json',
                                 },
                                 body: formData,
                             });
 
-                            const result = await response.json();
-
                             if (!response.ok) {
-                                const errorMsg =
-                                    result.message ||
-                                    Object.values(result.errors || {})
-                                        .flat()
-                                        .join('\n') ||
-                                    'فشل في إنشاء التصنيف';
-                                throw new Error(errorMsg);
+                                const errorData = await response.json();
+                                throw new Error(errorData.message || 'Request failed');
                             }
 
-                            this.fullname = '';
-                            coloredToast('success', 'ADD Category Successful');
+                            const result = await response.json();
+
+                            coloredToast('success', 'Categories added successfully!');
+
+                            // إعادة تعيين القيم بعد النجاح
+                            this.selectedCategoryId = [];
+
+                            if (typeof this.fetchManagers === 'function') {
+                                await this.fetchManagers();
+                            }
                         } catch (error) {
-                            coloredToast('danger', error.message);
+                            let errorMessage = error.message;
+
+                            if (error.message.includes('Unexpected token') || error.message.includes('<!DOCTYPE')) {
+                                errorMessage = 'Server error occurred. Please try again.';
+                            }
+
+                            coloredToast('danger', errorMessage);
                         }
                     },
                 }));

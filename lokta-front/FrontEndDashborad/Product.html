@@ -9,11 +9,13 @@
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-        <link rel="stylesheet" type="text/css" media="screen" href=" /assets/css/perfect-scrollbar.min.css" />
-        <link rel="stylesheet" type="text/css" media="screen" href=" /assets/css/style.css" />
-        <link defer rel="stylesheet" type="text/css" media="screen" href=" /assets/css/animate.css" />
-        <script src=" /assets/js/perfect-scrollbar.min.js"></script>
-        <script defer src=" /assets/js/popper.min.js"></script>
+        <link rel="stylesheet" type="text/css" media="screen" href="assets/css/perfect-scrollbar.min.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="assets/css/style.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="assets/css/file-upload-with-preview.min.css" />
+
+        <link defer rel="stylesheet" type="text/css" media="screen" href="assets/css/animate.css" />
+        <script src="assets/js/perfect-scrollbar.min.js"></script>
+        <script defer src="assets/js/popper.min.js"></script>
     </head>
 
     <body
@@ -372,7 +374,7 @@
                     <div class="h-full bg-white dark:bg-[#0e1726]">
                         <div class="flex items-center justify-between px-4 py-3">
                             <a href="index.html" class="main-logo flex shrink-0 items-center">
-                                <span class="align-middle text-2xl font-semibold dark:text-white-light lg:inline ltr:ml-1.5 rtl:mr-1.5">ADAM STORE</span>
+                                <span class="align-middle text-2xl font-semibold dark:text-white-light lg:inline ltr:ml-1.5 rtl:mr-1.5">LOKTA</span>
                             </a>
                             <a
                                 href="javascript:;"
@@ -435,6 +437,9 @@
                                     <li>
                                         <a href="index.html">Home</a>
                                     </li>
+                                    <li>
+                                        <a href="Navbar.html">Navbar</a>
+                                    </li>
                                 </ul>
                             </li>
 
@@ -453,43 +458,7 @@
                                 Category & Product
                             </h2>
                             <li class="menu nav-item">
-                                <button
-                                    type="button"
-                                    class="nav-link group"
-                                    :class="{'active' : activeDropdown === 'SellMail'}"
-                                    @click="activeDropdown === 'SellMail' ? activeDropdown = null : activeDropdown = 'SellMail'"
-                                >
-                                    <div class="flex items-center">
-                                        <svg
-                                            class="shrink-0 group-hover:!text-primary"
-                                            width="20"
-                                            height="20"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                            <path
-                                                fill-rule="evenodd"
-                                                clip-rule="evenodd"
-                                                d="M10.4036 22.4797L10.6787 22.015C11.1195 21.2703 11.3399 20.8979 11.691 20.6902C12.0422 20.4825 12.5001 20.4678 13.4161 20.4385C14.275 20.4111 14.8523 20.3361 15.3458 20.1317C16.385 19.7012 17.2106 18.8756 17.641 17.8365C17.9639 17.0571 17.9639 16.0691 17.9639 14.093V13.2448C17.9639 10.4683 17.9639 9.08006 17.3389 8.06023C16.9892 7.48958 16.5094 7.0098 15.9388 6.66011C14.919 6.03516 13.5307 6.03516 10.7542 6.03516H8.20964C5.43314 6.03516 4.04489 6.03516 3.02507 6.66011C2.45442 7.0098 1.97464 7.48958 1.62495 8.06023C1 9.08006 1 10.4683 1 13.2448V14.093C1 16.0691 1 17.0571 1.32282 17.8365C1.75326 18.8756 2.57886 19.7012 3.61802 20.1317C4.11158 20.3361 4.68882 20.4111 5.5477 20.4385C6.46368 20.4678 6.92167 20.4825 7.27278 20.6902C7.6239 20.8979 7.84431 21.2703 8.28514 22.015L8.5602 22.4797C8.97002 23.1721 9.9938 23.1721 10.4036 22.4797ZM13.1928 14.5171C13.7783 14.5171 14.253 14.0424 14.253 13.4568C14.253 12.8713 13.7783 12.3966 13.1928 12.3966C12.6072 12.3966 12.1325 12.8713 12.1325 13.4568C12.1325 14.0424 12.6072 14.5171 13.1928 14.5171ZM10.5422 13.4568C10.5422 14.0424 10.0675 14.5171 9.48193 14.5171C8.89637 14.5171 8.42169 14.0424 8.42169 13.4568C8.42169 12.8713 8.89637 12.3966 9.48193 12.3966C10.0675 12.3966 10.5422 12.8713 10.5422 13.4568ZM5.77108 14.5171C6.35664 14.5171 6.83133 14.0424 6.83133 13.4568C6.83133 12.8713 6.35664 12.3966 5.77108 12.3966C5.18553 12.3966 4.71084 12.8713 4.71084 13.4568C4.71084 14.0424 5.18553 14.5171 5.77108 14.5171Z"
-                                                fill="currentColor"
-                                            />
-                                            <path
-                                                opacity="0.5"
-                                                d="M15.486 1C16.7529 0.999992 17.7603 0.999986 18.5683 1.07681C19.3967 1.15558 20.0972 1.32069 20.7212 1.70307C21.3632 2.09648 21.9029 2.63623 22.2963 3.27821C22.6787 3.90219 22.8438 4.60265 22.9226 5.43112C22.9994 6.23907 22.9994 7.24658 22.9994 8.51343V9.37869C22.9994 10.2803 22.9994 10.9975 22.9597 11.579C22.9191 12.174 22.8344 12.6848 22.6362 13.1632C22.152 14.3323 21.2232 15.2611 20.0541 15.7453C20.0249 15.7574 19.9955 15.7691 19.966 15.7804C19.8249 15.8343 19.7039 15.8806 19.5978 15.915H17.9477C17.9639 15.416 17.9639 14.8217 17.9639 14.093V13.2448C17.9639 10.4683 17.9639 9.08006 17.3389 8.06023C16.9892 7.48958 16.5094 7.0098 15.9388 6.66011C14.919 6.03516 13.5307 6.03516 10.7542 6.03516H8.20964C7.22423 6.03516 6.41369 6.03516 5.73242 6.06309V4.4127C5.76513 4.29934 5.80995 4.16941 5.86255 4.0169C5.95202 3.75751 6.06509 3.51219 6.20848 3.27821C6.60188 2.63623 7.14163 2.09648 7.78361 1.70307C8.40759 1.32069 9.10805 1.15558 9.93651 1.07681C10.7445 0.999986 11.7519 0.999992 13.0188 1H15.486Z"
-                                                fill="currentColor"
-                                            />
-                                        </svg>
-
-                                        <span class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">Categories</span>
-                                    </div>
-                                    <div class="rtl:rotate-180" :class="{'!rotate-90' : activeDropdown === 'SellMail'}">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                        </svg>
-                                    </div>
-                                </button>
-                                <ul x-cloak x-show="activeDropdown === 'SellMail'" x-collapse class="sub-menu text-gray-500">
+                                <ul class="sub-menu">
                                     <li>
                                         <a href="Category.html">Category</a>
                                     </li>
@@ -499,48 +468,15 @@
                                 </ul>
                             </li>
                             <li class="menu nav-item">
-                                <button
-                                    type="button"
-                                    class="nav-link group"
-                                    :class="{'active' : activeDropdown === 'SellPick'}"
-                                    @click="activeDropdown === 'SellPick' ? activeDropdown = null : activeDropdown = 'SellPick'"
-                                >
-                                    <div class="flex items-center">
-                                        <svg
-                                            class="shrink-0 group-hover:!text-primary"
-                                            width="20"
-                                            height="20"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                            <path
-                                                fill-rule="evenodd"
-                                                clip-rule="evenodd"
-                                                d="M10.4036 22.4797L10.6787 22.015C11.1195 21.2703 11.3399 20.8979 11.691 20.6902C12.0422 20.4825 12.5001 20.4678 13.4161 20.4385C14.275 20.4111 14.8523 20.3361 15.3458 20.1317C16.385 19.7012 17.2106 18.8756 17.641 17.8365C17.9639 17.0571 17.9639 16.0691 17.9639 14.093V13.2448C17.9639 10.4683 17.9639 9.08006 17.3389 8.06023C16.9892 7.48958 16.5094 7.0098 15.9388 6.66011C14.919 6.03516 13.5307 6.03516 10.7542 6.03516H8.20964C5.43314 6.03516 4.04489 6.03516 3.02507 6.66011C2.45442 7.0098 1.97464 7.48958 1.62495 8.06023C1 9.08006 1 10.4683 1 13.2448V14.093C1 16.0691 1 17.0571 1.32282 17.8365C1.75326 18.8756 2.57886 19.7012 3.61802 20.1317C4.11158 20.3361 4.68882 20.4111 5.5477 20.4385C6.46368 20.4678 6.92167 20.4825 7.27278 20.6902C7.6239 20.8979 7.84431 21.2703 8.28514 22.015L8.5602 22.4797C8.97002 23.1721 9.9938 23.1721 10.4036 22.4797ZM13.1928 14.5171C13.7783 14.5171 14.253 14.0424 14.253 13.4568C14.253 12.8713 13.7783 12.3966 13.1928 12.3966C12.6072 12.3966 12.1325 12.8713 12.1325 13.4568C12.1325 14.0424 12.6072 14.5171 13.1928 14.5171ZM10.5422 13.4568C10.5422 14.0424 10.0675 14.5171 9.48193 14.5171C8.89637 14.5171 8.42169 14.0424 8.42169 13.4568C8.42169 12.8713 8.89637 12.3966 9.48193 12.3966C10.0675 12.3966 10.5422 12.8713 10.5422 13.4568ZM5.77108 14.5171C6.35664 14.5171 6.83133 14.0424 6.83133 13.4568C6.83133 12.8713 6.35664 12.3966 5.77108 12.3966C5.18553 12.3966 4.71084 12.8713 4.71084 13.4568C4.71084 14.0424 5.18553 14.5171 5.77108 14.5171Z"
-                                                fill="currentColor"
-                                            />
-                                            <path
-                                                opacity="0.5"
-                                                d="M15.486 1C16.7529 0.999992 17.7603 0.999986 18.5683 1.07681C19.3967 1.15558 20.0972 1.32069 20.7212 1.70307C21.3632 2.09648 21.9029 2.63623 22.2963 3.27821C22.6787 3.90219 22.8438 4.60265 22.9226 5.43112C22.9994 6.23907 22.9994 7.24658 22.9994 8.51343V9.37869C22.9994 10.2803 22.9994 10.9975 22.9597 11.579C22.9191 12.174 22.8344 12.6848 22.6362 13.1632C22.152 14.3323 21.2232 15.2611 20.0541 15.7453C20.0249 15.7574 19.9955 15.7691 19.966 15.7804C19.8249 15.8343 19.7039 15.8806 19.5978 15.915H17.9477C17.9639 15.416 17.9639 14.8217 17.9639 14.093V13.2448C17.9639 10.4683 17.9639 9.08006 17.3389 8.06023C16.9892 7.48958 16.5094 7.0098 15.9388 6.66011C14.919 6.03516 13.5307 6.03516 10.7542 6.03516H8.20964C7.22423 6.03516 6.41369 6.03516 5.73242 6.06309V4.4127C5.76513 4.29934 5.80995 4.16941 5.86255 4.0169C5.95202 3.75751 6.06509 3.51219 6.20848 3.27821C6.60188 2.63623 7.14163 2.09648 7.78361 1.70307C8.40759 1.32069 9.10805 1.15558 9.93651 1.07681C10.7445 0.999986 11.7519 0.999992 13.0188 1H15.486Z"
-                                                fill="currentColor"
-                                            />
-                                        </svg>
-
-                                        <span class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">Products</span>
-                                    </div>
-                                    <div class="rtl:rotate-180" :class="{'!rotate-90' : activeDropdown === 'SellPick'}">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                        </svg>
-                                    </div>
-                                </button>
-                                <ul x-cloak x-show="activeDropdown === 'SellPick'" x-collapse class="sub-menu text-gray-500">
+                                <ul class="sub-menu">
                                     <li>
                                         <a href="Product.html">Products</a>
                                     </li>
                                     <li>
-                                        <a href="Offer.html">Offer</a>
+                                        <a href="Offer.html">Plan</a>
+                                    </li>
+                                    <li>
+                                        <a href="Brand.html">Brand</a>
                                     </li>
                                 </ul>
                             </li>
@@ -566,6 +502,9 @@
                                 <li>
                                     <a href="Payment-input.html">Payment Input</a>
                                 </li>
+                                <li>
+                                    <a href="Payment_request.html">Payment Request</a>
+                                </li>
                             </ul>
                         </ul>
                     </div>
@@ -580,10 +519,10 @@
                         <div class="relative flex w-full items-center bg-white px-5 py-2.5 dark:bg-[#0e1726]">
                             <div class="horizontal-logo flex items-center justify-between lg:hidden ltr:mr-2 rtl:ml-2">
                                 <a href="index.html" class="main-logo flex shrink-0 items-center">
-                                    <img class="inline w-8 ltr:-ml-1 rtl:-mr-1" src=" /assets/images/logo.svg" alt="image" />
+                                    <img class="inline w-8 ltr:-ml-1 rtl:-mr-1" src="assets/images/logo.svg" alt="image" />
                                     <span
                                         class="hidden align-middle text-2xl font-semibold transition-all duration-300 dark:text-white-light md:inline ltr:ml-1.5 rtl:mr-1.5"
-                                        >VRISTO</span
+                                        >LOKTA</span
                                     >
                                 </a>
 
@@ -690,7 +629,7 @@
                                         <span
                                             ><img
                                                 class="h-9 w-9 rounded-full object-cover saturate-50 group-hover:saturate-100"
-                                                src=" /assets/images/user-profile.jpeg"
+                                                src="assets/images/user-profile.jpeg"
                                                 alt="image"
                                         /></span>
                                     </a>
@@ -704,7 +643,7 @@
                                         <li>
                                             <div class="flex items-center px-4 py-4">
                                                 <div class="flex-none">
-                                                    <img class="h-10 w-10 rounded-md object-cover" src=" /assets/images/user-profile.jpeg" alt="image" />
+                                                    <img class="h-10 w-10 rounded-md object-cover" src="assets/images/user-profile.jpeg" alt="image" />
                                                 </div>
                                                 <div class="truncate ltr:pl-4 rtl:pr-4">
                                                     <h4 class="text-base">
@@ -789,6 +728,9 @@
                                     <li>
                                         <a href="index.html">Home</a>
                                     </li>
+                                    <li>
+                                        <a href="Navbar.html">Navbar</a>
+                                    </li>
                                 </ul>
                             </li>
 
@@ -832,58 +774,22 @@
                                         </svg>
                                     </div>
                                 </a>
+
                                 <ul class="sub-menu">
-                                    <li class="relative">
-                                        <a href="javascript:;"
-                                            >Categories
-                                            <div class="ltr:ml-auto rtl:mr-auto rtl:rotate-180">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path
-                                                        d="M9 5L15 12L9 19"
-                                                        stroke="currentColor"
-                                                        stroke-width="1.5"
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                    />
-                                                </svg>
-                                            </div>
-                                        </a>
-                                        <ul
-                                            class="absolute top-0 z-[10] hidden min-w-[180px] rounded bg-white p-0 py-2 text-dark shadow dark:bg-[#1b2e4b] dark:text-white-dark ltr:left-[95%] rtl:right-[95%]"
-                                        >
-                                            <li>
-                                                <a href="Category.html">Category</a>
-                                            </li>
-                                            <li>
-                                                <a href="Sub_Category.html">Sub Category</a>
-                                            </li>
-                                        </ul>
+                                    <li>
+                                        <a href="Category.html">Category</a>
                                     </li>
-                                    <li class="relative">
-                                        <a href="javascript:;"
-                                            >Products
-                                            <div class="ltr:ml-auto rtl:mr-auto rtl:rotate-180">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path
-                                                        d="M9 5L15 12L9 19"
-                                                        stroke="currentColor"
-                                                        stroke-width="1.5"
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                    />
-                                                </svg>
-                                            </div>
-                                        </a>
-                                        <ul
-                                            class="absolute top-0 z-[10] hidden min-w-[180px] rounded bg-white p-0 py-2 text-dark shadow dark:bg-[#1b2e4b] dark:text-white-dark ltr:left-[95%] rtl:right-[95%]"
-                                        >
-                                            <li>
-                                                <a href="Product.html">Products</a>
-                                            </li>
-                                            <li>
-                                                <a href="Offer.html">Offer</a>
-                                            </li>
-                                        </ul>
+                                    <li>
+                                        <a href="Sub_Category.html">Sub Category</a>
+                                    </li>
+                                    <li>
+                                        <a href="Product.html">Products</a>
+                                    </li>
+                                    <li>
+                                        <a href="Offer.html">Plan</a>
+                                    </li>
+                                    <li>
+                                        <a href="Brand.html">Brand</a>
                                     </li>
                                 </ul>
                             </li>
@@ -962,7 +868,31 @@
                         <div class="pt-5">
                             <div x-data="multipleTable" x-init="fetchManagers()">
                                 <div class="panel mt-6">
-                                    <h5 class="mb-5 text-lg font-semibold dark:text-white-light md:absolute md:top-[25px] md:mb-0">Product</h5>
+                                    <h5 class="mb-5 text-lg font-semibold dark:text-white-light md:absolute md:top-[25px] md:mb-0">Products</h5>
+
+                                    <!-- Status Cards in One Row -->
+                                    <div class="mb-6 flex items-center justify-center gap-4" x-data="sales" x-init="fetchDashboardData()">
+                                        <!-- Completed -->
+
+                                        <!-- Rejected -->
+
+                                        <!-- Pending -->
+                                        <div class="status-card bg-yellow-50 text-yellow-600">
+                                            Completed: <span class="text-sm font-medium" x-text="product_stats.completed"> </span>
+                                        </div>
+                                        <div class="status-card bg-yellow-50 text-yellow-600">
+                                            Pending: <span class="text-sm font-medium" x-text="product_stats.pending"> </span>
+                                        </div>
+                                        <div class="status-card bg-yellow-50 text-yellow-600">
+                                            Rejected: <span class="text-sm font-medium" x-text="product_stats.rejected"> </span>
+                                        </div>
+                                        <div class="status-card bg-yellow-50 text-yellow-600">
+                                            Total: <span class="text-sm font-medium" x-text="product_stats.total"> </span>
+                                        </div>
+
+                                        <!-- Total -->
+                                    </div>
+
                                     <table id="myTable1" class="whitespace-nowrap"></table>
                                 </div>
                             </div>
@@ -973,7 +903,7 @@
 
                 <!-- start footer section -->
                 <div class="mt-auto p-6 text-center dark:text-white-dark ltr:sm:text-left rtl:sm:text-right">
-                    © <span id="footer-year">2022</span>. Developed By High Level Technology.
+                    © <span id="footer-year">2022</span>. <a href="http://highleveltechnology.com/">Developed By High Level Technology.</a>
                 </div>
                 <!-- end footer section -->
             </div>
@@ -1002,19 +932,103 @@
                 </div>
             </div>
         </div>
+        <div
+            x-data
+            x-show="$store.updateModal.isOpen"
+            x-transition
+            class="fixed inset-0 z-[999] flex items-center justify-center bg-black/60 p-4"
+            style="display: none"
+            x-cloak
+        >
+            <div class="flex min-h-screen items-start justify-center px-4" @click.self="open = false">
+                <div
+                    class="panel animate__animated my-8 w-full max-w-lg overflow-hidden rounded-lg border-0 p-0"
+                    :class="$store.app.rtlClass === 'rtl' ? 'animate__fadeInLeft' : 'animate__fadeInRight'"
+                >
+                    <div class="flex items-center justify-between bg-[#fbfbfb] px-5 py-3 dark:bg-[#121c2c]">
+                        <h5 class="text-lg font-bold">Update Confirmation</h5>
+                        <button @click="$store.updateModal.closeModal()" class="text-white-dark hover:text-dark">✕</button>
+                    </div>
+                    <div class="p-5">
+                        <div class="text-base font-medium text-[#1f2937] dark:text-white-dark/70">
+                            <div class="overflow-hidden">
+                                <!-- form grid -->
+                                <form @submit.prevent="updateManager()">
+                                    <div class="grid grid-cols-1 justify-between gap-5">
+                                        <input type="text" placeholder="Enter Title" class="form-input" x-model="$store.global.sharedData.title" required />
+                                        <input type="text" placeholder="Enter Price" class="form-input" x-model="$store.global.sharedData.price" required />
 
-        <script src=" /assets/js/alpine-collaspe.min.js"></script>
-        <script src=" /assets/js/alpine-persist.min.js"></script>
-        <script defer src=" /assets/js/alpine-ui.min.js"></script>
-        <script defer src=" /assets/js/alpine-focus.min.js"></script>
-        <script defer src=" /assets/js/alpine.min.js"></script>
-        <script src=" /assets/js/custom.js"></script>
-        <script src=" /assets/js/config.js"></script>
-        <script defer src=" /assets/js/sweetalert.min.js"></script>
-        <script src=" /assets/js/simple-datatables.js"></script>
+                                        <input type="text" placeholder="Enter City" class="form-input" x-model="$store.global.sharedData.city" required />
+
+                                        <textarea
+                                            id="ctnTextarea"
+                                            rows="3"
+                                            class="form-textarea mt-6"
+                                            x-model="$store.global.sharedData.description"
+                                            placeholder="Enter Discription"
+                                            required
+                                        ></textarea>
+                                    </div>
+
+                                    <div class="mt-8 flex items-center justify-end">
+                                        <button @click="$store.updateModal.closeModal()" class="btn btn-outline-danger">Cancel</button>
+                                        <button type="submit" @click="$store.updateModal.confirmUpdate()" class="btn btn-primary">Update</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="assets/js/alpine-collaspe.min.js"></script>
+        <script src="assets/js/alpine-persist.min.js"></script>
+        <script defer src="assets/js/alpine-ui.min.js"></script>
+        <script defer src="assets/js/alpine-focus.min.js"></script>
+        <script defer src="assets/js/alpine.min.js"></script>
+        <script src="assets/js/custom.js"></script>
+        <script src="assets/js/config.js"></script>
+        <script defer src="assets/js/sweetalert.min.js"></script>
+        <script src="assets/js/simple-datatables.js"></script>
 
         <script>
             document.addEventListener('alpine:init', () => {
+                Alpine.store('global', {
+                    sharedData: { total: '', price: '', city: '', description: '' },
+                });
+                Alpine.data('sales', () => ({
+                    product_stats: '',
+                    apiBaseUrl: API_CONFIG.BASE_URL,
+
+                    init() {
+                        this.fetchDashboardData();
+                    },
+                    async fetchDashboardData() {
+                        try {
+                            const token = localStorage.getItem('authToken');
+                            if (!token) {
+                                window.location.href = '/auth-boxed-signin.html';
+                                return;
+                            }
+
+                            const response = await fetch(`${this.apiBaseUrl}/api/admin/dashboard`, {
+                                method: 'GET',
+                                headers: {
+                                    Accept: 'application/json',
+                                    Authorization: `Bearer ${token}`,
+                                },
+                            });
+
+                            const data = await response.json();
+                            this.product_stats = data.data.product_stats;
+
+                            if (data.success) {
+                            }
+                        } catch (error) {}
+                    },
+                }));
+
                 // main section
                 Alpine.data('scrollToTop', () => ({
                     showTopButton: false,
@@ -1208,6 +1222,10 @@
                                 // Update status via API
                                 this.updateStatus(managerId, newStatus);
                             }
+                            if (e.target.closest('.update-btn')) {
+                                const managerId = e.target.closest('.update-btn').dataset.id;
+                                this.updateManager(managerId);
+                            }
                         });
                     },
 
@@ -1230,11 +1248,12 @@
                             });
 
                             const data = await response.json();
+
                             this.tableData = data.data;
+                            console.log(this.tableData);
 
                             this.populateTable();
-                        } catch (error) {
-                        }
+                        } catch (error) {}
                     },
 
                     // تعبئة الجدول بالبيانات
@@ -1244,28 +1263,36 @@
                         }
 
                         const mappedData = this.tableData.map((manager, index) => [
+                            this.formatText(index, manager.images),
+
                             this.formatName(manager.title, manager.images, index),
+                            this.formatText(manager.dates.start_date),
+                            this.formatText(manager.dates.end_date),
+
                             this.formatText(manager.price),
-                            this.formatStatus(manager.status),
+
                             this.formatPhone(manager.currency),
                             this.formatText(manager.subscription_price),
-                            this.formatText(manager.description),
                             this.formatText(manager.sub_category),
                             this.formatText(manager.brand),
+                            this.formatText(manager.description),
+
                             this.getActionButtons(manager.id, manager.status),
                         ]);
 
                         this.datatable1 = new simpleDatatables.DataTable('#myTable1', {
                             data: {
                                 headings: [
+                                    'Number',
                                     'Title',
+                                    'Start Date',
+                                    'End Date',
                                     'Price',
-                                    'Status',
                                     ' Currency',
                                     'Subscription Price',
-                                    'Description',
                                     'Sub Category',
                                     'brand',
+                                    'Description',
                                     '<div class="text-center">Action</div>',
                                 ],
                                 data: mappedData,
@@ -1292,14 +1319,70 @@
                     },
 
                     // تنسيق الاسم مع الصورة
-                    formatName(name, index) {
+                    formatName(name, images, index) {
+                        if (!images || images.length === 0) {
+                            return `
+                        <div class="flex items-center w-max">
+                            <div class="w-9 h-9 rounded-full ltr:mr-2 rtl:ml-2 bg-gray-200 flex items-center justify-center">
+                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            ${name || 'Unknown'}
+                        </div>`;
+                        }
+
                         return `
-            <div class="flex items-center w-max">
-                <img class="w-9 h-9 rounded-full ltr:mr-2 rtl:ml-2 object-cover"
-                     src=" /assets/images/profile-${index + 1}.jpeg"
-                     alt="${name || 'User'}"/>
-                ${name || 'Unknown'}
-            </div>`;
+                    <div class="flex items-center w-max" x-data="{ showGallery: false }">
+                        <!-- Main Image with Gallery Toggle -->
+                        <div class="relative">
+                            <img class="w-9 h-9 rounded-full ltr:mr-2 rtl:ml-2 object-cover cursor-pointer"
+                                 src="${images[0]}"
+                                 alt="${name || 'Item'}"
+                                 @click="showGallery = true"/>
+
+                            ${
+                                images.length > 1
+                                    ? `
+                                <span class="absolute -bottom-1 -right-1 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                    +${images.length - 1}
+                                </span>
+                            `
+                                    : ''
+                            }
+                        </div>
+
+                        ${name || 'Unknown'}
+
+                        <!-- Image Gallery Modal -->
+                        <div x-show="showGallery"
+                             x-transition
+                             class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-4"
+                             @click.away="showGallery = false"
+                             x-cloak>
+                            <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-auto">
+                                <div class="p-4 border-b flex justify-between items-center">
+                                    <h3 class="text-lg font-bold">${name || 'Images Gallery'}</h3>
+                                    <button @click="showGallery = false" class="text-gray-500 hover:text-gray-700">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 p-4">
+                                    ${images
+                                        .map(
+                                            (img) => `
+                                        <div class="border rounded overflow-hidden">
+                                            <img src="${img}" alt="Gallery Image" class="w-full h-48 object-cover"/>
+                                        </div>
+                                    `
+                                        )
+                                        .join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
                     },
 
                     // تنسيق البريد الإلكتروني
@@ -1326,29 +1409,31 @@
                     // أزرار الإجراءات
                     getActionButtons(managerId, currentStatus = 'pending') {
                         return `
-            <div class="flex items-center justify-center">
-                <!-- Status Dropdown -->
-                <div class="dropdown relative" data-id="${managerId}">
-                    <button class="dropdown-toggle btn btn-sm ${this.getStatusClass(currentStatus)}">
-                        ${currentStatus.charAt(0).toUpperCase() + currentStatus.slice(1)}
-                    </button>
-                    <ul class="dropdown-menu absolute hidden z-10 mt-1 w-28 bg-white shadow-lg rounded-md border border-gray-200">
-                        ${['completed', 'pending', 'rejected']
-                            .map(
-                                (status) => `
-                            <li>
-                                <a href="javascript:;" class="status-option block px-4 py-2 hover:bg-blue-50" data-value="${status}">
-                                    ${status.charAt(0).toUpperCase() + status.slice(1)}
-                                </a>
-                            </li>
-                        `
-                            )
-                            .join('')}
-                    </ul>
-                </div>
-                
-            
-            </div>`;
+                                                <div class="flex items-center justify-center gap-1">
+                                                    <button class="btn update-btn btn-sm btn-primary"data-id="${managerId}">UPDATE</button>
+
+                                                    <!-- Status Dropdown -->
+                                                    <div class="dropdown relative" data-id="${managerId}">
+                                                        <button class="dropdown-toggle btn btn-sm ${this.getStatusClass(currentStatus)}">
+                                                            ${currentStatus.charAt(0).toUpperCase() + currentStatus.slice(1)}
+                                                        </button>
+                                                        <ul class="dropdown-menu absolute hidden z-10 mt-1 w-28 bg-white shadow-lg rounded-md border border-gray-200">
+                                                            ${['completed', 'pending', 'rejected']
+                                                                .map(
+                                                                    (status) => `
+                                                                <li>
+                                                                    <a href="javascript:;" class="status-option block px-4 py-2 hover:bg-blue-50" data-value="${status}">
+                                                                        ${status.charAt(0).toUpperCase() + status.slice(1)}
+                                                                    </a>
+                                                                </li>
+                                                            `
+                                                                )
+                                                                .join('')}
+                                                        </ul>
+                                                    </div>
+
+
+                                                </div>`;
                     },
 
                     // Helper function for status button classes
@@ -1382,8 +1467,52 @@
                             coloredToast('danger', error.message);
                         }
                     },
+                    async updateManager(managerId) {
+                        try {
+                            // استخدام المودال بدلاً من confirm
+                            const updateConfirmed = await new Promise((resolve) => {
+                                Alpine.store('updateModal').openModal(managerId, () => {
+                                    resolve(true);
+                                });
+                            });
 
-                    // حذف المدير
+                            if (!updateConfirmed) return;
+
+                            // إنشاء FormData وإضافة الحقول
+                            const formData = {
+                                title: Alpine.store('global').sharedData.title,
+                                description: Alpine.store('global').sharedData.description,
+                                price: Alpine.store('global').sharedData.price,
+                                city: Alpine.store('global').sharedData.city,
+                            };
+
+                            const token = localStorage.getItem('authToken');
+                            if (!token) {
+                                throw new Error('Authentication token not found');
+                            }
+
+                            // إرسال الطلب باستخدام fetch
+                            const response = await fetch(`${this.apiBaseUrl}/api/products/${managerId}`, {
+                                method: 'POST', // أو 'PUT' إذا كان التحديث يستخدم PUT
+                                headers: {
+                                    'Content-Type': 'application/json', // مهم جداً عند إرسال JSON
+                                    Accept: 'application/json',
+                                    Authorization: `Bearer ${token}`,
+                                },
+                                body: JSON.stringify(formData),
+                            });
+
+                            const responseData = await response.json();
+
+                            // عرض رسالة النجاح
+                            coloredToast('success', 'Product updated successfully');
+
+                            // إعادة تحميل البيانات
+                            await this.fetchManagers();
+                        } catch (error) {
+                            coloredToast('error', error.message || 'Failed to update product');
+                        }
+                    }, // حذف المدير
                     async deleteManager(managerId) {
                         // استخدام المودال بدلاً من confirm
                         const deleteConfirmed = await new Promise((resolve) => {
@@ -1525,6 +1654,28 @@
                         }
                     },
                 }));
+                Alpine.store('updateModal', {
+                    apiBaseUrl: API_CONFIG.BASE_URL, // Ensure API_CONFIG is defined
+                    managerId: null,
+                    callback: null,
+
+                    openModal(id, callback) {
+                        this.managerId = id;
+                        this.callback = callback;
+                        this.isOpen = true;
+                    },
+
+                    closeModal() {
+                        this.isOpen = false;
+                    },
+
+                    confirmUpdate() {
+                        if (this.callback && this.managerId) {
+                            this.callback(this.managerId);
+                        }
+                        this.closeModal();
+                    },
+                });
             });
         </script>
     </body>

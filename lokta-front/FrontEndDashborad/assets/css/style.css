@@ -5,6 +5,29 @@
     height: 176px;
     width: 256px;
 }
+/* لمنع التمرير عند فتح النافذة */
+body.overflow-hidden {
+    overflow: hidden;
+}
+
+/* تأكد من أن overlay يغطي كل شيء */
+.fixed.inset-0 {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+/* تأكد من ظهور النافذة فوق كل شيء */
+.z-\[9999\] {
+    z-index: 9999;
+}
+
+/* العناصر الأخرى يجب أن يكون لها z-index أقل */
+.z-10 {
+    z-index: 10;
+}
 
 .ltr .ql-snow .ql-editor img {
     margin-left: 0px;
@@ -1973,7 +1996,6 @@ embed,
 object {
     display: block;
     /* 1 */
-    vertical-align: middle;
     /* 2 */
 }
 
@@ -4291,10 +4313,6 @@ label {
     background-color: rgb(27 46 75 / var(--tw-bg-opacity));
     --tw-text-opacity: 1;
     color: rgb(136 142 168 / var(--tw-text-opacity));
-}
-
-.dropdown ul {
-    /* @apply my-1 min-w-[120px] rounded bg-white p-0 py-2 shadow dark:bg-[#1b2e4b]; */
 }
 
 .dropdown ul li > a,
@@ -13155,7 +13173,55 @@ pre {
         border-bottom-left-radius: 0.375rem;
     }
 }
+.selectize {
+    width: 100%;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    background-color: #f9fafb;
+    font-size: 14px;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
 
+/* تنسيق عند الفتح */
+.selectize:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* تنسيق العناصر المختارة */
+.selectize option:checked {
+    font-weight: 600;
+    background-color: #3b82f6 !important;
+    color: white !important;
+    position: relative;
+}
+
+/* تأثير عند التحويم */
+.selectize option:hover {
+    background-color: #e0e7ff !important;
+}
+
+/* تنسيق القائمة المنسدلة */
+.selectize option {
+    padding: 10px 15px;
+    transition: all 0.2s ease;
+}
+
+/* تخصيص مظهر NiceSelect */
+.nice-select .list .option.selected {
+    font-weight: 600;
+    background-color: #3b82f6 !important;
+    color: white !important;
+}
+
+.nice-select .list .option:hover {
+    background-color: #e0e7ff !important;
+    color: #1e40af !important;
+}
 .rtl\:ltr\:mr-2:where([dir='ltr'], [dir='ltr'] *):where([dir='rtl'], [dir='rtl'] *) {
     margin-right: 0.5rem;
 }
