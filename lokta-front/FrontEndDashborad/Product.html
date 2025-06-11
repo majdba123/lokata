@@ -1322,69 +1322,68 @@
                     formatName(name, images, index) {
                         if (!images || images.length === 0) {
                             return `
-                        <div class="flex items-center w-max">
-                            <div class="w-9 h-9 rounded-full ltr:mr-2 rtl:ml-2 bg-gray-200 flex items-center justify-center">
-                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
+                            <div class="flex items-center w-max">
+                                <div class="w-9 h-9 rounded-full ltr:mr-2 rtl:ml-2 bg-gray-200 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                ${name || 'Unknown'}
+                            </div>`;
+                                        }
+
+                                        return `
+                        <div class="flex items-center w-max" x-data="{ showGallery: false }">
+                            <!-- Main Image with Gallery Toggle -->
+                            <div class="relative">
+                                <img class="w-9 h-9 rounded-full ltr:mr-2 rtl:ml-2 object-cover cursor-pointer"
+                                    src="${images[0]}"
+                                    alt="${name || 'Item'}"
+                                    @click="showGallery = true"/>
+                                
+                                ${
+                                    images.length > 1
+                                        ? `
+                                    <span class="absolute -bottom-1 -right-1 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                        +${images.length - 1}
+                                    </span>
+                                `
+                                        : ''
+                                }
                             </div>
+                            
                             ${name || 'Unknown'}
-                        </div>`;
-                        }
 
-                        return `
-                    <div class="flex items-center w-max" x-data="{ showGallery: false }">
-                        <!-- Main Image with Gallery Toggle -->
-                        <div class="relative">
-                            <img class="w-9 h-9 rounded-full ltr:mr-2 rtl:ml-2 object-cover cursor-pointer"
-                                 src="${images[0]}"
-                                 alt="${name || 'Item'}"
-                                 @click="showGallery = true"/>
-
-                            ${
-                                images.length > 1
-                                    ? `
-                                <span class="absolute -bottom-1 -right-1 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                                    +${images.length - 1}
-                                </span>
-                            `
-                                    : ''
-                            }
-                        </div>
-
-                        ${name || 'Unknown'}
-
-                        <!-- Image Gallery Modal -->
-                        <div x-show="showGallery"
-                             x-transition
-                             class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-4"
-                             @click.away="showGallery = false"
-                             x-cloak>
-                            <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-auto">
-                                <div class="p-4 border-b flex justify-between items-center">
-                                    <h3 class="text-lg font-bold">${name || 'Images Gallery'}</h3>
-                                    <button @click="showGallery = false" class="text-gray-500 hover:text-gray-700">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 p-4">
-                                    ${images
-                                        .map(
-                                            (img) => `
-                                        <div class="border rounded overflow-hidden">
-                                            <img src="${img}" alt="Gallery Image" class="w-full h-48 object-cover"/>
-                                        </div>
-                                    `
-                                        )
-                                        .join('')}
+                            <!-- Image Gallery Modal -->
+                            <div x-show="showGallery"  
+                                x-transition
+                                class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-4"
+                                @click.away="showGallery = false"
+                                x-cloak>
+                                <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-auto">
+                                    <div class="p-4 border-b flex justify-between items-center">
+                                        <h3 class="text-lg font-bold">${name || 'Images Gallery'}</h3>
+                                        <button @click="showGallery = false" class="text-gray-500 hover:text-gray-700">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 p-4">
+                                        ${images
+                                            .map(
+                                                (img) => `
+                                            <div class="border rounded overflow-hidden">
+                                                <img src="${img}" alt="Gallery Image" class="w-full h-48 object-cover"/>
+                                            </div>
+                                        `
+                                            )
+                                            .join('')}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>`;
+                        </div>`;
                     },
-
                     // تنسيق البريد الإلكتروني
                     formatEmail(email) {
                         return email ? `<a href="mailto:${email}" class="text-primary hover:underline">${email}</a>` : 'No Email Provided';
@@ -1403,7 +1402,7 @@
 
                     // تنسيق النص العادي
                     formatText(text) {
-                        return text || 'N/A';
+                        return text || '-';
                     },
 
                     // أزرار الإجراءات
@@ -1418,7 +1417,7 @@
                                                             ${currentStatus.charAt(0).toUpperCase() + currentStatus.slice(1)}
                                                         </button>
                                                         <ul class="dropdown-menu absolute hidden z-10 mt-1 w-28 bg-white shadow-lg rounded-md border border-gray-200">
-                                                            ${['completed', 'pending', 'rejected']
+                                                            ${['completed', 'pending', 'rejected', 'reupdate']
                                                                 .map(
                                                                     (status) => `
                                                                 <li>
@@ -1439,6 +1438,7 @@
                     // Helper function for status button classes
                     getStatusClass(status) {
                         const classes = {
+                            reupdate: 'btn-success',
                             completed: 'btn-success',
                             pending: 'btn-warning',
                             rejected: 'btn-danger',
