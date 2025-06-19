@@ -1265,7 +1265,7 @@
                         const mappedData = this.tableData.map((manager, index) => [
                             this.formatText(index, manager.images),
 
-                            this.formatName(manager.title, manager.images, index),
+                            this.formatName(manager.title, manager.images, index,manager.description),
                             this.formatText(manager.dates.start_date),
                             this.formatText(manager.dates.end_date),
 
@@ -1275,7 +1275,6 @@
                             this.formatText(manager.subscription_price),
                             this.formatText(manager.sub_category),
                             this.formatText(manager.brand),
-                            this.formatText(manager.description),
 
                             this.getActionButtons(manager.id, manager.status),
                         ]);
@@ -1292,7 +1291,6 @@
                                     'Subscription Price',
                                     'Sub Category',
                                     'brand',
-                                    'Description',
                                     '<div class="text-center">Action</div>',
                                 ],
                                 data: mappedData,
@@ -1316,10 +1314,21 @@
                                 bottom: '{info}{select}{pager}',
                             },
                         });
+                            this.reinitAlpine();
+                    
+                    },
+                    reinitAlpine() {
+                        // إعادة تهيئة Alpine.js على الصفوف الجديدة
+                        Alpine.initTree(document.querySelector('#myTable1'));
+
+                        // إعادة تحميل الصور
+                        document.querySelectorAll('#myTable1 img').forEach((img) => {
+                            img.setAttribute('src', img.getAttribute('src'));
+                        });
                     },
 
                     // تنسيق الاسم مع الصورة
-                    formatName(name, images, index) {
+                    formatName(name, images, index,Description) {
                         if (!images || images.length === 0) {
                             return `
             <div class="flex items-center w-max">
@@ -1362,7 +1371,7 @@
                  x-cloak>
                 <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-auto">
                     <div class="p-4 border-b flex justify-between items-center">
-                        <h3 class="text-lg font-bold">${name || 'Images Gallery'}</h3>
+                        <h3 class="text-lg font-bold">${Description || 'Images Gallery'}</h3>
                         <button @click="showGallery = false" class="text-gray-500 hover:text-gray-700">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
