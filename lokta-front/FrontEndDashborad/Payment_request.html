@@ -1315,7 +1315,6 @@
 
                             const data = await response.json();
                             this.tableData = data.data;
-                            console.log(data);
 
                             this.populateTable();
                         } catch (error) {}
@@ -1336,7 +1335,7 @@
                             return [
                                 item.title || 'N/A', // عنوان المنتج
                                 this.formatPaymentDetails(paymentDetails), // تفاصيل الدفع
-                                item.price || 'N/A', // عنوان المنتج
+                                item.subscription_price || 'N/A', // عنوان المنتج
 
                                 inputs.phone?.value || 'N/A', // عنوان المنتج
                                 inputs.text?.value || 'N/A', // عنوان المنتج

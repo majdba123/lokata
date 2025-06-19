@@ -1257,7 +1257,6 @@
                             });
 
                             const data = await response.json();
-                            console.log(data);
                             this.tableData = data.brands;
                             this.currentPage = data.brands.current_page;
                             this.totalPages = data.brands.last_page;
