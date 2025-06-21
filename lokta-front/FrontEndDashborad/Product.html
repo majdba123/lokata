@@ -1249,7 +1249,7 @@
 
                             const data = await response.json();
 
-                            this.tableData = data.data;
+                            this.tableData = data.data.reverse();
 
                             this.populateTable();
                         } catch (error) {}

@@ -1327,12 +1327,14 @@
                             this.datatable1.destroy();
                         }
 
-                        const mappedData = this.tableData.map((item) => {
+                        const mappedData = this.tableData.map((item, index) => {
                             const paymentDetails = item.payment_details || {};
                             const inputs = paymentDetails.inputs || [];
 
                             // إنشاء صف لكل عنصر في tableData
                             return [
+                                index || 'N/A', // عنوان المنتج
+
                                 item.title || 'N/A', // عنوان المنتج
                                 this.formatPaymentDetails(paymentDetails), // تفاصيل الدفع
                                 item.subscription_price || 'N/A', // عنوان المنتج
@@ -1345,7 +1347,7 @@
 
                         this.datatable1 = new simpleDatatables.DataTable('#myTable1', {
                             data: {
-                                headings: ['Title', 'Payment Details', 'Price', 'Phone', 'Text', 'Actions'],
+                                headings: ['Number', 'Title', 'Payment Details', 'Price', 'Phone', 'Text', 'Actions'],
                                 data: mappedData,
                             },
                             searchable: true,
