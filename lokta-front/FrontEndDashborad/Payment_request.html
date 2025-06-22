@@ -1320,8 +1320,6 @@
                         } catch (error) {}
                     },
 
-                    // تعبئة الجدول بالبيانات
-                    // تعبئة الجدول بالبيانات
                     populateTable() {
                         if (this.datatable1) {
                             this.datatable1.destroy();
@@ -1333,7 +1331,7 @@
 
                             // إنشاء صف لكل عنصر في tableData
                             return [
-                                index || 'N/A', // عنوان المنتج
+                                index+1,
 
                                 item.title || 'N/A', // عنوان المنتج
                                 this.formatPaymentDetails(paymentDetails), // تفاصيل الدفع

@@ -1249,7 +1249,8 @@
 
                             const data = await response.json();
 
-                            this.tableData = data.data.reverse();
+                            this.tableData = data.data;
+                            
 
                             this.populateTable();
                         } catch (error) {}
@@ -1262,7 +1263,7 @@
                         }
 
                         const mappedData = this.tableData.map((manager, index) => [
-                            this.formatText(index, manager.images),
+                            this.formatText(index+1, manager.images),
 
                             this.formatName(manager.title, manager.images, index,manager.description),
                             this.formatText(manager.dates.start_date),
