@@ -1248,9 +1248,7 @@
                             });
 
                             const data = await response.json();
-
                             this.tableData = data.data;
-                            
 
                             this.populateTable();
                         } catch (error) {}
@@ -1263,11 +1261,11 @@
                         }
 
                         const mappedData = this.tableData.map((manager, index) => [
-                            this.formatText(index+1, manager.images),
+                            this.formatText(index + 1, manager.images),
 
-                            this.formatName(manager.title, manager.images, index,manager.description),
-                            this.formatText(manager.dates.start_date),
-                            this.formatText(manager.dates.end_date),
+                            this.formatName(manager.title, manager.images, index, manager.description),
+                            this.formatText(manager.dates?.start_date),
+                            this.formatText(manager.dates?.end_date),
 
                             this.formatText(manager.price),
 
@@ -1277,7 +1275,6 @@
 
                             this.getActionButtons(manager.id, manager.status),
                         ]);
-
                         this.datatable1 = new simpleDatatables.DataTable('#myTable1', {
                             data: {
                                 headings: [
@@ -1312,8 +1309,7 @@
                                 bottom: '{info}{select}{pager}',
                             },
                         });
-                            this.reinitAlpine();
-                    
+                        this.reinitAlpine();
                     },
                     reinitAlpine() {
                         // إعادة تهيئة Alpine.js على الصفوف الجديدة
@@ -1326,7 +1322,7 @@
                     },
 
                     // تنسيق الاسم مع الصورة
-                    formatName(name, images, index,Description) {
+                    formatName(name, images, index, Description) {
                         if (!images || images.length === 0) {
                             return `
             <div class="flex items-center w-max">

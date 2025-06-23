@@ -1019,7 +1019,7 @@
                     <button @click="$store.deleteModal.closeModal()" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">✕</button>
                 </div>
                 <div class="p-4">
-                    <p class="text-gray-700 dark:text-gray-300">"Are you sure you want to delete this Payment?"</p>
+                    <p class="text-gray-700 dark:text-gray-300">"Are you sure you want to change status this Payment?"</p>
                 </div>
                 <div class="flex justify-end gap-2 border-t p-4 dark:border-gray-700">
                     <button @click="$store.deleteModal.closeModal()" class="btn btn-outline-danger">No</button>
@@ -1214,12 +1214,15 @@
                     async init() {
                         await this.fetchManagers();
 
-                        // Event Delegation for Delete Buttons
+                        // Event Delegation for Toggle Status Buttons
                         document.addEventListener('click', (e) => {
-                            if (e.target.closest('.delete-btn')) {
-                                const managerId = e.target.closest('.delete-btn').dataset.id;
-                                this.deleteManager(managerId);
+                            if (e.target.closest('.toggle-status-btn')) {
+                                const btn = e.target.closest('.toggle-status-btn');
+                                const managerId = btn.dataset.id;
+                                const status = parseInt(btn.dataset.status);
+                                this.togglePaymentStatus(managerId, status);
                             }
+
                             if (e.target.closest('.update-btn')) {
                                 const managerId = e.target.closest('.update-btn').dataset.id;
                                 this.updateManager(managerId);
@@ -1257,7 +1260,6 @@
                             }
                         });
                     },
-
                     // جلب بيانات المديرين من API
                     async fetchManagers() {
                         try {
@@ -1291,7 +1293,7 @@
                         const mappedData = this.tableData.map((manager, index) => [
                             this.formatText(manager.title, index),
                             this.formatText(manager.description),
-                            this.getActionButtons(manager.id),
+                            this.getActionButtons(manager.id, manager.status),
                         ]);
 
                         this.datatable1 = new simpleDatatables.DataTable('#myTable1', {
@@ -1322,12 +1324,12 @@
                     // تنسيق الاسم مع الصورة
                     formatName(name, index) {
                         return `
-                        <div class="flex items-center w-max">
-                            <img class="w-9 h-9 rounded-full ltr:mr-2 rtl:ml-2 object-cover"
-                                 src="assets/images/profile-${index + 1}.jpeg"
-                                 alt="${name || 'User'}"/>
-                            ${name || 'Unknown'}
-                        </div>`;
+                                    <div class="flex items-center w-max">
+                                        <img class="w-9 h-9 rounded-full ltr:mr-2 rtl:ml-2 object-cover"
+                                             src="assets/images/profile-${index + 1}.jpeg"
+                                             alt="${name || 'User'}"/>
+                                        ${name || 'Unknown'}
+                                    </div>`;
                     },
 
                     // تنسيق البريد الإلكتروني
@@ -1352,26 +1354,6 @@
                     },
 
                     // أزرار الإجراءات
-                    getActionButtons(managerId) {
-                        return `
-                        <div class="flex items-center justify-center">
-                            <!-- Status Dropdown -->
-
-                            <button class="btn update-btn btn-warning"data-id="${managerId}">UPDATE</button>
-
-                            <!-- Delete Button -->
-                            <button class="btn btn-sm btn-danger delete-btn ml-2" data-id="${managerId}">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path opacity="0.5" d="M9.17065 4C9.58249 2.83481 10.6937 2 11.9999 2C13.3062 2 14.4174 2.83481 14.8292 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                                    <path d="M20.5001 6H3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                                    <path d="M18.8334 8.5L18.3735 15.3991C18.1965 18.054 18.108 19.3815 17.243 20.1907C16.378 21 15.0476 21 12.3868 21H11.6134C8.9526 21 7.6222 21 6.75719 20.1907C5.89218 19.3815 5.80368 18.054 5.62669 15.3991L5.16675 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                                    <path opacity="0.5" d="M9.5 11L10 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                                    <path opacity="0.5" d="M14.5 11L14 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                                </svg>
-                            </button>
-                        </div>`;
-                    },
-
                     // Helper function for status button classes
                     getStatusClass(status) {
                         const classes = {
@@ -1424,33 +1406,71 @@
                         }
                     },
                     // حذف المدير
-                    async deleteManager(managerId) {
-                        // استخدام المودال بدلاً من confirm
-                        const deleteConfirmed = await new Promise((resolve) => {
-                            Alpine.store('deleteModal').openModal(managerId, () => {
-                                resolve(true);
-                            });
+                    async togglePaymentStatus(paymentId, currentStatus) {
+                        // Use modal instead of confirm
+                        const actionConfirmed = await new Promise((resolve) => {
+                            const action = currentStatus == 0 ? 'disable' : 'enable';
+                            Alpine.store('deleteModal').openModal(
+                                paymentId,
+                                () => {
+                                    resolve(true);
+                                },
+                                `Are you sure you want to ${action} this payment method?`
+                            );
                         });
 
-                        if (!deleteConfirmed) return;
+                        if (!actionConfirmed) return;
 
                         try {
                             const token = localStorage.getItem('authToken');
-                            const response = await fetch(`${this.apiBaseUrl}/api/admin/paymentways/delete_payment/${managerId}`, {
+                            const newStatus = currentStatus == 1 ? 0 : 1;
+                            const response = await fetch(`${this.apiBaseUrl}/api/admin/paymentways/delete_payment/${paymentId}`, {
                                 method: 'DELETE',
                                 headers: {
                                     Accept: 'application/json',
                                     Authorization: `Bearer ${token}`,
+                                    'Content-Type': 'application/json',
                                 },
+                                body: JSON.stringify({ status: newStatus }),
                             });
 
-                            if (!response.ok) throw new Error('Failed to delete Payment');
-                            coloredToast('success', `Payment Delete successfully! `);
+                            if (!response.ok) throw new Error('Failed to update payment status');
+                            coloredToast('success', `Payment method ${newStatus == 1 ? 'enabled' : 'disabled'} successfully!`);
 
                             await this.fetchManagers();
-                        } catch (error) {}
+                        } catch (error) {
+                            coloredToast('error', 'Error updating payment status');
+                            console.error('Error:', error);
+                        }
                     },
-                    // بقية الدوال المساعدة...
+
+                    getActionButtons(managerId, currentStatus) {
+                        const isActive = currentStatus == 0;
+                        const statusIcon = isActive
+                            ? `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="1.5"/>
+            <path opacity="0.5" d="M8 12C8 14.2091 9.79086 16 12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>`
+                            : `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12Z" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M8 12H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>`;
+
+                        const btnClass = isActive ? 'btn-warning' : 'btn-success';
+                        const btnTitle = isActive ? 'Disable' : 'Enable';
+
+                        return `
+        <div class="flex items-center justify-center">
+            <!-- Update Button -->
+            <button class="btn update-btn btn-primary" data-id="${managerId}">UPDATE</button>
+
+            <!-- Toggle Status Button -->
+            <button class="btn btn-sm ${btnClass} toggle-status-btn ml-2" data-id="${managerId}" data-status="${currentStatus}" title="${btnTitle}">
+                ${statusIcon}
+            </button>
+        </div>`;
+                    },
+
                     getStatusColor(status) {
                         const statusColors = {
                             active: 'success',

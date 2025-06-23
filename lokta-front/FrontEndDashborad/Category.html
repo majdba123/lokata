@@ -955,6 +955,9 @@
                 </div>
                 <div class="p-4">
                     <p class="text-gray-700 dark:text-gray-300">"Are you sure you want to delete this Category?"</p>
+                    <p class="text-sm italic text-red-500 dark:text-red-400">
+                        Note: Deleting this category will also remove all related products permanently.
+                    </p>
                 </div>
                 <div class="flex justify-end gap-2 border-t p-4 dark:border-gray-700">
                     <button @click="$store.deleteModal.closeModal()" class="btn btn-outline-danger">No</button>
