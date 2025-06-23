@@ -151,7 +151,7 @@ class ProductController extends Controller
         try {
             $ownerId = Auth::id();
             $validationRules = [
-                'title' => 'required|string|max:255|unique:products',
+                'title' => 'required|string|max:255',
                 'price' => 'required|numeric|min:0',
                 'sub__category_id' => 'required|numeric|exists:sub__categories,id',
                 'description' => 'required|string',
