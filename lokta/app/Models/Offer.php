@@ -14,6 +14,7 @@ class Offer extends Model
         'level',       //   1 2 3
         'discription',
         'count_month',
+         'status',
         'price'
     ];
 
