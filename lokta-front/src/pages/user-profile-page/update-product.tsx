@@ -1,7 +1,7 @@
 import { Subcategory } from "@/api/services/category/types";
 import { updateProductApi } from "@/api/services/products/product-service";
 import { Product } from "@/api/services/products/types";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { SY_CITIES } from "../vendor-pages/create-product/create-product";
@@ -52,13 +52,27 @@ function UpdateProduct(props: Props) {
     id: watchedSubCategoryId ?? props.sub_category_id,
   });
 
+  const sortedSubcategories = useMemo(() => {
+    if (!subcategoriesQuery.data) {
+      return [];
+    }
+    // Create a shallow copy before sorting to avoid mutating the original data
+    return [...subcategoriesQuery.data].sort((a, b) =>
+      a.title.localeCompare(b.title)
+    );
+  }, [subcategoriesQuery.data]);
+
+  const sortedBrands = useMemo(() => {
+    if (!brandsQuery.data) {
+      return [];
+    }
+    // Create a shallow copy before sorting to avoid mutating the original data
+    return [...brandsQuery.data].sort((a, b) => a.name.localeCompare(b.name));
+  }, [brandsQuery.data]);
+
   const defaultBrand = brandsQuery.data?.find(
     (brand) => brand.name === props.brand
   );
-
- 
-
-  
 
   const handleChooseFile = async (
     e: React.ChangeEvent<HTMLInputElement>
@@ -136,33 +150,37 @@ function UpdateProduct(props: Props) {
         </div>
 
         {/* Subcategory Select */}
-        <div>
-          <label htmlFor="sub__category_id">الفئة الفرعية</label>
-          <select
-            {...register("sub__category_id", {
-              required: "الفئة الفرعية مطلوبة",
-            })} // Added required validation
-            className="border border-gray-300 rounded-md p-2 w-full"
-            disabled={subcategoriesQuery.isLoading || !subcategoriesQuery.data}
-            defaultValue={props.sub_category_id}
-          >
-            <option value="" disabled>
-              {subcategoriesQuery.isLoading
-                ? "جاري التحميل..."
-                : "اختر الفئة الفرعية"}
-            </option>
-            {subcategoriesQuery.data?.map((subcategory: Subcategory) => (
-              <option key={subcategory.id} value={subcategory.id}>
-                {subcategory.title}
+        {subcategoriesQuery.status === "success" && (
+          <div>
+            <label htmlFor="sub__category_id">الفئة الفرعية</label>
+            <select
+              {...register("sub__category_id", {
+                required: "الفئة الفرعية مطلوبة",
+              })} // Added required validation
+              className="border border-gray-300 rounded-md p-2 w-full"
+              disabled={
+                subcategoriesQuery.isLoading || !subcategoriesQuery.data
+              }
+              defaultValue={props.sub_category_id}
+            >
+              <option value="" disabled>
+                {subcategoriesQuery.isLoading
+                  ? "جاري التحميل..."
+                  : "اختر الفئة الفرعية"}
               </option>
-            ))}
-          </select>
-          {errors.sub__category_id && (
-            <span className="text-red-500 text-sm">
-              {errors.sub__category_id.message}
-            </span>
-          )}
-        </div>
+              {sortedSubcategories.map((subcategory: Subcategory) => (
+                <option key={subcategory.id} value={subcategory.id}>
+                  {subcategory.title}
+                </option>
+              ))}
+            </select>
+            {errors.sub__category_id && (
+              <span className="text-red-500 text-sm">
+                {errors.sub__category_id.message}
+              </span>
+            )}
+          </div>
+        )}
 
         {/* Brand Select */}
         <div className={`${!watch("sub__category_id") && "opacity-[0.4]"}`}>
@@ -172,7 +190,7 @@ function UpdateProduct(props: Props) {
           </label>{" "}
           {watchedSubCategoryId &&
             brandsQuery.status === "success" &&
-            brandsQuery.data.length === 0 && (
+            sortedBrands.length === 0 && (
               <p className="text-sm text-orange-500 mt-1">
                 لا توجد علامات تجارية لهذه الفئة الفرعية.
               </p>
@@ -185,7 +203,7 @@ function UpdateProduct(props: Props) {
           >
             <option value="">اختر العلامة التجارية</option>
             {brandsQuery.status == "success" &&
-              brandsQuery.data.map((brand) => (
+              sortedBrands.map((brand) => (
                 <option key={brand.id} value={brand.id}>
                   {brand.name}
                 </option>

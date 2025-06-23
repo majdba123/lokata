@@ -20,13 +20,12 @@ export type Product = {
   owner_id: number;
   brand_id: number;
   currency: "sy" | "us";
-  status: "rejected" | "completed" | "pending";
+  status: "rejected" | "completed" | "pending" | "reupdated";
   dates: ProductDates;
   city: string | null;
-  sub_category : string
-  brand : string
-  sub_category_id : number
-  
+  sub_category: string;
+  brand: string;
+  sub_category_id: number;
 };
 
 export type ProductDates = {

@@ -31,7 +31,7 @@ export function CategoryCarousel({
         {subcategories.map((subcategory) => (
           <CarouselItem
             key={subcategory.id}
-            className="basis-1/2 pl-2 md:basis-1/4 lg:basis-1/6"
+            className="basis-1/3 sm:basis-1/4 md:basis-1/6 lg:basis-1/8 pl-2"
           >
             <CategoryItem
               categoryName={categoryName}

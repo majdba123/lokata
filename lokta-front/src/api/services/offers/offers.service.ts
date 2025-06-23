@@ -9,7 +9,7 @@ class OffersService {
   getAllOffersApi = async () => {
     try {
       const accessToken = useAuthStore.getState().accessToken;
-      const { data } = await axios.get<Offer[]>(
+      const { data } = await axios.get<{ data: Offer[] }>(
         `${API_URL}/api/offers/fillter`,
         {
           headers: headerGenerator([
@@ -17,7 +17,7 @@ class OffersService {
           ]),
         }
       );
-      return data;
+      return data.data;
     } catch (error) {
       throw new Error(resolveError(error));
     }

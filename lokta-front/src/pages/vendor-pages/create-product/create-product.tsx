@@ -154,9 +154,32 @@ function CreateProduct() {
       return [];
     }
 
-    return curCategory[0].sub_category;
+    const subcategories = curCategory[0].sub_category;
+
+    if (!subcategories) {
+      return [];
+    }
+    // Create a shallow copy before sorting to avoid mutating the original data
+    return [...subcategories].sort((a, b) => a.title.localeCompare(b.title));
   }, [watchedCategoryId, allCategoriesQuery.data]);
 
+  const sortedCategories = useMemo(() => {
+    if (!allCategoriesQuery.data) {
+      return [];
+    }
+    // Create a shallow copy before sorting to avoid mutating the original data
+    return [...allCategoriesQuery.data].sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
+  }, [allCategoriesQuery.data]);
+
+  const sortedBrands = useMemo(() => {
+    if (!brands) {
+      return [];
+    }
+    // Create a shallow copy before sorting to avoid mutating the original data
+    return [...brands].sort((a, b) => a.name.localeCompare(b.name));
+  }, [brands]);
   return (
     <div dir="rtl" className="mx-auto p-8 w-[100%]">
       {currentStep === "form" && (
@@ -208,7 +231,7 @@ function CreateProduct() {
                     ? "جاري التحميل..."
                     : "اختر الفئة الرئيسية"}
                 </option>
-                {allCategoriesQuery.data?.map((category: Category) => (
+                {sortedCategories.map((category: Category) => (
                   <option key={category.id} value={category.id}>
                     {category.name}{" "}
                     {/* Assuming category has a 'title' field */}
@@ -245,11 +268,13 @@ function CreateProduct() {
                   </option>
                 ))}
               </select>
-              {watchedCategoryId && filteredSubcategories.length === 0 && !allCategoriesQuery.isLoading && (
-                <p className="text-sm text-orange-500 mt-1">
-                  لا توجد فئات فرعية لهذه الفئة الرئيسية.
-                </p>
-              )}
+              {watchedCategoryId &&
+                filteredSubcategories.length === 0 &&
+                !allCategoriesQuery.isLoading && (
+                  <p className="text-sm text-orange-500 mt-1">
+                    لا توجد فئات فرعية لهذه الفئة الرئيسية.
+                  </p>
+                )}
               {errors.sub__category_id && (
                 <span className="text-red-500 text-sm">
                   {errors.sub__category_id.message}
@@ -265,18 +290,18 @@ function CreateProduct() {
                 })} // Brand is required
                 className="border border-gray-300 rounded-md p-2 w-full"
                 defaultValue=""
-                disabled={!watchedSubcategoryId || brands.length === 0}
+                disabled={!watchedSubcategoryId || sortedBrands.length === 0}
               >
                 <option value="" disabled>
                   اختر العلامة التجارية
                 </option>{" "}
-                {brands.map((brand) => (
+                {sortedBrands.map((brand) => (
                   <option key={brand.id} value={brand.id}>
                     {brand.name}
                   </option>
                 ))}
               </select>
-              {watchedSubcategoryId && brands.length === 0 && (
+              {watchedSubcategoryId && sortedBrands.length === 0 && (
                 <p className="text-sm text-orange-500 mt-1">
                   لا توجد علامات تجارية لهذه الفئة الفرعية.
                 </p>

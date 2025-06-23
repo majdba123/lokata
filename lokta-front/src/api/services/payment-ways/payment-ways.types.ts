@@ -5,6 +5,7 @@ export type PaymentWay = {
   created_at: string;
   updated_at: string;
   paymentway_input: PaymentWayInput[];
+  status: 1 | 0;
   image: string | null;
 };
 

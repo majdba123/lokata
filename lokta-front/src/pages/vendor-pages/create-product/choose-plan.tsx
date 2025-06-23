@@ -171,7 +171,6 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
             "لقد اكتمل الطلب وسوف يتم قريبا نشر الاعلان بعد التاكد من صحة البيانت",
           duration: 6000,
           position: "top-center",
-          
         });
         navigate("/profile/my-products");
       },
@@ -216,23 +215,25 @@ const ChoosePlan: React.FC<ChoosePlanProps> = ({
                   اختر طريقة الدفع
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {paymentsWayQuery.data?.map((paymentWay: PaymentWay) => (
-                    <PaymentWayItem
-                      key={paymentWay.id}
-                      paymentWay={paymentWay}
-                      isSelected={
-                        selectedPaymentWayId === String(paymentWay.id)
-                      }
-                      onSelect={(selectedPW: any) => {
-                        setSelectedPaymentWayId(String(selectedPW.id));
-                        setSelectedPaymentWayDetails(selectedPW);
-                      }}
-                      paymentInputValues={paymentInputValues}
-                      onInputChange={handleInputChange}
-                      paymentInputErrors={paymentInputErrors} // Pass errors down
-                      onFileChange={handleFileChange}
-                    />
-                  ))}
+                  {paymentsWayQuery.data
+                    ?.filter((paymentWay) => paymentWay.status === 1)
+                    .map((paymentWay: PaymentWay) => (
+                      <PaymentWayItem
+                        key={paymentWay.id}
+                        paymentWay={paymentWay}
+                        isSelected={
+                          selectedPaymentWayId === String(paymentWay.id)
+                        }
+                        onSelect={(selectedPW: any) => {
+                          setSelectedPaymentWayId(String(selectedPW.id));
+                          setSelectedPaymentWayDetails(selectedPW);
+                        }}
+                        paymentInputValues={paymentInputValues}
+                        onInputChange={handleInputChange}
+                        paymentInputErrors={paymentInputErrors} // Pass errors down
+                        onFileChange={handleFileChange}
+                      />
+                    ))}
                 </div>
               </div>
             )}
