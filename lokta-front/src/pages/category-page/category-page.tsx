@@ -1,13 +1,27 @@
 import { Product } from "@/api/services/products/types";
-import SalesBoard from "@/components/my-ui/sales-board";
 import { useCategoryStore } from "@/zustand-stores/category-store";
-
-import categoryBoard from "@/assets/Rectangle5.png";
 
 import { ProductGrid } from "@/components/my-ui/product-grid";
 import FilterSidebar from "./filter-sidebar";
 import { useState } from "react";
+import AdsBoard from "../ads/ads-board";
 
+const ads = [
+  {
+    src: `https://picsum.photos/seed/${
+      Math.random() * new Date().getTime()
+    }/600/300`,
+    link: "https://google.com",
+  },
+  {
+    src: `https://picsum.photos/seed/${Math.random()}/600/300`,
+    link: "https://google.com",
+  },
+  {
+    src: `https://picsum.photos/seed/${Math.random() * 33}/600/300`,
+    link: "https://google.com",
+  },
+];
 function CategoryPage() {
   const curSubCategoryId = useCategoryStore((state) => state.curSubCategoryId);
   const subcategories = useCategoryStore((state) => state.subcategories);
@@ -20,7 +34,7 @@ function CategoryPage() {
 
   return (
     <div dir="rtl">
-      <SalesBoard boardImage={categoryBoard} />
+      <AdsBoard ads={ads} type="slide" />
       <div className="w-full flex flex-col justify-center items-center space-y-2">
         <p className="text-xl ">
           {curSubCategoryId == -1 ? "الكل" : curSubCategory?.title}

@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowLeftFromLineIcon, BadgePlus } from "lucide-react";
+import { ArrowLeftFromLineIcon, BadgePlus, Megaphone } from "lucide-react";
 import logo from "@/assets/lokta-logo.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/zustand-stores/auth.store";
@@ -50,12 +50,20 @@ const Header: React.FC = () => {
 
           <div className="flex items-center gap-2">
             {isAuthenticated && (
-              <Button asChild variant={"ghost"} className="">
-                <Link to={"/profile/create-product"}>
-                  {" "}
-                  انشاء منتج جديد <BadgePlus />{" "}
-                </Link>
-              </Button>
+              <div className="flex items-center gap-2 px-2">
+                <Button asChild variant={"ghost"} className="">
+                  <Link to={"/profile/create-product"}>
+                    {" "}
+                    انشاء منتج جديد <BadgePlus />{" "}
+                  </Link>
+                </Button>
+                <Button asChild variant={"ghost"}>
+                  <Link to={"/ads/create"}>
+                    {" "}
+                    انشاء اعلانات جديد <Megaphone />{" "}
+                  </Link>
+                </Button>
+              </div>
             )}
             <div className="flex items-center md:space-x-2 ">
               <span className="hidden md:inline">

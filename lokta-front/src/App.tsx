@@ -17,6 +17,7 @@ import { Toaster } from "sonner";
 import MyProducts from "./pages/user-profile-page/my-products";
 import ProductPage from "./pages/product-page";
 import AllCategoryPage from "./pages/all-category-page/all-category-page";
+import CreateAdsPage from "./pages/ads/create-ads-page";
 
 function App() {
   return (
@@ -31,6 +32,9 @@ function App() {
             element={<CategoryPage />}
           />
           <Route path="/:categoryName/*" element={<CategoryPage />} />
+        </Route>
+        <Route path="/ads" element={<PageLayout />}>
+          <Route path="create" element={<CreateAdsPage />} />
         </Route>
         <Route element={<PageLayout />}>
           <Route element={<RequireAuth />}>
