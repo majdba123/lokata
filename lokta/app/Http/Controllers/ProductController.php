@@ -150,21 +150,27 @@ class ProductController extends Controller
 
         try {
             $ownerId = Auth::id();
-
             $validationRules = [
-                'title' => 'required|string|max:255|unique:products',
+                'title' => 'required|string|max:255',
                 'price' => 'required|numeric|min:0',
                 'sub__category_id' => 'required|numeric|exists:sub__categories,id',
                 'description' => 'required|string',
                 'city' => 'required|string',
                 'images' => 'required|array',
-                'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // تعديل هنا للتحقق من أن كل صورة صالحة
+                'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
                 'brand_id' => 'required|numeric|exists:brands,id',
                 'currency' => 'required|string|in:sy,us',
-                'offer_id' => 'required|numeric|exists:offers,id',
-                'paymentway_id' => 'required|numeric|exists:paymentways,id',
+                'offer_id' => [
+                    'required',
+                    'numeric',
+                    Rule::exists('offers', 'id')->where('status', 1)
+                ],
+                'paymentway_id' => [
+                    'required',
+                    'numeric',
+                    Rule::exists('paymentways', 'id')->where('status', 1)
+                ],
             ];
-
             if ($request->paymentway_id != 1) {
                 $validationRules['payment_inputs'] = 'required|array';
             }

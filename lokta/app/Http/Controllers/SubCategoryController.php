@@ -96,6 +96,7 @@ class SubCategoryController extends Controller
 
     public function destroy(Sub_Category $subCategory): JsonResponse
     {
+        $subCategory->product->delete();
         $subCategory->delete();
 
         return response()->json(['message' => 'Subcategory deleted successfully'], 200);

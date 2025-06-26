@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('currency');
             $table->string('city')->default('damascuse');
             $table->string('is_show_payment')->default('0');
+            $table->string('status')->default('pending');
 
             $table->string('discreption');
             $table->foreignIdFor(Sub_Category::class)->constrained()->cascadeOnDelete()->cascadeOnUpdate();
@@ -31,7 +32,6 @@ return new class extends Migration
             $table->foreignIdFor(Offer::class)->nullable();
             $table->foreignIdFor(Paymentway::class)->nullable();
             $table->json('payment_inputs'); // لتخزين بيانات الدفع
-            $table->enum('status', ['pending', 'approved', 'rejected', 'reupdate', 'completed','expired'])->default('pending');
             $table->date('start_date')->nullable(); // تاريخ بداية العرض
             $table->date('end_date')->nullable(); // تاريخ نهاية العرض
             $table->timestamps();

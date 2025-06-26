@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Paymentway;
 use App\Models\PaymentwayInput;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -14,14 +15,35 @@ class PaymentwayController extends Controller
     /**
      * عرض جميع طرق الدفع مع حقولها
      */
-    public function index()
+    public function index(Request $request)
     {
-        $paymentways = Paymentway::with('Paymentway_input')
-                        ->where('id', '!=', 1) // استبعاد طريقة الدفع ذات id = 1
-                        ->get();
+    // التحقق من صلاحيات المستخدم
+        $user = Auth::user();
+        $isAdmin = $user && $user->role === 'admin';
+
+        // بناء الاستعلام الأساسي
+        $query = Paymentway::with('Paymentway_input')
+                    ->where('id', '!=', 1); // استبعاد البوابة الافتراضية
+
+        // إذا لم يكن مديراً، نضيف شرط status = 1
+        if (!$isAdmin) {
+            $query->where('status', 1);
+        }
+
+        // تنفيذ الاستعلام
+        $paymentways = $query->get();
+
+        // إضافة تحقق إضافي إذا لزم الأمر
+        if ($paymentways->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'لا توجد بوابات دفع متاحة'
+            ], 404);
+        }
 
         return response()->json([
             'success' => true,
+            'is_admin' => $isAdmin, // إرسال معلومات الصلاحية للفرونت إن لزم
             'data' => $paymentways
         ], 200);
     }
@@ -174,16 +196,22 @@ class PaymentwayController extends Controller
 /**
  * حذف طريقة الدفع
  */
-public function destroy($id)
+public function destroy(Request $request,$id)
 {
-    // منع حذف بوابة الدفع ذات id = 1
+    // التحقق من صحة البيانات المدخلة
+    $request->validate([
+        'status' => 'required|in:0,1', // يجب أن تكون القيمة 0 أو 1 فقط
+    ]);
+
+    // منع تعديل بوابة الدفع الافتراضية (id = 1)
     if ($id == 1) {
         return response()->json([
             'success' => false,
-            'message' => 'لا يمكن حذف بوابة الدفع الافتراضية'
+            'message' => 'لا يمكن تعديل حالة بوابة الدفع الافتراضية'
         ], 403); // كود 403 Forbidden
     }
 
+    // البحث عن طريقة الدفع
     $paymentway = Paymentway::find($id);
 
     if (!$paymentway) {
@@ -193,12 +221,16 @@ public function destroy($id)
         ], 404);
     }
 
-    $paymentway->Paymentway_input()->delete();
-    $paymentway->delete();
+    // تحديث حالة طريقة الدفع
+    $paymentway->update(['status' => $request->status]);
+
+    // رسالة الاستجابة حسب الحالة
+    $statusMessage = $request->status == 1 ? 'تم تفعيل طريقة الدفع بنجاح' : 'تم تعطيل طريقة الدفع بنجاح';
 
     return response()->json([
         'success' => true,
-        'message' => 'تم حذف طريقة الدفع بنجاح'
+        'message' => $statusMessage,
+        'data' => $paymentway
     ], 200);
 }
 }

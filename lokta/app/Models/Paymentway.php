@@ -13,6 +13,7 @@ class Paymentway extends Model
     protected $fillable = [
         'title',
         'image',
+        'status',
         'description',
 
     ];

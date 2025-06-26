@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Offer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OfferController extends Controller
 {
@@ -15,13 +16,23 @@ class OfferController extends Controller
         // Start with all offers
         $query = Offer::query();
 
+        // Check if user is admin
+        $user = Auth::user();
+        $isAdmin = $user && $user->role === 'admin';
+
+        // For non-admin users, show only active offers (status = 1)
+        if (!$isAdmin) {
+            $query->where('status', 1);
+        }
+
         // Filter by title if provided
         if ($request->has('title')) {
             $query->where('title', 'like', '%' . $request->title . '%');
         }
 
+        // Filter by level if provided
         if ($request->has('level')) {
-            $query->where('level', 'like', '%' . $request->level . '%');
+            $query->where('level', $request->level); // removed 'like' for exact match
         }
 
         // Filter by price range if provided
@@ -37,10 +48,19 @@ class OfferController extends Controller
             $query->where('count_month', $request->count_month);
         }
 
+        // Optional: Filter by status if admin explicitly requests it
+        if ($isAdmin && $request->has('status')) {
+            $query->where('status', $request->status);
+        }
+
         // Get the filtered results
         $offers = $query->get();
 
-        return response()->json($offers);
+        return response()->json([
+            'success' => true,
+            'is_admin' => $isAdmin,
+            'data' => $offers
+        ]);
     }
 
     /**
@@ -113,13 +133,34 @@ class OfferController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(Request $request,$id)
     {
+        $request->validate([
+            'status' => 'required|in:0,1', // يجب أن تكون القيمة 0 أو 1 فقط
+        ]);
+
+        // البحث عن العرض
         $offer = Offer::find($id);
-        $offer->delete();
+
+        if (!$offer) {
+            return response()->json([
+                'success' => false,
+                'message' => 'العرض غير موجود'
+            ], 404);
+        }
+
+        // تحديث حالة العرض
+        $offer->update(['status' => $request->status]);
+
+        // رسالة الاستجابة حسب الحالة
+        $statusMessage = $request->status == 1
+            ? 'تم تفعيل العرض بنجاح'
+            : 'تم تعطيل العرض بنجاح';
 
         return response()->json([
-            'message' => 'Offer deleted successfully'
-        ]);
+            'success' => true,
+            'message' => $statusMessage,
+            'data' => $offer
+        ], 200);
     }
 }
