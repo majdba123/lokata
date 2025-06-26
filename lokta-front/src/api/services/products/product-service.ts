@@ -17,9 +17,7 @@ class ProductService {
         data: Product[];
         pagination: Pagination;
       }>(`${API_URL}/api/products/filter`, {
-        params: {
-          ...filter,per_page : 1
-        },
+        params: filter,
         headers: {
           "Content-Type": "application/json",
         },
