@@ -1,4 +1,4 @@
-import { Product } from "@/api/services/products/types";
+import { Pagination, Product } from "@/api/services/products/types";
 import PriceRangeSlider from "@/components/my-ui/double-price-range";
 import useDebounce from "@/hooks/useDebounce";
 import { useCategoryStore } from "@/zustand-stores/category-store";
@@ -13,10 +13,11 @@ import useAllBrandsInCategory from "./useAllBrandsInCategory";
 import { Brand } from "@/api/services/brand/types";
 
 type Props = {
-  onFetchProducts: (products: Product[]) => void;
+  onFetchProducts: (args: { data: Product[]; pagination: Pagination }) => void;
+  page: number;
 };
 
-function FilterSidebar({ onFetchProducts }: Props) {
+function FilterSidebar({ onFetchProducts, page }: Props) {
   const location = useLocation();
   const { search } = location.state ? location.state : { search: "" };
   const { categoryName, subCategoryName } = useParams();
@@ -115,6 +116,7 @@ function FilterSidebar({ onFetchProducts }: Props) {
       min_price: priceRange[0],
       max_price: priceRange[1],
       category_id: curCategory?.id,
+      page,
     },
     onFetchProducts,
   });

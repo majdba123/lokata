@@ -1,10 +1,14 @@
 import { filterProductsApi } from "@/api/services/products/product-service";
-import { Product, ProductsFilter } from "@/api/services/products/types";
+import {
+  Pagination,
+  Product,
+  ProductsFilter,
+} from "@/api/services/products/types";
 import { useQuery } from "@tanstack/react-query";
 
 type Props = {
   filters: ProductsFilter;
-  onFetchProducts: (products: Product[]) => void;
+  onFetchProducts: (args: { data: Product[]; pagination: Pagination }) => void;
 };
 
 export default function useFIlterProductsQuery({
@@ -26,6 +30,7 @@ export default function useFIlterProductsQuery({
       finalFilters.min_price = filters.min_price;
       if (filters.max_price !== undefined && filters.max_price > 0)
         finalFilters.max_price = filters.max_price;
+      if (filters.page) finalFilters.page = filters.page;
 
       const res = await filterProductsApi(finalFilters);
       onFetchProducts(res);

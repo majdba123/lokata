@@ -6,6 +6,7 @@ export type ProductsFilter = {
   brand_id?: number;
   subcategory_title?: string;
   category_id?: number;
+  page? : number
 };
 
 export type Product = {
@@ -20,7 +21,7 @@ export type Product = {
   owner_id: number;
   brand_id: number;
   currency: "sy" | "us";
-  status: "rejected" | "completed" | "pending" | "reupdated";
+  status: "rejected" | "completed" | "pending" | "reupdate";
   dates: ProductDates;
   city: string | null;
   sub_category: string;
@@ -53,4 +54,12 @@ export type UpdateProductRequest = {
   brand_id?: number;
   currency: "sy" | "us";
   city?: string;
+};
+
+export type Pagination = {
+  count: number;
+  current_page: number;
+  total: number;
+  total_pages: number;
+
 };

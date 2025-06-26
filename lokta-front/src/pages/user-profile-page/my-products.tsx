@@ -106,7 +106,7 @@ function MyProducts() {
                 الحالة :{" "}
                 <span
                   className={`${
-                    product.status == "pending" || product.status == "reupdated"
+                    product.status == "pending" || product.status == "reupdate"
                       ? "text-yellow-500"
                       : product.status == "rejected"
                       ? "text-red-600"
@@ -117,7 +117,7 @@ function MyProducts() {
                     ? "قيد الانتظار"
                     : product.status == "rejected"
                     ? "مرفوض"
-                    : product.status == "reupdated"
+                    : product.status == "reupdate"
                     ? "معدل"
                     : "مقبول"}
                 </span>{" "}

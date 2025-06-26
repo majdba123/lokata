@@ -1,6 +1,11 @@
 import axios from "axios";
 import { resolveError } from "../helpers/error-resolver";
-import { CreateProductRequest, Product, ProductsFilter } from "./types";
+import {
+  CreateProductRequest,
+  Pagination,
+  Product,
+  ProductsFilter,
+} from "./types";
 import { API_URL } from "@/api/constants";
 import { useAuthStore } from "@/zustand-stores/auth.store";
 import { headerGenerator } from "../helpers/header-generator";
@@ -8,15 +13,17 @@ import { headerGenerator } from "../helpers/header-generator";
 class ProductService {
   filterProductsApi = async (filter: ProductsFilter) => {
     try {
-      const { data } = await axios.get<Product[]>(
-        `${API_URL}/api/products/filter`,
-        {
-          params: filter,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const { data } = await axios.get<{
+        data: Product[];
+        pagination: Pagination;
+      }>(`${API_URL}/api/products/filter`, {
+        params: {
+          ...filter,per_page : 1
+        },
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       return data;
     } catch (error) {
       throw new Error(resolveError(error));

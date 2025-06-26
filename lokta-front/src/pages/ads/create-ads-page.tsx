@@ -93,6 +93,7 @@ export default function CreateAdsPage() {
     watch,
     setError,
     clearErrors,
+    getValues,
   } = useForm<AdFormData>({
     resolver: zodResolver(adSchema),
   });
@@ -265,6 +266,7 @@ export default function CreateAdsPage() {
           backToForm={() => {
             setCurrentStep("form");
           }}
+          adsData={getValues()}
         />
       )}
     </div>
