@@ -28,7 +28,7 @@ const OfferItem: React.FC<OfferItemProps> = ({
     >
       <h4 className="font-semibold text-md mb-1">{offer.title}</h4>
       <p className="text-sm text-gray-600 mb-2">
-        المدة: {offer.count_month} شهر
+        المدة: {offer.count_month} يوم
       </p>
       <p className="text-lg font-bold text-blue-700">
         {Number(offer.price) === 0 ? "مجاني" : `${offer.price} ل.س`}

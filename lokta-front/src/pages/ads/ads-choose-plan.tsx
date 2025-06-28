@@ -185,9 +185,13 @@ const AdsChoosePlan: React.FC<Props> = ({ backToForm, adsData }) => {
                     <p className="text-sm text-gray-600 mb-2">
                       {plan.discription}
                     </p>
-                    <p className="text-sm">المدة: {plan.count_month} شهور</p>
+                    <p className="text-sm">المدة: {plan.count_month} ايام</p>
                     <p className="text-sm font-semibold">
                       السعر: {plan.price} ريال
+                    </p>
+                    <p className="text-xl text-gray-600 mt-2 ">
+                      اعلان {" "}
+                      {plan.level == 1 ? "داخلى" : "خارجى"}
                     </p>
                   </div>
                 ))}

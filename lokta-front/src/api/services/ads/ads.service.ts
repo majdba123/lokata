@@ -52,7 +52,7 @@ class AdsService {
     try {
       const accessToken = useAuthStore.getState().accessToken;
       const { data } = await axios.get<{ data: AdsPlanElement[] }>(
-        `${API_URL}/api/offers/fillter`,
+        `${API_URL}/api/plan/fillter`,
         {
           headers: headerGenerator([
             {
