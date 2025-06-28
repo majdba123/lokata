@@ -478,7 +478,6 @@
                                     <li>
                                         <a href="Brand.html">Brand</a>
                                     </li>
-                                    
                                 </ul>
                             </li>
 
@@ -818,7 +817,6 @@
                                     <li>
                                         <a href="Brand.html">Brand</a>
                                     </li>
-                                
                                 </ul>
                             </li>
                             <li class="menu nav-item relative">
@@ -987,6 +985,7 @@
         </div>
         <!-- Modal for Delete Confirmation -->
         <!-- Delete Confirmation Modal -->
+        <!-- Delete Confirmation Modal -->
         <div
             x-data
             x-show="$store.deleteModal.isOpen"
@@ -1001,7 +1000,7 @@
                     <button @click="$store.deleteModal.closeModal()" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">✕</button>
                 </div>
                 <div class="p-4">
-                    <p class="text-gray-700 dark:text-gray-300">"Are you sure you want to delete this Merchans?"</p>
+                    <p class="text-gray-700 dark:text-gray-300">"Are you sure you want to delete this product?"</p>
                 </div>
                 <div class="flex justify-end gap-2 border-t p-4 dark:border-gray-700">
                     <button @click="$store.deleteModal.closeModal()" class="btn btn-outline-danger">No</button>
@@ -1263,10 +1262,16 @@
                         await this.fetchManagers();
 
                         // Event Delegation for Delete Buttons
+                        // في دالة init تأكد من أن event delegation يعمل بشكل صحيح
                         document.addEventListener('click', (e) => {
                             if (e.target.closest('.delete-btn')) {
                                 const managerId = e.target.closest('.delete-btn').dataset.id;
-                                this.deleteManager(managerId);
+                                if (managerId) {
+                                    this.deleteManager(managerId);
+                                } else {
+                                    console.error('Product ID is undefined');
+                                    coloredToast('danger', 'Could not find product ID');
+                                }
                             }
                         });
 
@@ -1488,33 +1493,35 @@
                     // أزرار الإجراءات
                     getActionButtons(managerId, currentStatus = 'pending') {
                         return `
-                                                <div class="flex items-center justify-center gap-1">
-                                                    <button class="btn update-btn btn-sm btn-primary"data-id="${managerId}">UPDATE</button>
+        <div class="flex items-center justify-center gap-1">
+            <button class="btn update-btn btn-sm btn-primary" data-id="${managerId}">UPDATE</button>
+            
+            <!-- Delete Button -->
+            <button class="btn delete-btn btn-sm btn-danger" data-id="${managerId}">
+                DELETE
+            </button>
 
-                                                    <!-- Status Dropdown -->
-                                                    <div class="dropdown relative" data-id="${managerId}">
-                                                        <button class="dropdown-toggle btn btn-sm ${this.getStatusClass(currentStatus)}">
-                                                            ${currentStatus.charAt(0).toUpperCase() + currentStatus.slice(1)}
-                                                        </button>
-                                                        <ul class="dropdown-menu absolute hidden z-10 mt-1 w-28 bg-white shadow-lg rounded-md border border-gray-200">
-                                                            ${['completed', 'pending', 'rejected', 'reupdate']
-                                                                .map(
-                                                                    (status) => `
-                                                                <li>
-                                                                    <a href="javascript:;" class="status-option block px-4 py-2 hover:bg-blue-50" data-value="${status}">
-                                                                        ${status.charAt(0).toUpperCase() + status.slice(1)}
-                                                                    </a>
-                                                                </li>
-                                                            `
-                                                                )
-                                                                .join('')}
-                                                        </ul>
-                                                    </div>
-
-
-                                                </div>`;
+            <!-- Status Dropdown -->
+            <div class="dropdown relative" data-id="${managerId}">
+                <button class="dropdown-toggle btn btn-sm ${this.getStatusClass(currentStatus)}">
+                    ${currentStatus.charAt(0).toUpperCase() + currentStatus.slice(1)}
+                </button>
+                <ul class="dropdown-menu absolute hidden z-10 mt-1 w-28 bg-white shadow-lg rounded-md border border-gray-200">
+                    ${['completed', 'pending', 'rejected', 'reupdate']
+                        .map(
+                            (status) => `
+                        <li>
+                            <a href="javascript:;" class="status-option block px-4 py-2 hover:bg-blue-50" data-value="${status}">
+                                ${status.charAt(0).toUpperCase() + status.slice(1)}
+                            </a>
+                        </li>
+                    `
+                        )
+                        .join('')}
+                </ul>
+            </div>
+        </div>`;
                     },
-
                     // Helper function for status button classes
                     getStatusClass(status) {
                         const classes = {
@@ -1605,20 +1612,20 @@
 
                         try {
                             const token = localStorage.getItem('authToken');
-                            const response = await fetch(`${this.apiBaseUrl}/api/admin/merchants/delete/${managerId}`, {
+                            const response = await fetch(`${this.apiBaseUrl}/api/products/${managerId}`, {
                                 method: 'DELETE',
                                 headers: {
                                     Accept: 'application/json',
                                     Authorization: `Bearer ${token}`,
                                 },
                             });
+                            coloredToast('success', 'Delete Product successfully');
 
-                            if (!response.ok) throw new Error('Failed to delete manager');
+                            this.fetchManagers();
 
-                            this.showSuccess('تم حذف المدير بنجاح');
                             await this.fetchManagers();
                         } catch (error) {
-                            this.showError(error.message || 'فشل في حذف المدير. الرجاء المحاولة لاحقاً.');
+                            this.showError(error.message || 'Delete Product error');
                         }
                     },
                     // بقية الدوال المساعدة...
@@ -1641,10 +1648,6 @@
                             next: '<svg...></svg>',
                         };
                         return icons[type];
-                    },
-
-                    showSuccess(message) {
-                        alert(message);
                     },
 
                     showError(message) {

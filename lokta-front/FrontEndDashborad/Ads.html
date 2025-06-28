@@ -1006,7 +1006,7 @@
                                 <!-- form grid -->
                                 <form @submit.prevent="updateManager()">
                                     <div class="grid grid-cols-1 justify-between gap-5">
-                                        <input type="text" placeholder="Enter Title" class="form-input" x-model="$store.global.sharedData.title" required />
+                                        <input type="text" placeholder="Enter Link" class="form-input" x-model="$store.global.sharedData.title" required />
 
                                         <label class="mb-1 block">Ad Image</label>
                                         <input
@@ -1380,51 +1380,55 @@
                     // تنسيق الاسم مع الصورة
                     formatName(images, index, Description) {
                         return `
-            <div class="flex items-center w-max" x-data="{ showGallery: false }">
-                <!-- Main Image with Gallery Toggle -->
-                <div class="relative">
-                    <img class="w-9 h-9 rounded-full ltr:mr-2 rtl:ml-2 object-cover cursor-pointer"
-                         src="${images}"
-                         alt="${'Item'}"
-                         @click="showGallery = true"/>
+        <div class="flex items-center w-max" x-data="{ showGallery: false }">
+            <!-- Main Image with Gallery Toggle -->
+            <div class="relative">
+                <img class="w-9 h-9 rounded-full ltr:mr-2 rtl:ml-2 object-cover cursor-pointer"
+                     src="${images}"
+                     alt="Item"
+                     @click="showGallery = true"/>
+            </div>
 
-
-                </div>
-
-
-                <!-- Image Gallery Modal -->
-                <div x-show="showGallery"
-                     x-transition
-                     class="fixed inset-0 z-50 flex items-center justify-center bg-opacity-75 p-4"
-                     @click.away="showGallery = false"
-                     x-cloak>
-                    <div class=" rounded-lg max-w-4xl w-full max-h-[90vh] overflow-auto bg-black " >
-                        <div class="p-4 border-b flex justify-between items-center">
-                            ${Description ? `
-                        <div class="bg-black/80 text-center">
-                            <a href="${Description}" target="_blank" 
-                               class="text-blue-400 hover:text-blue-300 font-medium inline-block max-w-full truncate px-4">
-                                ${Description}
-                            </a>
-                        </div>
-                    ` : ''}                            <button @click="showGallery = false" class="text-gray-500 hover:text-gray-700">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 p-4">
-                            ${`
-                                <div class="border rounded overflow-hidden">
-                                    <img src="${images}" alt="Gallery Image" class="w-full h-48 object-cover"/>
-                                </div>
-                            `}
+            <!-- Image Gallery Modal for single image -->
+            <div x-show="showGallery"
+                 x-transition
+                 class="fixed inset-0 z-50 flex items-center justify-center bg-opacity-90 p-4"
+                 @click.away="showGallery = false"
+                 x-cloak>
+                <div class="relative max-w-4xl w-full max-h-[90vh]">
+                    <!-- Close button -->
+                    <button @click="showGallery = false" 
+                            class="absolute top-4 right-4 text-white hover:text-gray-300 z-10 bg-black/50 rounded-full p-1">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                    
+                    <!-- Image container -->
+                    <div class="flex flex-col h-full">
+                        ${
+                            Description
+                                ? `
+                            <div class="text-center p-2 bg-white text-black">
+                                <a href="${Description}" target="_blank" 
+                                   class="text-blue-400 hover:text-blue-300 font-medium inline-block max-w-full truncate px-4">
+                                    ${Description}
+                                </a>
+                            </div>
+                        `
+                                : ''
+                        }
+                        
+                        <div class="flex-1 flex items-center justify-center p-4">
+                            <img src="${images}" 
+                                 alt="Enlarged view" 
+                                 class="max-w-full max-h-[80vh] object-contain"/>
                         </div>
                     </div>
                 </div>
-            </div>`;
-                    },
-                    // تنسيق البريد الإلكتروني
+            </div>
+        </div>`;
+                    }, // تنسيق البريد الإلكتروني
                     formatEmail(email) {
                         return email ? `<a href="mailto:${email}" class="text-primary hover:underline">${email}</a>` : 'No Email Provided';
                     },

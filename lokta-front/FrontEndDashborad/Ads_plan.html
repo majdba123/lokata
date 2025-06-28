@@ -478,7 +478,6 @@
                                     <li>
                                         <a href="Brand.html">Brand</a>
                                     </li>
-                                    
                                 </ul>
                             </li>
 
@@ -953,10 +952,9 @@
                                                 <input type="text" placeholder=" Enter Count Of Days" class="form-input" x-model="mouth" required />
                                                 <input type="text" placeholder="Enter Price" class="form-input" x-model="price" required />
                                                 <select id="ctnSelect1" class="form-select text-white-dark" x-model="level" required>
-                                                    <option>level</option>
-                                                    <option>1</option>
-                                                    <option>2</option>
-                                                    <option>3</option>
+                                                    <option>Enternal / External</option>
+                                                    <option value="1">Enternal</option>
+                                                    <option value="2">External</option>
                                                 </select>
                                             </div>
                                             <textarea
@@ -1025,10 +1023,9 @@
                                         />
                                         <input type="text" placeholder="Enter Price" class="form-input" x-model="$store.global.sharedData.price" required />
                                         <select id="ctnSelect1" class="form-select text-white-dark" x-model="$store.global.sharedData.level" required>
-                                            <option>level</option>
-                                            <option>1</option>
-                                            <option>2</option>
-                                            <option>3</option>
+                                            <option>Enternal / External</option>
+                                            <option value="1">Enternal</option>
+                                            <option value="2">External</option>
                                         </select>
                                         <textarea
                                             id="ctnTextarea"
@@ -1333,7 +1330,7 @@
 
                         const mappedData = this.tableData.map((manager, index) => [
                             this.formatText(manager.title, index),
-                            this.formatText(manager.level),
+                            this.formatText1(manager.level),
                             this.formatText(manager.discription),
                             this.formatText(manager.count_month),
                             this.formatText(manager.price),
@@ -1396,8 +1393,13 @@
                     formatText(text) {
                         return text || 'N/A';
                     },
-
-                    // أزرار الإجراءات
+                    formatText1(text) {
+                        if (text == '1') {
+                            return 'Enternal';
+                        } else {
+                            return 'External' || 'N/A';
+                        }
+                    },
                     getActionButtons(managerId, currentStatus) {
                         const isActive = currentStatus == 0;
                         const statusIcon = isActive

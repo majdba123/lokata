@@ -478,7 +478,6 @@
                                     <li>
                                         <a href="Brand.html">Brand</a>
                                     </li>
-                                    
                                 </ul>
                             </li>
 
@@ -818,7 +817,6 @@
                                     <li>
                                         <a href="Brand.html">Brand</a>
                                     </li>
-                                
                                 </ul>
                             </li>
                             <li class="menu nav-item relative">
@@ -1408,8 +1406,8 @@
                             // إنشاء صف لكل عنصر في tableData
                             return [
                                 index + 1,
+                                this.formatName(item.img, index, item.link),
 
-                                item.title || 'N/A', // عنوان المنتج
                                 this.formatPaymentDetails(paymentDetails), // تفاصيل الدفع
                                 item.subscription_price || 'N/A', // عنوان المنتج
 
@@ -1421,7 +1419,7 @@
 
                         this.datatable1 = new simpleDatatables.DataTable('#myTable1', {
                             data: {
-                                headings: ['Number', 'Title', 'Payment Details', 'Price', 'Phone', 'Text', 'Actions'],
+                                headings: ['Number', 'Image', 'Payment Details', 'Price', 'Phone', 'Text', 'Actions'],
                                 data: mappedData,
                             },
                             searchable: true,
@@ -1441,6 +1439,14 @@
                                 top: '{search}',
                                 bottom: '{info}{select}{pager}',
                             },
+                        });
+                        this.reinitAlpine();
+                    },
+                    reinitAlpine() {
+                        Alpine.initTree(document.querySelector('#myTable1'));
+
+                        document.querySelectorAll('#myTable1 img').forEach((img) => {
+                            img.setAttribute('src', img.getAttribute('src'));
                         });
                     },
 
@@ -1474,15 +1480,57 @@
                         return classes[status] || classes.default;
                     },
                     // تنسيق الاسم مع الصورة
-                    formatName(name, index) {
+                    formatName(images, index, Description) {
                         return `
-                                    <div class="flex items-center w-max">
-                                        <img class="w-9 h-9 rounded-full ltr:mr-2 rtl:ml-2 object-cover"
-                                             src="assets/images/profile-${index + 1}.jpeg"
-                                             alt="${name || 'User'}"/>
-                                        ${name || 'Unknown'}
-                                    </div>`;
-                    },
+        <div class="flex items-center w-max" x-data="{ showGallery: false }">
+            <!-- Main Image with Gallery Toggle -->
+            <div class="relative">
+                <img class="w-9 h-9 rounded-full ltr:mr-2 rtl:ml-2 object-cover cursor-pointer"
+                     src="${images}"
+                     alt="Item"
+                     @click="showGallery = true"/>
+            </div>
+
+            <!-- Image Gallery Modal for single image -->
+            <div x-show="showGallery"
+                 x-transition
+                 class="fixed inset-0 z-50 flex items-center justify-center bg-opacity-90 p-4"
+                 @click.away="showGallery = false"
+                 x-cloak>
+                <div class="relative max-w-4xl w-full max-h-[90vh]">
+                    <!-- Close button -->
+                    <button @click="showGallery = false" 
+                            class="absolute top-4 right-4 text-white hover:text-gray-300 z-10 bg-black/50 rounded-full p-1">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                    
+                    <!-- Image container -->
+                    <div class="flex flex-col h-full">
+                        ${
+                            Description
+                                ? `
+                            <div class="text-center p-2 bg-white text-black">
+                                <a href="${Description}" target="_blank" 
+                                   class="text-blue-400 hover:text-blue-300 font-medium inline-block max-w-full truncate px-4">
+                                    ${Description}
+                                </a>
+                            </div>
+                        `
+                                : ''
+                        }
+                        
+                        <div class="flex-1 flex items-center justify-center p-4">
+                            <img src="${images}" 
+                                 alt="Enlarged view" 
+                                 class="max-w-full max-h-[80vh] object-contain"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+                    }, // تنسيق البريد الإلكتروني
 
                     // تنسيق البريد الإلكتروني
                     formatEmail(email) {
