@@ -18,23 +18,11 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { cn } from "@/lib/utils";
+import useGetAdsByTypeAndCategory from "../ads/hooks/useGetAdsByTypeAndCategory";
+import { useParams } from "react-router-dom";
+import useCategoriesQuery from "../all-category-page/useCategoriesQuery";
+import Loading from "@/components/my-ui/loading";
 
-const ads = [
-  {
-    src: `https://picsum.photos/seed/${
-      Math.random() * new Date().getTime()
-    }/600/300`,
-    link: "https://google.com",
-  },
-  {
-    src: `https://picsum.photos/seed/${Math.random()}/600/300`,
-    link: "https://google.com",
-  },
-  {
-    src: `https://picsum.photos/seed/${Math.random() * 33}/600/300`,
-    link: "https://google.com",
-  },
-];
 function CategoryPage() {
   const curSubCategoryId = useCategoryStore((state) => state.curSubCategoryId);
   const subcategories = useCategoryStore((state) => state.subcategories);
@@ -42,6 +30,19 @@ function CategoryPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [pagination, setPagination] = useState<TPagination>();
   const [page, setPage] = useState(1);
+
+  const { categoryName } = useParams();
+  const categoriesQuery = useCategoriesQuery();
+  const categories = categoriesQuery.data ?? [];
+  const curCategory = categories?.find((item) => item.name == categoryName);
+  const {
+    data: ads,
+    isPending: isAdsPending,
+    status: adsStatus,
+  } = useGetAdsByTypeAndCategory({
+    type: "internal",
+    category: curCategory ? curCategory.id : -1,
+  });
 
   const onFetchProducts = ({
     data,
@@ -101,7 +102,13 @@ function CategoryPage() {
 
   return (
     <div dir="rtl">
-      <AdsBoard ads={ads} type="slide" />
+      {isAdsPending && <Loading />}
+      {adsStatus === "success" && (
+        <AdsBoard
+          ads={ads.map((ad) => ({ src: ad.img, link: ad.link }))}
+          type="slide"
+        />
+      )}
       <div className="w-full flex flex-col justify-center items-center space-y-2">
         <p className="text-xl ">
           {curSubCategoryId == -1 ? "الكل" : curSubCategory?.title}
@@ -117,7 +124,7 @@ function CategoryPage() {
         </main>
       </div>
       {pagination && pagination.total_pages > 1 && (
-        <Pagination >
+        <Pagination>
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious

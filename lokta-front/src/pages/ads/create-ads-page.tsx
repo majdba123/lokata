@@ -65,14 +65,13 @@ const adSchema = z.object({
   image: z
     .instanceof(FileList)
     .refine((files) => files.length > 0, "صورة الاعلان مطلوبة")
-    .transform((files) => files[0])
-    .refine((file) => file instanceof File, "يجب اختيار ملف صالح")
+    .refine((files) => files instanceof FileList, "يجب اختيار ملف صالح")
     .refine(
-      (file) => file.size <= 5 * 1024 * 1024,
+      (files) => files[0].size <= 5 * 1024 * 1024,
       "حجم الصورة يجب أن لا يتجاوز 5MB"
     )
     .refine(
-      (file) => ["image/jpeg", "image/png", "image/webp"].includes(file.type),
+      (files) => ["image/jpeg", "image/png", "image/webp"].includes(files[0].type),
       "صيغة الصورة غير مدعومة (فقط JPG, PNG, WEBP)"
     ),
   adLink: z.string().min(1, "لينك الاعلان مطلوب").url("الرابط غير صالح"),
@@ -141,7 +140,7 @@ export default function CreateAdsPage() {
   const onSubmit = async (data: AdFormData) => {
     try {
       if (data.image) {
-        const validationError = await validateImageFile(data.image);
+        const validationError = await validateImageFile(data.image[0]);
         if (validationError) {
           setError("image", {
             type: "manual",
@@ -150,11 +149,6 @@ export default function CreateAdsPage() {
           return;
         }
       }
-
-      console.log("Form Data Submitted:", data);
-      console.log("Ad Image File:", data.image);
-      console.log("Ad Link:", data.adLink);
-
       toast.success(
         "بيانات الاعلان جاهزة، سيتم نقلك الى اختيار خطط الاعلان وطرق الدفع"
       );

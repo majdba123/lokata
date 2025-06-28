@@ -27,7 +27,13 @@ const tabs = [
     onClick: () => {},
     Icon: () => null,
   },
-
+  {
+    name: "اعلاناتي", // My ads Dashboard
+    to: "/profile/my-ads",
+    current: false,
+    onClick: () => {},
+    Icon: () => null,
+  },
   {
     name: "تسجيل الخروج", // Logout
     to: "/login",

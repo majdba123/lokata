@@ -18,6 +18,7 @@ import MyProducts from "./pages/user-profile-page/my-products";
 import ProductPage from "./pages/product-page";
 import AllCategoryPage from "./pages/all-category-page/all-category-page";
 import CreateAdsPage from "./pages/ads/create-ads-page";
+import MyAds from "./pages/user-profile-page/my-ads";
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
               <Route path="dashboard" element={<ProfileDashboard />} />
               <Route path="create-product" element={<CreateProduct />} />
               <Route path="my-products" element={<MyProducts />} />
+              <Route path="my-ads" element={<MyAds />} />
             </Route>
           </Route>{" "}
         </Route>

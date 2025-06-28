@@ -52,17 +52,22 @@ function AdsBoard({ type, className, ads }: Props) {
   // Handle single ad
   if (ads.length === 1) {
     return (
-      <div className={cn("relative overflow-hidden rounded-lg", className)}>
+      <div
+        className={cn(
+          "relative overflow-hidden rounded-lg  h-32 w-full md:h-90",
+          className
+        )}
+      >
         <a
           href={ads[0].link}
           target="_blank"
           rel="noopener noreferrer"
-          className="block w-full h-full transition-transform hover:scale-105"
+          className="block w-full h-full transition-all hover:scale-105"
         >
           <img
             src={ads[0].src || "/placeholder.svg"}
             alt="إعلان"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-fill"
           />
         </a>
       </div>
@@ -81,14 +86,22 @@ function AdsBoard({ type, className, ads }: Props) {
           ]}
           opts={{
             align: "start",
+            loop: ads.length > 4,
             direction: "rtl",
           }}
           dir="rtl"
           className="w-full"
         >
-          <CarouselContent className="h-32 md:h-90">
+          <CarouselContent className="-mr-4 h-20 w md:h-50">
             {ads.map((ad, index) => (
-              <CarouselItem key={index} className="h-full">
+              <CarouselItem
+                key={index}
+                className={cn("pr-4", {
+                  "basis-1/2": ads.length === 2,
+                  "basis-1/3": ads.length === 3,
+                  "basis-1/4": ads.length >= 4,
+                })}
+              >
                 <div className="overflow-hidden w-full h-full rounded-lg">
                   <a
                     href={ad.link}

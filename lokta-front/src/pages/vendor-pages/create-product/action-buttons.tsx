@@ -7,6 +7,7 @@ interface ActionButtonsProps {
   isSubmitDisabled: boolean;
   submitText?: string;
   submittingText?: string;
+  backButtonText?: string;
 }
 
 const ActionButtons: React.FC<ActionButtonsProps> = ({
@@ -16,6 +17,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
   isSubmitDisabled,
   submitText = "تأكيد وإنشاء المنتج بالخطة",
   submittingText = "جاري إنشاء المنتج...",
+  backButtonText = "العودة لتعديل المنتج",
 }) => {
   return (
     <div className="flex flex-col sm:flex-row gap-4 mt-6">
@@ -23,7 +25,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
         onClick={onBack}
         className="bg-gray-500 text-white rounded-md py-2 px-4 hover:bg-gray-600 transition duration-200 w-full sm:w-auto"
       >
-        العودة لتعديل المنتج
+        {backButtonText}{" "}
       </button>
       <button
         className="bg-green-500 text-white rounded-md py-2 px-4 hover:bg-green-600 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto flex-grow"

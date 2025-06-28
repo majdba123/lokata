@@ -3,23 +3,7 @@ import Loading from "@/components/my-ui/loading";
 import Hero from "@/components/my-ui/hero-component";
 import useCategoriesQuery from "./useCategoriesQuery";
 import AdsBoard from "../ads/ads-board";
-
-const ads = [
-  {
-    src: `https://picsum.photos/seed/${
-      Math.random() * new Date().getTime()
-    }/600/300`,
-    link: "https://google.com",
-  },
-  {
-    src: `https://picsum.photos/seed/${Math.random()}/600/300`,
-    link: "https://google.com",
-  },
-  {
-    src: `https://picsum.photos/seed/${Math.random() * 33}/600/300`,
-    link: "https://google.com",
-  },
-];
+import useGetAdsByTypeAndCategory from "../ads/hooks/useGetAdsByTypeAndCategory";
 
 function AllCategoryPage() {
   const { data, status } = useCategoriesQuery();
@@ -44,7 +28,7 @@ function AllCategoryPage() {
                   {item.name}
                 </h2>
               </div>
-              <AdsBoard type="fade" ads={ads} />
+              <AdsContainer categoryId={item.id} type="fade" />
               <CategoryCarousel
                 categoryName={item.name}
                 subcategories={item.sub_category}
@@ -56,5 +40,28 @@ function AllCategoryPage() {
     </div>
   );
 }
+
+type TAdsProps = {
+  categoryId: number;
+  type: "slide" | "fade";
+};
+
+const AdsContainer = ({ categoryId, type = "slide" }: TAdsProps) => {
+  const adsQuery = useGetAdsByTypeAndCategory({
+    type: "external",
+    category: categoryId,
+  });
+  return (
+    <>
+      {adsQuery.status === "pending" && <Loading />}
+      {adsQuery.status === "success" && (
+        <AdsBoard
+          type={type}
+          ads={adsQuery.data.map((ad) => ({ src: ad.img, link: ad.link }))}
+        />
+      )}
+    </>
+  );
+};
 
 export default AllCategoryPage;

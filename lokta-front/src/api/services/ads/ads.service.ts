@@ -30,15 +30,19 @@ class AdsService {
     category,
   }: {
     type: AdsType;
-    category: string;
+    category: number;
   }) => {
     try {
-      await axios.get(`${API_URL}/api/ads/filter`, {
-        params: {
-          type,
-          category_id: category,
-        },
-      });
+      const { data } = await axios.get<AdsElement[]>(
+        `${API_URL}/api/ads/filter`,
+        {
+          params: {
+            type,
+            category_id: category,
+          },
+        }
+      );
+      return data;
     } catch (error) {
       throw new Error(resolveError(error));
     }
@@ -57,12 +61,30 @@ class AdsService {
           ]),
         }
       );
-      return data;
+      return data.data;
+    } catch (error) {
+      throw new Error(resolveError(error));
+    }
+  };
+
+  createAdsApi = async (data: FormData) => {
+    try {
+      const accessToken = useAuthStore.getState().accessToken;
+      await axios.post(`${API_URL}/api/ads/store`, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
     } catch (error) {
       throw new Error(resolveError(error));
     }
   };
 }
 
-export const { getMyAdsApi, getAdsByTypeAndCategoryApi, getAdsPlansApi } =
-  new AdsService();
+export const {
+  getMyAdsApi,
+  getAdsByTypeAndCategoryApi,
+  getAdsPlansApi,
+  createAdsApi,
+} = new AdsService();
